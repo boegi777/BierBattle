@@ -6,12 +6,27 @@
     android:layout_height="match_parent"
     tools:context="com.fantavier.bierbattle.bierbattle.MainActivity$PlaceholderFragment">
 
-    <Button
-        android:id="@+id/uebersicht"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Übersicht"
-        tools:layout_editor_absoluteX="148dp"
-        tools:layout_editor_absoluteY="371dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="36sp"
+            tools:layout_editor_absoluteX="163dp"
+            tools:layout_editor_absoluteY="74dp" />
+
+        <Button
+            android:id="@+id/uebersicht"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Übersicht"
+            tools:layout_editor_absoluteX="148dp"
+            tools:layout_editor_absoluteY="371dp" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
