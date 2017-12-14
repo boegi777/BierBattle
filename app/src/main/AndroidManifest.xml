@@ -19,6 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".BierschuldenZaehler" />
+        <activity android:name=".Registrierung" />
+        <activity android:name=".Login"></activity>
     </application>
 
 </manifest>
