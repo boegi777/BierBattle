@@ -36,36 +36,41 @@ public class MenueTab extends Fragment {
         Button zaehler = (Button) rootView.findViewById(R.id.uebersicht);
         username = (TextView) rootView.findViewById(R.id.username);
 
+        try {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        usersRef = FirebaseDatabase.getInstance().getReference("users");
+            DatabaseReference userRef = usersRef.child(user.getUid());
 
-        DatabaseReference userRef = usersRef.child(user.getUid());
+            userRef.child("username").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    MenueTab.this.username.setText(dataSnapshot.getValue().toString());
+                }
 
-        userRef.child("username").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                MenueTab.this.username.setText(dataSnapshot.getValue().toString());
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                }
+            });
 
-            }
-        });
-
-        username.setText("Test");
+            username.setText("Test");
+        } catch(Exception e){
+            Intent startLogin = new Intent(getActivity(), Login.class);
+            startActivity(startLogin);
+        }
 
         zaehler.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity(),BierschuldenZaehler.class);
+                Intent i = new Intent(getActivity(), BierschuldenZaehler.class);
                 startActivity(i);
 
             }
         });
         return rootView;
+
     }
 
 }

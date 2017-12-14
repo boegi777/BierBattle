@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         //if(user != null){
+            //FirebaseAuth.getInstance().signOut();
             //user = null;
         //}
 
