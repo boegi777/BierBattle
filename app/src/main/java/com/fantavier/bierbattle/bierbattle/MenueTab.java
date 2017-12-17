@@ -37,11 +37,9 @@ public class MenueTab extends Fragment {
         Button zaehler = (Button) rootView.findViewById(R.id.uebersicht);
         Button logout = (Button) rootView.findViewById(R.id.logout);
 
-        username = (TextView) rootView.findViewById(R.id.username);
-        userProvider = new UserProvider();
-
         try {
-
+            username = (TextView) rootView.findViewById(R.id.username);
+            userProvider = new UserProvider();
             userProvider.setUsernameListener(new UserProvider.UsernameListener(){
                 @Override
                 public void onUsernameChanged(String username) {
