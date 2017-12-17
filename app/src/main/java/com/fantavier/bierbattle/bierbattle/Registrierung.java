@@ -68,10 +68,10 @@ public class Registrierung extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 Map<String, String> userData = new HashMap<String, String>();
+                                userData.put("uid", mAuth.getCurrentUser().getUid());
                                 userData.put("username", Registrierung.this.getUsernameString());
 
-                                mDbRef = mDbRef.child(mAuth.getCurrentUser().getUid());
-                                mDbRef.setValue(userData);
+                                UserProvider.createUser(userData);
 
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");

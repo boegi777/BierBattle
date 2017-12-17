@@ -26,6 +26,7 @@ public class MenueTab extends Fragment {
 
     private static final String TAG = "MenueTab";
     private DatabaseReference usersRef;
+    private UserProvider userProvider;
 
     public TextView username;
 
@@ -34,28 +35,21 @@ public class MenueTab extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.menue_tab, container, false);
         Button zaehler = (Button) rootView.findViewById(R.id.uebersicht);
+        Button logout = (Button) rootView.findViewById(R.id.logout);
+
         username = (TextView) rootView.findViewById(R.id.username);
+        userProvider = new UserProvider();
 
         try {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-            DatabaseReference userRef = usersRef.child(user.getUid());
-
-            userRef.child("username").addValueEventListener(new ValueEventListener() {
+            userProvider.setUsernameListener(new UserProvider.UsernameListener(){
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    MenueTab.this.username.setText(dataSnapshot.getValue().toString());
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
+                public void onUsernameChanged(String username) {
+                    MenueTab.this.username.setText(username);
                 }
             });
 
-            username.setText("Test");
-        } catch(Exception e){
+        } catch (Exception e) {
             Intent startLogin = new Intent(getActivity(), Login.class);
             startActivity(startLogin);
         }
@@ -67,6 +61,15 @@ public class MenueTab extends Fragment {
                 Intent i = new Intent(getActivity(), BierschuldenZaehler.class);
                 startActivity(i);
 
+            }
+        });
+        logout.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Intent login = new Intent(getActivity(), Login.class);
+                startActivity(login);
             }
         });
         return rootView;

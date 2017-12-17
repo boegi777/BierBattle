@@ -27,6 +27,14 @@
             android:text="Übersicht"
             tools:layout_editor_absoluteX="148dp"
             tools:layout_editor_absoluteY="371dp" />
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            tools:layout_editor_absoluteX="148dp"
+            tools:layout_editor_absoluteY="371dp" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
