@@ -59,8 +59,6 @@ public class Registrierung extends AppCompatActivity {
     }
 
     public void onRegistration(){
-        Log.d(TAG, password.getText().toString());
-        Log.d(TAG, password_repeat.getText().toString());
         if(password.getText().toString().equals(password_repeat.getText().toString())) {
             mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -72,7 +70,6 @@ public class Registrierung extends AppCompatActivity {
                                 userData.put("username", Registrierung.this.getUsernameString());
 
                                 UserProvider.createUser(userData);
-
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
                                 Toast.makeText(Registrierung.this, "Registration completed",

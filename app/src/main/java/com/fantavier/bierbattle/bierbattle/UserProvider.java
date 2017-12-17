@@ -1,5 +1,7 @@
 package com.fantavier.bierbattle.bierbattle;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -15,6 +17,7 @@ import java.util.Map;
 
 public class UserProvider {
 
+    private static final String TAG = "UserProvider";
     private static DatabaseReference mDbRef;
     private UsernameListener usernameListener;
 
@@ -29,7 +32,7 @@ public class UserProvider {
 
     public static void createUser(Map<String, String> userData){
         /* Prüfen, ob Daten korrekt sind!! */
-        mDbRef = mDbRef.child(userData.get("uid"));
+        mDbRef = FirebaseDatabase.getInstance().getReference("users").child(userData.get("uid"));
         mDbRef.setValue(userData);
     }
 
@@ -45,8 +48,12 @@ public class UserProvider {
         userRef.child("username").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(usernameListener != null){
-                    usernameListener.onUsernameChanged(dataSnapshot.getValue().toString());
+                try {
+                    if (usernameListener != null) {
+                        usernameListener.onUsernameChanged(dataSnapshot.getValue().toString());
+                    }
+                } catch (Exception e){
+                    Log.d(TAG, e.getMessage());
                 }
 
             }
