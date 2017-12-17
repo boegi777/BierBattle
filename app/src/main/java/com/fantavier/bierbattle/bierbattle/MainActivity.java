@@ -38,21 +38,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        //if(user != null){
-            //FirebaseAuth.getInstance().signOut();
-            //user = null;
-        //}
-
-        if(user == null) {
-            Intent startLogin = new Intent(MainActivity.this, Login.class);
-            startActivity(startLogin);
-        }
-
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
