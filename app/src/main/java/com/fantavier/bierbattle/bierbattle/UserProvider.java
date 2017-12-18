@@ -33,6 +33,7 @@ public class UserProvider {
     public static void createUser(Map<String, String> userData){
         /* Prüfen, ob Daten korrekt sind!! */
         mDbRef = FirebaseDatabase.getInstance().getReference("users").child(userData.get("uid"));
+        userData.remove("uid");
         mDbRef.setValue(userData);
     }
 

@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ExpandableListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Registrierung extends AppCompatActivity {
@@ -36,6 +41,11 @@ public class Registrierung extends AppCompatActivity {
     private TextView password;
     private TextView password_repeat;
 
+    private ExpandableListView listView;
+    private ExpandableListAdapter listAdapter;
+    private List<String> listDataHeader;
+    private HashMap<String, List<String>> listHash;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,12 +60,48 @@ public class Registrierung extends AppCompatActivity {
         password_repeat = (TextView) findViewById(R.id.password_repeat);
         registrierungButton = (Button) findViewById(R.id.registrierung_button);
 
+        listView = (ExpandableListView) findViewById(R.id.category);
+        initCategorys();
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listHash);
+        listView.setAdapter(listAdapter);
+
+        listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+                for(int j=1; j < listView.getAdapter().getCount(); j++){
+                    CheckBox item = (CheckBox) expandableListView.getChildAt(j).findViewById(R.id.ListItem);
+                    if(j == i1+1){
+                        item.setChecked(true);
+                    } else {
+                        item.setChecked(false);
+                    }
+                }
+                //CheckBox clickChild = (CheckBox) view.findViewById(R.id.ListItem);
+                //clickChild.setChecked(true);
+                return true;
+            }
+        });
+
         registrierungButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Registrierung.this.onRegistration();
             }
         });
+    }
+
+    private void initCategorys(){
+        listDataHeader = new ArrayList<>();
+        listHash = new HashMap<>();
+
+        listDataHeader.add("Studiengang");
+
+        List<String> edmtDev = new ArrayList<>();
+        edmtDev.add("Mediendesigninformatik");
+        edmtDev.add("Angewandte Informatik");
+        edmtDev.add("Wirtschaftsinformatik");
+
+        listHash.put(listDataHeader.get(0),edmtDev);
     }
 
     public void onRegistration(){
@@ -68,6 +114,7 @@ public class Registrierung extends AppCompatActivity {
                                 Map<String, String> userData = new HashMap<String, String>();
                                 userData.put("uid", mAuth.getCurrentUser().getUid());
                                 userData.put("username", Registrierung.this.getUsernameString());
+                                userData.put("category", "1");
 
                                 UserProvider.createUser(userData);
                                 // Sign in success, update UI with the signed-in user's information
