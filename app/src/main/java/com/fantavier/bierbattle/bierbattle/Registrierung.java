@@ -18,8 +18,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -45,6 +48,8 @@ public class Registrierung extends AppCompatActivity {
     private ExpandableListAdapter listAdapter;
     private List<String> listDataHeader;
     private HashMap<String, List<String>> listHash;
+    private List<String> categorys = null;
+    private Integer categoryId = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +77,11 @@ public class Registrierung extends AppCompatActivity {
                     CheckBox item = (CheckBox) expandableListView.getChildAt(j).findViewById(R.id.ListItem);
                     if(j == i1+1){
                         item.setChecked(true);
+                        categoryId = j;
                     } else {
                         item.setChecked(false);
                     }
                 }
-                //CheckBox clickChild = (CheckBox) view.findViewById(R.id.ListItem);
-                //clickChild.setChecked(true);
                 return true;
             }
         });
@@ -94,14 +98,28 @@ public class Registrierung extends AppCompatActivity {
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
 
-        listDataHeader.add("Studiengang");
+        mDbRef = mDbRef = FirebaseDatabase.getInstance().getReference("categorys");
+        mDbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                categorys = (List<String>) dataSnapshot.getValue();
 
-        List<String> edmtDev = new ArrayList<>();
-        edmtDev.add("Mediendesigninformatik");
-        edmtDev.add("Angewandte Informatik");
-        edmtDev.add("Wirtschaftsinformatik");
+                categorys.remove(0);
+                listDataHeader.add("Studiengang");
 
-        listHash.put(listDataHeader.get(0),edmtDev);
+                List<String> edmtDev = new ArrayList<>();
+                edmtDev.add("Mediendesigninformatik");
+                edmtDev.add("Angewandte Informatik");
+                edmtDev.add("Wirtschaftsinformatik");
+
+                listHash.put(listDataHeader.get(0), categorys);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void onRegistration(){
@@ -114,7 +132,8 @@ public class Registrierung extends AppCompatActivity {
                                 Map<String, String> userData = new HashMap<String, String>();
                                 userData.put("uid", mAuth.getCurrentUser().getUid());
                                 userData.put("username", Registrierung.this.getUsernameString());
-                                userData.put("category", "1");
+
+                                userData.put("category", categoryId.toString());
 
                                 UserProvider.createUser(userData);
                                 // Sign in success, update UI with the signed-in user's information
