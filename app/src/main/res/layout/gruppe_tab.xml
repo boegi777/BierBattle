@@ -4,13 +4,8 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_dark"
+    android:background="@color/common_google_signin_btn_text_dark_pressed"
     tools:context="com.fantavier.bierbattle.bierbattle.MainActivity$PlaceholderFragment">
-
-    <ListView
-        android:id="@+id/GroupList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
     <ListView
         android:id="@+id/GroupList"
