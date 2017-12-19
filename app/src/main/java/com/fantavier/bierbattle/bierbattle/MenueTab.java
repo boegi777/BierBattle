@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,8 +35,7 @@ public class MenueTab extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.menue_tab, container, false);
-        Button zaehler = (Button) rootView.findViewById(R.id.uebersicht);
-        Button logout = (Button) rootView.findViewById(R.id.logout);
+        ImageButton zaehler = (ImageButton) rootView.findViewById(R.id.bier);
 
         try {
             username = (TextView) rootView.findViewById(R.id.username);
@@ -61,15 +61,7 @@ public class MenueTab extends Fragment {
 
             }
         });
-        logout.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent login = new Intent(getActivity(), Login.class);
-                startActivity(login);
-            }
-        });
         return rootView;
 
     }

@@ -12,9 +12,13 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.app.Activity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import static android.app.PendingIntent.getActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,9 +76,22 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_logout) {
+            setContentView(R.layout.activity_login);
+            //Activity wechsel noch nicht fertig
+            /*logout.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    FirebaseAuth.getInstance().signOut();
+                    Intent login = new Intent(getActivity(), Login.class);
+                    startActivity(login);
+                }
+            });*/
+
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
