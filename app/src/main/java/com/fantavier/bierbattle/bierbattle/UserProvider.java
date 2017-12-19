@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,7 +20,9 @@ public class UserProvider {
 
     private static final String TAG = "UserProvider";
     private static DatabaseReference mDbRef;
-    private UsernameListener usernameListener;
+    private static UsernameListener usernameListener;
+    private static ActiveGroupListener activeGroupListener;
+
 
     public UserProvider(){
         usernameListener = null;
@@ -28,6 +31,9 @@ public class UserProvider {
 
     public interface UsernameListener {
         void onUsernameChanged(String username);
+    }
+    public interface ActiveGroupListener {
+        void onActiveGroupChanged(String groupId);
     }
 
     public static void createUser(Map<String, String> userData){
@@ -40,6 +46,7 @@ public class UserProvider {
     public void setUsernameListener(UsernameListener listener){
         usernameListener = listener;
     }
+    public void setActiveGroupListener(ActiveGroupListener listener) { activeGroupListener = listener; }
 
     private void loadUserData(){
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -62,6 +69,31 @@ public class UserProvider {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                     /* Fehlerbehandlung implementieren!! */
+            }
+        });
+        userRef.child("groups").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    if(activeGroupListener != null){
+                        String activeGroupId = "";
+                        HashMap<String, Boolean> groups = (HashMap<String, Boolean>) dataSnapshot.getValue();
+
+                        for(Map.Entry<String, Boolean> entry : groups.entrySet()) {
+                            if(entry.getValue() == true){
+                                activeGroupListener.onActiveGroupChanged(entry.getKey().toString());
+                                break;
+                            }
+                        }
+                    }
+                } catch (Exception e){
+                    Log.d(TAG, e.getMessage());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.fantavier.bierbattle.bierbattle;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,10 +13,12 @@ import android.widget.TextView;
  */
 
 public class TermineTab extends Fragment {
+
+    UserProvider userProvider;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.termine_tab, container, false);;
+        View rootView = inflater.inflate(R.layout.termine_tab, container, false);
         return rootView;
     }
 }

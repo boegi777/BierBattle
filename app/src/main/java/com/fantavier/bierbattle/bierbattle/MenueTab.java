@@ -3,6 +3,8 @@ package com.fantavier.bierbattle.bierbattle;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,31 +28,16 @@ public class MenueTab extends Fragment {
 
     private static final String TAG = "MenueTab";
     private DatabaseReference usersRef;
-    private UserProvider userProvider;
-
+    private View rootView;
     public TextView username;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.menue_tab, container, false);
+        rootView = inflater.inflate(R.layout.menue_tab, container, false);
         Button zaehler = (Button) rootView.findViewById(R.id.uebersicht);
         Button logout = (Button) rootView.findViewById(R.id.logout);
-
-        try {
-            username = (TextView) rootView.findViewById(R.id.username);
-            userProvider = new UserProvider();
-            userProvider.setUsernameListener(new UserProvider.UsernameListener(){
-                @Override
-                public void onUsernameChanged(String username) {
-                    MenueTab.this.username.setText(username);
-                }
-            });
-
-        } catch (Exception e) {
-            Intent startLogin = new Intent(getActivity(), Login.class);
-            startActivity(startLogin);
-        }
+        username = (TextView) rootView.findViewById(R.id.username);
 
         zaehler.setOnClickListener(new View.OnClickListener() {
 
@@ -74,6 +61,23 @@ public class MenueTab extends Fragment {
 
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        try {
+            if(MainActivity.userProvider == null){
+                MainActivity.userProvider = new UserProvider();
+            }
+            MainActivity.userProvider.setUsernameListener(new UserProvider.UsernameListener(){
+                @Override
+                public void onUsernameChanged(String username) {
+                    MenueTab.this.username.setText(username);
+                }
+            });
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+        }
+    }
 }
 
 
