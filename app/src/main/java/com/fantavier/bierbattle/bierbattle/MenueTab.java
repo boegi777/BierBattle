@@ -54,8 +54,6 @@ public class MenueTab extends Fragment {
             startActivity(startLogin);
         }
         rootView = inflater.inflate(R.layout.menue_tab, container, false);
-        Button zaehler = (Button) rootView.findViewById(R.id.uebersicht);
-        Button logout = (Button) rootView.findViewById(R.id.logout);
         username = (TextView) rootView.findViewById(R.id.username);
 
         zaehler.setOnClickListener(new View.OnClickListener() {
@@ -67,16 +65,7 @@ public class MenueTab extends Fragment {
 
             }
         });
-        logout.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent login = new Intent(getActivity(), Login.class);
-                startActivity(login);
-            }
-        });
-        return rootView;
+         return rootView;
 
     }
 
