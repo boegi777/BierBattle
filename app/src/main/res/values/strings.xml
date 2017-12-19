@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">BeerBattle</string>
     <string name="tab_text_1">Menü</string>
-    <string name="tab_text_2">Termine</string>
-    <string name="tab_text_3">Gruppe</string>
+    <string name="tab_text_2">Gruppe</string>
+    <string name="tab_text_3">Termine</string>
     <string name="tab_text_4">Teilnehmer</string>
     <string name="action_logout">Logout</string>
     <string name="section_format">Hello World from section: %1$d</string>

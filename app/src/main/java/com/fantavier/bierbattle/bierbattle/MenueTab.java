@@ -3,6 +3,8 @@ package com.fantavier.bierbattle.bierbattle;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +53,10 @@ public class MenueTab extends Fragment {
             Intent startLogin = new Intent(getActivity(), Login.class);
             startActivity(startLogin);
         }
+        rootView = inflater.inflate(R.layout.menue_tab, container, false);
+        Button zaehler = (Button) rootView.findViewById(R.id.uebersicht);
+        Button logout = (Button) rootView.findViewById(R.id.logout);
+        username = (TextView) rootView.findViewById(R.id.username);
 
         zaehler.setOnClickListener(new View.OnClickListener() {
 
@@ -61,11 +67,36 @@ public class MenueTab extends Fragment {
 
             }
         });
+        logout.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Intent login = new Intent(getActivity(), Login.class);
+                startActivity(login);
+            }
+        });
         return rootView;
 
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        try {
+            if(MainActivity.userProvider == null){
+                MainActivity.userProvider = new UserProvider();
+            }
+            MainActivity.userProvider.setUsernameListener(new UserProvider.UsernameListener(){
+                @Override
+                public void onUsernameChanged(String username) {
+                    MenueTab.this.username.setText(username);
+                }
+            });
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+        }
+    }
 }
 
 
