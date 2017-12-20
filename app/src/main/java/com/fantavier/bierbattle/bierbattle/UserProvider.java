@@ -24,77 +24,89 @@ public class UserProvider {
     private static ActiveGroupListener activeGroupListener;
 
 
-    public UserProvider(){
-        usernameListener = null;
-        loadUserData();
+    public UserProvider() {
+        try {
+            usernameListener = null;
+            loadUserData();
+        } catch (Exception e){
+            throw e;
+        }
     }
 
     public interface UsernameListener {
         void onUsernameChanged(String username);
     }
+
     public interface ActiveGroupListener {
         void onActiveGroupChanged(String groupId);
     }
 
-    public static void createUser(Map<String, String> userData){
+    public static void createUser(Map<String, String> userData) {
         /* Prüfen, ob Daten korrekt sind!! */
         mDbRef = FirebaseDatabase.getInstance().getReference("users").child(userData.get("uid"));
         userData.remove("uid");
         mDbRef.setValue(userData);
     }
 
-    public void setUsernameListener(UsernameListener listener){
+    public void setUsernameListener(UsernameListener listener) {
         usernameListener = listener;
     }
-    public void setActiveGroupListener(ActiveGroupListener listener) { activeGroupListener = listener; }
 
-    private void loadUserData(){
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mDbRef = FirebaseDatabase.getInstance().getReference("users");
-        DatabaseReference userRef = mDbRef.child(uid);
+    public void setActiveGroupListener(ActiveGroupListener listener) {
+        activeGroupListener = listener;
+    }
 
-        userRef.child("username").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
-                    if (usernameListener != null) {
-                        usernameListener.onUsernameChanged(dataSnapshot.getValue().toString());
+    private void loadUserData() {
+        try {
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            mDbRef = FirebaseDatabase.getInstance().getReference("users");
+            DatabaseReference userRef = mDbRef.child(uid);
+
+            userRef.child("username").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    try {
+                        if (usernameListener != null) {
+                            usernameListener.onUsernameChanged(dataSnapshot.getValue().toString());
+                        }
+                    } catch (Exception e) {
+                        throw e;
                     }
-                } catch (Exception e){
-                    Log.d(TAG, e.getMessage());
+
                 }
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
                     /* Fehlerbehandlung implementieren!! */
-            }
-        });
-        userRef.child("groups").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
-                    if(activeGroupListener != null){
-                        String activeGroupId = "";
-                        HashMap<String, Boolean> groups = (HashMap<String, Boolean>) dataSnapshot.getValue();
+                }
+            });
+            userRef.child("groups").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    try {
+                        if (activeGroupListener != null) {
+                            String activeGroupId = "";
+                            HashMap<String, Boolean> groups = (HashMap<String, Boolean>) dataSnapshot.getValue();
 
-                        for(Map.Entry<String, Boolean> entry : groups.entrySet()) {
-                            if(entry.getValue() == true){
-                                activeGroupListener.onActiveGroupChanged(entry.getKey().toString());
-                                break;
+                            for (Map.Entry<String, Boolean> entry : groups.entrySet()) {
+                                if (entry.getValue() == true) {
+                                    activeGroupListener.onActiveGroupChanged(entry.getKey().toString());
+                                    break;
+                                }
                             }
                         }
+                    } catch (Exception e) {
+                        throw e;
                     }
-                } catch (Exception e){
-                    Log.d(TAG, e.getMessage());
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        } catch(Exception e){
+          throw e;
+        }
     }
 }

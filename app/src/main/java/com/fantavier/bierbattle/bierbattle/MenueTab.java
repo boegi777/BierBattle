@@ -29,7 +29,6 @@ public class MenueTab extends Fragment {
 
     private static final String TAG = "MenueTab";
     private DatabaseReference usersRef;
-    private UserProvider userProvider;
 
     public TextView username;
 
@@ -41,8 +40,10 @@ public class MenueTab extends Fragment {
 
         try {
             username = (TextView) rootView.findViewById(R.id.username);
-            userProvider = new UserProvider();
-            userProvider.setUsernameListener(new UserProvider.UsernameListener(){
+            if(MainActivity.userProvider == null){
+                MainActivity.userProvider = new UserProvider();
+            }
+            MainActivity.userProvider.setUsernameListener(new UserProvider.UsernameListener(){
                 @Override
                 public void onUsernameChanged(String username) {
                     MenueTab.this.username.setText(username);
