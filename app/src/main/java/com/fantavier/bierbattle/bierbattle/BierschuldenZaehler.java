@@ -22,26 +22,37 @@ import android.widget.TextView;
  */
 
 public class BierschuldenZaehler extends AppCompatActivity {
-    //String animalList[] = {"Lion","Tiger","Monkey","Elephant","Dog","Cat","Camel"};
-
+    ListView listView ;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bierschulden);
         Button buttonNew = (Button) findViewById(R.id.zurueck);
+        ListView simpleList;
+        ListView min;
+
 
         buttonNew.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                /* Intent i = new Intent(BierschuldenZaehler.this, MainActivity.class);
-                startActivity(i); */
                 finish();
             }
         });
 
-       // ListView simpleList = (ListView) findViewById(R.id.plusview);
 
-        //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.bierschulden, R.id.textView, animalList);
-        //simpleList.setAdapter(arrayAdapter);
+        listView = (ListView) findViewById(R.id.plusview);
+        min = (ListView) findViewById(R.id.minusview);
 
+        String[] plus = new String[] { "Paul   3", "Juri   1", "Peter   2"};
+
+        String[] minus = new String[] { "Ursula   1", "Anja   5", "Frank   1", "Ulf   2"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, android.R.id.text1, plus);
+
+        ArrayAdapter<String> bdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, minus);
+
+        listView.setAdapter(adapter);
+        min.setAdapter(bdapter);
     }
 }
