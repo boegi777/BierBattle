@@ -37,7 +37,7 @@ public class MenueTab extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.menue_tab, container, false);
-        ImageButton zaehler = (ImageButton) rootView.findViewById(R.id.bier);
+        ImageButton zurueck = (ImageButton) rootView.findViewById(R.id.bier);
 
         try {
             username = (TextView) rootView.findViewById(R.id.username);
@@ -53,10 +53,9 @@ public class MenueTab extends Fragment {
             Intent startLogin = new Intent(getActivity(), Login.class);
             startActivity(startLogin);
         }
-        rootView = inflater.inflate(R.layout.menue_tab, container, false);
-        username = (TextView) rootView.findViewById(R.id.username);
 
-        zaehler.setOnClickListener(new View.OnClickListener() {
+
+        zurueck.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -65,6 +64,7 @@ public class MenueTab extends Fragment {
 
             }
         });
+
          return rootView;
 
     }

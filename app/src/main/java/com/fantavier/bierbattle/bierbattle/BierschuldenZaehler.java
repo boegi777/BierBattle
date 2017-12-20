@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -20,6 +22,7 @@ import android.widget.TextView;
  */
 
 public class BierschuldenZaehler extends AppCompatActivity {
+    //String animalList[] = {"Lion","Tiger","Monkey","Elephant","Dog","Cat","Camel"};
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,10 +32,16 @@ public class BierschuldenZaehler extends AppCompatActivity {
         buttonNew.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(BierschuldenZaehler.this, MainActivity.class);
-                startActivity(i);
+                /* Intent i = new Intent(BierschuldenZaehler.this, MainActivity.class);
+                startActivity(i); */
+                finish();
             }
         });
+
+       // ListView simpleList = (ListView) findViewById(R.id.plusview);
+
+        //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.bierschulden, R.id.textView, animalList);
+        //simpleList.setAdapter(arrayAdapter);
 
     }
 }
