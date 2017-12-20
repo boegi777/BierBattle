@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "168184167415",
+    "firebase_url": "https://bierbattle.firebaseio.com",
+    "project_id": "bierbattle",
+    "storage_bucket": "bierbattle.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:168184167415:android:e9151114d7494ffc",
+        "android_client_info": {
+          "package_name": "com.fantavier.bierbattle.bierbattle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "168184167415-76st2vo0nh61mi6qu3pnl9s39081cauv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fantavier.bierbattle.bierbattle",
+            "certificate_hash": "cbe59de63e30b02f678c56d4dfe5af943a054621"
+          }
+        },
+        {
+          "client_id": "168184167415-u2f1b97c2u5o5rpkbs11e8dch09ugp5m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fantavier.bierbattle.bierbattle",
+            "certificate_hash": "de8b33f842de276c1125c2866160c4f749351056"
+          }
+        },
+        {
+          "client_id": "168184167415-nnm70eqd4f1lk2ngfh9ib6365md3aq8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaLOSY3KxhHI5wWepfqy0w5qaLfz66Oic"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "168184167415-nnm70eqd4f1lk2ngfh9ib6365md3aq8g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
