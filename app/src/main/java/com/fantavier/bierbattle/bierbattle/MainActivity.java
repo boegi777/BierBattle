@@ -54,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            Intent i = new Intent(this, Login.class);
+            startActivity(i);
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -68,8 +73,6 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
-
 
 
     }
@@ -93,11 +96,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_logout) {
             FirebaseAuth.getInstance().signOut();
             finish();
-            Intent i = new Intent(MainActivity.this, Login.class);
-            startActivity(i);
-            //Activity wechsel noch nicht fertig
-
-            return true;
         }
 
 
