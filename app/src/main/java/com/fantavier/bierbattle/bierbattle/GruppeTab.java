@@ -37,43 +37,40 @@ public class GruppeTab extends Fragment {
 
     @Override
     public void onStart(){
-        super.onStart();
-        getShit();
-    }
-    @Override
-    public void onResume(){
-        super.onResume();
-        getShit();
-    }
-
-    private void getShit(){
-        if(MainActivity.userProvider == null){
-            MainActivity.userProvider = new UserProvider();
-        }
-        MainActivity.userProvider.setActiveGroupListener(new UserProvider.ActiveGroupListener() {
-            @Override
-            public void onActiveGroupChanged(String groupId) {
-                Log.d(TAG, groupId);
-                MainActivity.activeGroupId = groupId;
-                if(MainActivity.groupProvider == null){
-                    MainActivity.groupProvider = new GroupProvider(MainActivity.activeGroupId);
-                }
-                MainActivity.groupProvider.setGroupDataListener(new GroupProvider.GroupDataListener() {
-                    @Override
-                    public void onGroupeDataChanged(GroupProvider.Group group) {
-                        activeGroup = group;
-                        MainActivity.groupProvider.setMemberNameListener(new GroupProvider.MemberNameListener() {
-                            @Override
-                            public void onMemberNameListener() {
-                                List<String> members = activeGroup.getMemberStrings();
-                                ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, members);
-
-                                GruppeTab.this.groupList.setAdapter(groupMemberAdapter);
-                            }
-                        });
-                    }
-                });
+        try {
+            super.onStart();
+            if (MainActivity.userProvider == null) {
+                MainActivity.userProvider = new UserProvider();
             }
-        });
+            MainActivity.userProvider.setActiveGroupListener(new UserProvider.ActiveGroupListener() {
+                @Override
+                public void onActiveGroupChanged(String groupId) {
+                    Log.d(TAG, groupId);
+                    MainActivity.activeGroupId = groupId;
+                    if (MainActivity.groupProvider == null) {
+                        MainActivity.groupProvider = new GroupProvider(MainActivity.activeGroupId);
+                    }
+                    MainActivity.groupProvider.setGroupDataListener(new GroupProvider.GroupDataListener() {
+                        @Override
+                        public void onGroupeDataChanged(GroupProvider.Group group) {
+                            activeGroup = group;
+                            MainActivity.groupProvider.setMemberNameListener(new GroupProvider.MemberNameListener() {
+                                @Override
+                                public void onMemberNameListener() {
+                                    List<String> members = activeGroup.getMemberStrings();
+                                    ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, members);
+
+                                    GruppeTab.this.groupList.setAdapter(groupMemberAdapter);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        } catch (Exception e){
+            Log.d(TAG, e.getMessage());
+            Intent startLogin = new Intent(getActivity(), Login.class);
+            startActivity(startLogin);
+        }
     }
 }
