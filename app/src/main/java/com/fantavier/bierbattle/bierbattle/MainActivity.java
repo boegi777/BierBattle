@@ -92,20 +92,10 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
             FirebaseAuth.getInstance().signOut();
-            Intent i = new Intent(MainActivity.this, Login.class);
             finish();
+            Intent i = new Intent(MainActivity.this, Login.class);
             startActivity(i);
-            setContentView(R.layout.activity_login);
             //Activity wechsel noch nicht fertig
-            /*logout.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-                    FirebaseAuth.getInstance().signOut();
-                    Intent login = new Intent(getActivity(), Login.class);
-                    startActivity(login);
-                }
-            });*/
 
             return true;
         }
