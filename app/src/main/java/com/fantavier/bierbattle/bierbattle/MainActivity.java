@@ -93,8 +93,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_logout) {
             FirebaseAuth.getInstance().signOut();
             finish();
-            Intent i = new Intent(MainActivity.this, Login.class);
-            startActivity(i);
             //Activity wechsel noch nicht fertig
 
             return true;
