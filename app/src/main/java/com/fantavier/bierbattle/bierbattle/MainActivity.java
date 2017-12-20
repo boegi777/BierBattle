@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
 
+
+
     }
 
 
@@ -89,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
+            FirebaseAuth.getInstance().signOut();
+            Intent i = new Intent(MainActivity.this, Login.class);
+            finish();
+            startActivity(i);
             setContentView(R.layout.activity_login);
             //Activity wechsel noch nicht fertig
             /*logout.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 4;
         }
     }
 }

@@ -38,6 +38,15 @@ public class GruppeTab extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
+        getShit();
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        getShit();
+    }
+
+    private void getShit(){
         if(MainActivity.userProvider == null){
             MainActivity.userProvider = new UserProvider();
         }
