@@ -126,7 +126,7 @@
         android:id="@+id/kreis"
         android:layout_width="130dp"
         android:layout_height="130dp"
-        android:src="@drawable/favorites"
+        android:src="@drawable/circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
