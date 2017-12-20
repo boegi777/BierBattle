@@ -125,7 +125,7 @@ public class GroupProvider {
         @Override
         public int compareTo(@NonNull Object o) {
             int comparePoints = ((Member)o).getPoints();
-            return comparePoints;
+            return comparePoints-this.points;
         }
 
     }
