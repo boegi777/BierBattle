@@ -1,5 +1,6 @@
 package com.fantavier.bierbattle.bierbattle;
 
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -43,7 +44,6 @@ public class GroupProvider {
         void onMemberNameListener();
     }
 
-
     public class Group {
         private String groupId;
         private String category;
@@ -51,6 +51,7 @@ public class GroupProvider {
         private String endtime;
         private boolean active;
         private List<Member> members;
+        private List<Appointment> appointments;
 
         public Group(
                 String groupId,
@@ -58,7 +59,8 @@ public class GroupProvider {
                 String starttime,
                 String endtime,
                 List<Member> members,
-                boolean active)
+                boolean active,
+                List<Appointment> appointments)
         {
             this.groupId = groupId;
             this.active = active;
@@ -66,20 +68,26 @@ public class GroupProvider {
             this.starttime = starttime;
             this.endtime = endtime;
             this.members = members;
+            this.appointments = appointments;
         }
 
         public ArrayList<String> getMemberStrings(){
             ArrayList<String> memberStrings = new ArrayList<String>();
 
             for(Member member : this.members){
-                StringBuilder builder = new StringBuilder();
-                builder.append("Name: ");
-                builder.append(member.name);
-                builder.append(" Punkte: ");
-                builder.append(member.points);
-                memberStrings.add(builder.toString());
+                memberStrings.add(member.toString());
             }
             return memberStrings;
+        }
+
+
+        public ArrayList<String> getAppointmentStrings(){
+            ArrayList<String> appointmentStrings = new ArrayList<String>();
+
+            for(Appointment appointment : this.appointments){
+                appointmentStrings.add(appointment.toString());
+            }
+            return appointmentStrings;
         }
     }
 
@@ -106,7 +114,7 @@ public class GroupProvider {
                         Member.this.name = dataSnapshot.getValue().toString();
                         memberNameListener.onMemberNameListener();
                     } catch (Exception e){
-                        Log.d(TAG, e.getMessage());
+                        throw e;
                     }
 
                 }
@@ -126,6 +134,47 @@ public class GroupProvider {
         public int compareTo(@NonNull Object o) {
             int comparePoints = ((Member)o).getPoints();
             return comparePoints-this.points;
+        }
+
+        @Override
+        public String toString(){
+            StringBuilder builder = new StringBuilder();
+            builder.append("Name: ");
+            builder.append(this.name);
+            builder.append(" Punkte: ");
+            builder.append(this.points);
+            return builder.toString();
+        }
+
+    }
+
+    public class Appointment {
+        private String appointmentId;
+        private String title;
+        private String createtime;
+        private String starttime;
+        private Boolean votingend;
+        private Boolean weekly;
+        private HashMap<String, Boolean> votings;
+
+        public Appointment(String appointmentIdId, String title, String createtime, String starttime, Boolean votingend, Boolean weekly, HashMap<String, Boolean> votings){
+            this.appointmentId = appointmentIdId;
+            this.title = title;
+            this.createtime = createtime;
+            this.starttime = starttime;
+            this.votingend = votingend;
+            this.weekly = weekly;
+            this.votings = votings;
+        }
+
+        @Override
+        public String toString(){
+            StringBuilder builder = new StringBuilder();
+            builder.append(this.title);
+            if(votingend == false){
+                builder.append("   -- Abstimmung --");
+            }
+            return builder.toString();
         }
 
     }
@@ -150,7 +199,7 @@ public class GroupProvider {
                             groupListener.onGroupeDataChanged(group);
                         }
                     } catch (Exception e) {
-                        Log.d(TAG, e.getMessage());
+                        throw e;
                     }
 
                 }
@@ -161,7 +210,7 @@ public class GroupProvider {
                 }
             });
         } catch (Exception e){
-            Log.d(TAG, e.getMessage());
+            throw e;
         }
     }
 
@@ -172,6 +221,7 @@ public class GroupProvider {
         String starttime = "";
         String endtime = "";
         List<Member> members = new ArrayList<Member>();
+        List<Appointment> appointments = new ArrayList<Appointment>();
 
         for(DataSnapshot child : dataSnapshot.getChildren()){
 
@@ -191,14 +241,17 @@ public class GroupProvider {
                 case "members":
                     members = getMembers(child);
                     break;
+                case "appointments":
+                    appointments = getAppointments(child);
+                    break;
             }
 
         }
 
-        return new Group(key, category, starttime, endtime, members, active);
+        return new Group(key, category, starttime, endtime, members, active, appointments);
     }
 
-    public List<Member> getMembers(DataSnapshot membersDS){
+    private List<Member> getMembers(DataSnapshot membersDS){
         List<Member> members = new ArrayList<Member>();
 
         String key = "";
@@ -222,5 +275,57 @@ public class GroupProvider {
 
         Collections.sort(members);
         return members;
+    }
+
+    private List<Appointment> getAppointments(DataSnapshot appointmentsDS){
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        String key = "";
+        String title = "";
+        String createtime = "";
+        String starttime = "";
+        boolean votingend = false;
+        HashMap<String, Boolean> votings = new HashMap<>();
+        boolean weekly = false;
+
+        for(DataSnapshot appointmentDS : appointmentsDS.getChildren()){
+            key = appointmentDS.getKey();
+            for(DataSnapshot appointmentData : appointmentDS.getChildren()) {
+                switch (appointmentData.getKey()) {
+                    case "title":
+                        title = appointmentData.getValue().toString();
+                        break;
+                    case "createtime":
+                        createtime = appointmentData.getValue().toString();
+                        break;
+                    case "starttime":
+                        starttime = appointmentData.getValue().toString();
+                        break;
+                    case "votingend":
+                        votingend = (boolean) appointmentData.getValue();
+                        break;
+                    case "votings":
+                        votings = getVotings(appointmentData);
+                        break;
+                    case "weekly":
+                        weekly = (boolean) appointmentData.getValue();
+                        break;
+                }
+            }
+            Appointment appointment = new Appointment(key, title, createtime, starttime, votingend, weekly, votings);
+            appointments.add(appointment);
+        }
+        return appointments;
+    }
+
+    private HashMap<String, Boolean> getVotings(DataSnapshot votingsDS){
+        HashMap<String, Boolean> votings = new HashMap<>();
+
+        for(DataSnapshot voting : votingsDS.getChildren()){
+            boolean value = (boolean) voting.getValue();
+            votings.put(voting.getKey().toString(), value);
+        }
+
+        return votings;
+
     }
 }

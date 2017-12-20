@@ -62,7 +62,7 @@ public class Login extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(Login.this, "Authentication succeeded",
                                     Toast.LENGTH_SHORT).show();
-                            finish();
+                            Login.this.finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());

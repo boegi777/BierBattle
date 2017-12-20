@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.app.Activity;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static String activeGroupId;
     public static UserProvider userProvider = null;
     public static GroupProvider groupProvider = null;
+    public static GroupProvider.Group activeGroup;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -53,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            Intent i = new Intent(this, Login.class);
+            startActivity(i);
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,8 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
-
+        mViewPager.setOffscreenPageLimit(3);
 
 
     }
@@ -92,22 +98,7 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
             FirebaseAuth.getInstance().signOut();
-            Intent i = new Intent(MainActivity.this, Login.class);
             finish();
-            startActivity(i);
-            setContentView(R.layout.activity_login);
-            //Activity wechsel noch nicht fertig
-            /*logout.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-                    FirebaseAuth.getInstance().signOut();
-                    Intent login = new Intent(getActivity(), Login.class);
-                    startActivity(login);
-                }
-            });*/
-
-            return true;
         }
 
 
@@ -148,6 +139,46 @@ public class MainActivity extends AppCompatActivity {
         public int getCount() {
             // Show 3 total pages.
             return 4;
+        }
+    }
+
+    public void setGroupListener(){
+        try {
+            if (MainActivity.userProvider == null) {
+                MainActivity.userProvider = new UserProvider();
+            }
+            MainActivity.userProvider.setActiveGroupListener(new UserProvider.ActiveGroupListener() {
+                @Override
+                public void onActiveGroupChanged(String groupId) {
+                    Log.d(TAG, groupId);
+                    MainActivity.activeGroupId = groupId;
+                    if (MainActivity.groupProvider == null) {
+                        MainActivity.groupProvider = new GroupProvider(MainActivity.activeGroupId);
+                    }
+                    MainActivity.groupProvider.setGroupDataListener(new GroupProvider.GroupDataListener() {
+                        @Override
+                        public void onGroupeDataChanged(GroupProvider.Group group) {
+                            activeGroup = group;
+                            List<String> appointments = activeGroup.getAppointmentStrings();
+                            ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
+                            TermineTab.appointmentList.setAdapter(appointmentAdapter);
+
+                            MainActivity.groupProvider.setMemberNameListener(new GroupProvider.MemberNameListener() {
+                                @Override
+                                public void onMemberNameListener() {
+                                    List<String> members = activeGroup.getMemberStrings();
+                                    ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, members);
+                                    GruppeTab.groupList.setAdapter(groupMemberAdapter);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        } catch (Exception e){
+            Log.d(TAG, e.getMessage());
+            Intent startLogin = new Intent(MainActivity.this, Login.class);
+            startActivity(startLogin);
         }
     }
 }

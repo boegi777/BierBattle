@@ -23,14 +23,8 @@ public class UserProvider {
     private static UsernameListener usernameListener;
     private static ActiveGroupListener activeGroupListener;
 
-
     public UserProvider() {
-        try {
-            usernameListener = null;
-            loadUserData();
-        } catch (Exception e){
-            throw e;
-        }
+        loadUserData();
     }
 
     public interface UsernameListener {
@@ -61,6 +55,7 @@ public class UserProvider {
             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             mDbRef = FirebaseDatabase.getInstance().getReference("users");
             DatabaseReference userRef = mDbRef.child(uid);
+            userRef.keepSynced(true);
 
             userRef.child("username").addValueEventListener(new ValueEventListener() {
                 @Override

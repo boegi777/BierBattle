@@ -98,8 +98,8 @@ public class Registrierung extends AppCompatActivity {
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
 
-        mDbRef = mDbRef = FirebaseDatabase.getInstance().getReference("categorys");
-        mDbRef.addValueEventListener(new ValueEventListener() {
+        DatabaseReference catRef = FirebaseDatabase.getInstance().getReference("categorys");
+        catRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 categorys = (List<String>) dataSnapshot.getValue();
@@ -117,7 +117,7 @@ public class Registrierung extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Log.d(TAG, databaseError.getDetails());
             }
         });
     }

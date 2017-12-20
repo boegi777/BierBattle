@@ -22,9 +22,9 @@
         <activity android:name=".BierschuldenZaehler" />
         <activity
             android:name=".Registrierung"
-            android:windowSoftInputMode="adjustPan"
-            />
-        <activity android:name=".Login"></activity>
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".Login" />
+        <activity android:name=".TerminDetail"></activity>
     </application>
 
 </manifest>
