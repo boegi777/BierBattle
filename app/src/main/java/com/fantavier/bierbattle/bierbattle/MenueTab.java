@@ -25,6 +25,9 @@ public class MenueTab extends Fragment {
     private static final String TAG = "MenueTab";
     private DatabaseReference usersRef;
     private ImageButton kamera_btn;
+    private ImageButton bierschulden;
+    private ImageButton plus_btn;
+    private ImageButton minus_btn;
 
     public TextView username;
 
@@ -32,8 +35,10 @@ public class MenueTab extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.menue_tab, container, false);
-        ImageButton zurueck = (ImageButton) rootView.findViewById(R.id.bier);
+        bierschulden = (ImageButton) rootView.findViewById(R.id.bier);
         kamera_btn = (ImageButton) rootView.findViewById(R.id.kamera);
+        plus_btn = (ImageButton) rootView.findViewById(R.id.plus);
+        minus_btn = (ImageButton) rootView.findViewById(R.id.minus);
         final Activity activity = getActivity();
         kamera_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +71,27 @@ public class MenueTab extends Fragment {
         }
 
 
-        zurueck.setOnClickListener(new View.OnClickListener() {
+        bierschulden.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), BierschuldenZaehler.class);
+                startActivity(i);
+
+            }
+        });
+
+        minus_btn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), BierschuldenZaehler.class);
+                startActivity(i);
+
+            }
+        });
+
+        plus_btn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
