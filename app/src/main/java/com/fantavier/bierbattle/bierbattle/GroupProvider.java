@@ -40,6 +40,9 @@ public class GroupProvider {
         void onMemberNameListener();
     }
 
+    public void setGroupDataListener(GroupDataListener listener){ groupListener = listener; }
+    public void setMemberNameListener(MemberNameListener listener) { memberNameListener = listener; }
+
     public class Group {
         private String groupId;
         private String category;
@@ -65,6 +68,10 @@ public class GroupProvider {
             this.endtime = endtime;
             this.members = members;
             this.appointments = appointments;
+        }
+
+        public Appointment getAppointment(String index){
+            return this.appointments.get(Integer.parseInt(index));
         }
 
         public ArrayList<String> getMemberStrings(){
@@ -148,19 +155,43 @@ public class GroupProvider {
         private String appointmentId;
         private String title;
         private String createtime;
-        private String starttime;
+        private String date;
+        private String time;
         private Boolean votingend;
         private Boolean weekly;
+        private String location;
         private HashMap<String, Boolean> votings;
 
-        public Appointment(String appointmentIdId, String title, String createtime, String starttime, Boolean votingend, Boolean weekly, HashMap<String, Boolean> votings){
+        public Appointment(String appointmentIdId, String title, String createtime, String date, String time, Boolean votingend, Boolean weekly, HashMap<String, Boolean> votings, String location){
             this.appointmentId = appointmentIdId;
             this.title = title;
             this.createtime = createtime;
-            this.starttime = starttime;
+            this.date = date;
+            this.time = time;
             this.votingend = votingend;
             this.weekly = weekly;
             this.votings = votings;
+            this.location = location;
+        }
+
+        public String getTitle(){
+            return this.title;
+        }
+
+        public String getDate(){
+            return this.date;
+        }
+
+        public String getTime(){
+            return this.time;
+        }
+
+        public boolean getWeekly(){
+            return this.weekly;
+        }
+
+        public String getLocation(){
+            return this.location;
         }
 
         @Override
@@ -174,11 +205,6 @@ public class GroupProvider {
         }
 
     }
-
-    public void setGroupDataListener(GroupDataListener listener){
-        groupListener = listener;
-    }
-    public void setMemberNameListener(MemberNameListener listener) { memberNameListener = listener; }
 
     private void loadGroupData(){
         try {
@@ -278,7 +304,9 @@ public class GroupProvider {
         String key = "";
         String title = "";
         String createtime = "";
-        String starttime = "";
+        String date = "";
+        String time = "";
+        String location = "";
         boolean votingend = false;
         HashMap<String, Boolean> votings = new HashMap<>();
         boolean weekly = false;
@@ -293,8 +321,11 @@ public class GroupProvider {
                     case "createtime":
                         createtime = appointmentData.getValue().toString();
                         break;
-                    case "starttime":
-                        starttime = appointmentData.getValue().toString();
+                    case "date":
+                        date = appointmentData.getValue().toString();
+                        break;
+                    case "time":
+                        time = appointmentData.getValue().toString();
                         break;
                     case "votingend":
                         votingend = (boolean) appointmentData.getValue();
@@ -305,9 +336,11 @@ public class GroupProvider {
                     case "weekly":
                         weekly = (boolean) appointmentData.getValue();
                         break;
+                    case "location":
+                        location = appointmentData.getValue().toString();
                 }
             }
-            Appointment appointment = new Appointment(key, title, createtime, starttime, votingend, weekly, votings);
+            Appointment appointment = new Appointment(key, title, createtime, date, time, votingend, weekly, votings, location);
             appointments.add(appointment);
         }
         return appointments;
