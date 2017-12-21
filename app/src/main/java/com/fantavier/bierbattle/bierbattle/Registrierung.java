@@ -107,10 +107,6 @@ public class Registrierung extends AppCompatActivity {
                 categorys.remove(0);
                 listDataHeader.add("Studiengang");
 
-                List<String> edmtDev = new ArrayList<>();
-                edmtDev.add("Mediendesigninformatik");
-                edmtDev.add("Angewandte Informatik");
-                edmtDev.add("Wirtschaftsinformatik");
 
                 listHash.put(listDataHeader.get(0), categorys);
             }
