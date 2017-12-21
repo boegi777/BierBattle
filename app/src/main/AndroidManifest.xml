@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fantavier.bierbattle.bierbattle">
+    <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="23"/>
 
     <application
         android:allowBackup="true"
