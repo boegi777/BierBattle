@@ -13,20 +13,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.app.Activity;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.security.acl.Group;
-import java.util.HashMap;
 import java.util.List;
-
-import static android.app.PendingIntent.getActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -177,8 +167,14 @@ public class MainActivity extends AppCompatActivity {
             });
         } catch (Exception e){
             Log.d(TAG, e.getMessage());
-            Intent startLogin = new Intent(MainActivity.this, Login.class);
-            startActivity(startLogin);
         }
+    }
+
+    @Override
+    public void onDestroy(){
+        moveTaskToBack(true);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
+        super.onDestroy();
     }
 }
