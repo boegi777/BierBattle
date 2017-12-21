@@ -5,9 +5,11 @@
 
     <TextView
         android:id="@+id/ListHeader"
-        android:padding="?android:attr/expandableListPreferredItemPaddingLeft"
-        android:textSize="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed"
+        android:padding="?android:attr/expandableListPreferredItemPaddingLeft"
+        android:textAlignment="center"
+        android:textSize="18sp" />
 
 </LinearLayout>
