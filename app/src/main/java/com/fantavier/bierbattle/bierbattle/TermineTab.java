@@ -3,6 +3,7 @@ package com.fantavier.bierbattle.bierbattle;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ public class TermineTab extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent appointmentDetails = new Intent(rootView.getContext(), TerminDetail.class);
+                Integer index = i;
+                appointmentDetails.putExtra("Index", index.toString());
                 startActivity(appointmentDetails);
             }
         });
