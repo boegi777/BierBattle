@@ -1,5 +1,6 @@
 package com.fantavier.bierbattle.bierbattle;
 
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.ListView;
 
 public class BierschuldenZaehler extends AppCompatActivity {
     ListView listView ;
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bierschulden);

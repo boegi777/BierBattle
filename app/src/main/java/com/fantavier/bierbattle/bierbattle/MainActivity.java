@@ -1,6 +1,8 @@
 package com.fantavier.bierbattle.bierbattle;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     public static GroupProvider groupProvider = null;
     public static GroupProvider.Group activeGroup;
 
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
             Intent i = new Intent(this, Login.class);

@@ -27,6 +27,7 @@ public class MenueTab extends Fragment {
     public TextView username;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

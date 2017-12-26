@@ -27,13 +27,11 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView mScannerView;
     private Vibrator vibrator;
-    final MediaPlayer beerBottleSound = MediaPlayer.create(this,R.raw.opening_a_bottle);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e("onCreate", "onCreate");
-
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         mScannerView = new ZXingScannerView(this);
         setContentView(mScannerView);
@@ -122,8 +120,8 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
     public void handleResult(Result rawResult) {
 
         final String result = rawResult.getText();
-        vibrator.vibrate(100);
-        beerBottleSound.start();
+        vibrator.vibrate(500);
+
         Log.d("QRCodeScanner", rawResult.getText());
         Log.d("QRCodeScanner", rawResult.getBarcodeFormat().toString());
 
