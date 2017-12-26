@@ -3,9 +3,11 @@ package com.fantavier.bierbattle.bierbattle;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -24,12 +26,15 @@ import static android.Manifest.permission.CAMERA;
 public class QRScanner extends AppCompatActivity implements ZXingScannerView.ResultHandler{
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView mScannerView;
+    private Vibrator vibrator;
+    final MediaPlayer beerBottleSound = MediaPlayer.create(this,R.raw.opening_a_bottle);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e("onCreate", "onCreate");
 
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         mScannerView = new ZXingScannerView(this);
         setContentView(mScannerView);
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
@@ -117,6 +122,8 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
     public void handleResult(Result rawResult) {
 
         final String result = rawResult.getText();
+        vibrator.vibrate(100);
+        beerBottleSound.start();
         Log.d("QRCodeScanner", rawResult.getText());
         Log.d("QRCodeScanner", rawResult.getBarcodeFormat().toString());
 
