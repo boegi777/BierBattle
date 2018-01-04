@@ -25,6 +25,7 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
     private Vibrator vibrator;
     private MediaPlayer beerBottleSound;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,15 +114,13 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
     @Override
     public void onDestroy() {
         super.onDestroy();
-        beerBottleSound.release();
         mScannerView.stopCamera();
     }
     @Override
     public void handleResult(Result rawResult) {
-
+        beerBottleSound.start();
         final String result = rawResult.getText();
         vibrator.vibrate(500);
-        beerBottleSound.start();
         Log.d("QRCodeScanner", rawResult.getText());
         Log.d("QRCodeScanner", rawResult.getBarcodeFormat().toString());
 
