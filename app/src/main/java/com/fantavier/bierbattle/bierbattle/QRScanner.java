@@ -27,7 +27,7 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView mScannerView;
     private Vibrator vibrator;
-    final MediaPlayer beerBottleSound = MediaPlayer.create(this,R.raw.opening_a_bottle);
+    //final MediaPlayer beerBottleSound = MediaPlayer.create(this,R.raw.opening_a_bottle);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

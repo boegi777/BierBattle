@@ -124,6 +124,7 @@ public class Appointment implements GroupProvider.DatabaseReferenceObject {
                             break;
                     }
                 }
+                GroupProvider.appointmentTitleListener.onAppointmentTitleChangedListener();
             }
 
             @Override
@@ -145,7 +146,7 @@ public class Appointment implements GroupProvider.DatabaseReferenceObject {
         StringBuilder builder = new StringBuilder();
         builder.append(this.title);
         if(this.votingend == false){
-            builder.append("   -- Abstimmung --");
+            builder.append("   -- Abstimmung -- ");
         }
         return builder.toString();
     }
