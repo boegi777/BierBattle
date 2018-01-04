@@ -6,6 +6,7 @@
         android:minSdkVersion="23"
         android:targetSdkVersion="23" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -35,8 +36,8 @@
         <activity android:name=".TerminDetail" />
         <activity android:name=".TerminErstellen"
             android:label="Termin erstellen">
-
         </activity>
+        <activity android:name=".QRScanner"/>
     </application>
 
 </manifest>
