@@ -19,6 +19,8 @@ import com.fantavier.bierbattle.bierbattle.model.Group;
 import com.fantavier.bierbattle.bierbattle.model.GroupProvider;
 import com.fantavier.bierbattle.bierbattle.model.UserProvider;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -143,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.userProvider.setActiveGroupListener(new UserProvider.ActiveGroupListener() {
                 @Override
                 public void onActiveGroupChanged(String groupId) {
-                    Log.d(TAG, groupId);
                     MainActivity.activeGroupId = groupId;
                     if (MainActivity.groupProvider == null) {
                         MainActivity.groupProvider = new GroupProvider(MainActivity.activeGroupId);
@@ -153,18 +154,18 @@ public class MainActivity extends AppCompatActivity {
                         public void onGroupeDataChanged(Group group) {
                             activeGroup = group;
 
-                            MainActivity.groupProvider.setAppointmentTitleListener(new GroupProvider.AppointmentTitleListener() {
+                            MainActivity.groupProvider.setAppointmentDataListener(new GroupProvider.AppointmentDataListener() {
                                 @Override
-                                public void onAppointmentTitleChangedListener() {
+                                public void onAppointmentDataChangedListener() {
                                     List<String> appointments = activeGroup.getAppointmentTitles();
                                     ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
                                     TermineTab.appointmentList.setAdapter(appointmentAdapter);
                                 }
                             });
 
-                            MainActivity.groupProvider.setMemberTitleListener(new GroupProvider.MemberTitleListener() {
+                            MainActivity.groupProvider.setMemberDataListener(new GroupProvider.MemberDataListener() {
                                 @Override
-                                public void onMemberTitleChangedListener() {
+                                public void onMemberDataChangedListener() {
                                     List<String> members = activeGroup.getMemberTitles();
                                     ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, members);
                                     GruppeTab.groupList.setAdapter(groupMemberAdapter);
