@@ -153,9 +153,14 @@ public class MainActivity extends AppCompatActivity {
                         public void onGroupeDataChanged(Group group) {
                             activeGroup = group;
 
-                            List<String> appointments = activeGroup.getAppointmentTitles();
-                            ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
-                            TermineTab.appointmentList.setAdapter(appointmentAdapter);
+                            MainActivity.groupProvider.setAppointmentTitleListener(new GroupProvider.AppointmentTitleListener() {
+                                @Override
+                                public void onAppointmentTitleChangedListener() {
+                                    List<String> appointments = activeGroup.getAppointmentTitles();
+                                    ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
+                                    TermineTab.appointmentList.setAdapter(appointmentAdapter);
+                                }
+                            });
 
                             MainActivity.groupProvider.setMemberTitleListener(new GroupProvider.MemberTitleListener() {
                                 @Override

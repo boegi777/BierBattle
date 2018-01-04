@@ -21,6 +21,7 @@ public class GroupProvider {
     private static DatabaseReference mDbRef;
     public static GroupProvider.GroupDataListener groupListener;
     public static GroupProvider.MemberTitleListener memberTitleListener;
+    public static GroupProvider.AppointmentTitleListener appointmentTitleListener;
     public static GroupProvider.VoteChangedListener voteChangedListener;
     private static String groupId;
     private static Group group;
@@ -43,12 +44,17 @@ public class GroupProvider {
         void onMemberTitleChangedListener();
     }
 
+    public interface AppointmentTitleListener {
+        void onAppointmentTitleChangedListener();
+    }
+
     public interface VoteChangedListener {
         void onVoteChanged();
     }
 
     public void setGroupDataListener(GroupDataListener listener){ groupListener = listener; }
     public void setMemberTitleListener(MemberTitleListener listener) { memberTitleListener = listener; }
+    public void setAppointmentTitleListener(AppointmentTitleListener listener) { appointmentTitleListener = listener; }
     //public void setVoteChangedListener(VoteChangedListener listener) { voteChangedListener = listener; }
 
     private void loadGroupData(){
