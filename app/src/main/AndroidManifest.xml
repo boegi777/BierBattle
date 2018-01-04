@@ -35,8 +35,8 @@
         <activity android:name=".TerminDetail" />
         <activity android:name=".TerminErstellen"
             android:label="Termin erstellen">
-
         </activity>
+        <activity android:name=".QRScanner"/>
     </application>
 
 </manifest>
