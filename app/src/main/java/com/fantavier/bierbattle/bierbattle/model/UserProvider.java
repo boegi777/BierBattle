@@ -1,4 +1,4 @@
-package com.fantavier.bierbattle.bierbattle;
+package com.fantavier.bierbattle.bierbattle.model;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +23,10 @@ public class UserProvider {
 
     public UserProvider() {
         loadUserData();
+    }
+
+    public interface FirebaseInterface{
+        DatabaseReference dbRef = null;
     }
 
     public interface UsernameListener {
