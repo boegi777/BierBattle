@@ -1,8 +1,6 @@
 package com.fantavier.bierbattle.bierbattle;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,52 +16,49 @@ import android.widget.ListView;
 
 public class BierschuldenZaehler extends AppCompatActivity {
     ListView listView ;
-    ListView min;
-    Button button_zurueck;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bierschulden);
+        Button buttonNew = (Button) findViewById(R.id.zurueck);
+        ListView simpleList;
+        ListView min;
 
-        button_zurueck = (Button) findViewById(R.id.zurueck);
-        listView = (ListView) findViewById(R.id.plusview);
-        min = (ListView) findViewById(R.id.minusview);
 
-        String[] plus = new String[] { "Paul   3", "Juri   1", "Peter   2"};
-        String[] minus = new String[] { "Ursula   1", "Anja   5", "Frank   1", "Ulf   2"};
-/*
-        public void showSimplePopUp(){
-
-            AlertDialog.Builder helpBuilder = new AlertDialog.Builder(this);
-            helpBuilder.setTitle("Pop Up");
-            helpBuilder.setMessage("This is a Simple Pop Up");
-            helpBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialog, int which) { }
-                    });
-
-            // Remember, create doesn't show the dialog
-            AlertDialog helpDialog = helpBuilder.create();
-            helpDialog.show();
-        }
-*/
-
-        button_zurueck.setOnClickListener(new View.OnClickListener(){
+        buttonNew.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
 
-/*
-        min.setOnItemLongClickListener( new AdapterView.OnItemLongClickListener() {
+
+        listView = (ListView) findViewById(R.id.plusview);
+        min = (ListView) findViewById(R.id.minusview);
+
+        String[] plus = new String[] { "Paul   3", "Juri   1", "Peter   2"};
+
+        String[] minus = new String[] { "Ursula   1", "Anja   5", "Frank   1", "Ulf   2"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, plus);
+
+        ArrayAdapter<String> bdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, minus);
+
+        listView.setAdapter(adapter);
+        min.setAdapter(bdapter);
+
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
-            public boolean onItemLongClick (AdapterView <?> adapter, View item,int pos, long id){
-                showSimplePopUp();
-                return true;
+            public void onItemClick(AdapterView<?> adapter, View v, int position){
+                ItemClicked item = adapter.getItemAtPosition(position);
+
+                Intent intent = new Intent(Activity.this,destinationActivity.class);
+                //based on item add info to intent
+                startActivity(intent);
             }
-    });
-*/
+        });
 
 
 
