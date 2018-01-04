@@ -87,6 +87,7 @@
             android:paddingVertical="10dp"
             android:text="Wöchentlich"
             android:textAlignment="viewStart"
+            android:textColor="@android:color/darker_gray"
             android:textColorLink="@color/colorPrimary"
             android:textSize="30sp"
             tools:text="Wöchentlich" />

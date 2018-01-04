@@ -8,4 +8,9 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="zurück">Zurück</string>
 
+    <string name="email">Email</string>
+    <string name="zahl_plus">4</string>
+    <string name="zahl_minus">2</string>
+    <string name="rank">1</string>
+
 </resources>
