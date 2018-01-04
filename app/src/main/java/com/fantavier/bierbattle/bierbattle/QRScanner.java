@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.google.zxing.Result;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-
+import static android.Manifest.permission.CAMERA;
 
 
 public class QRScanner extends AppCompatActivity implements ZXingScannerView.ResultHandler{
