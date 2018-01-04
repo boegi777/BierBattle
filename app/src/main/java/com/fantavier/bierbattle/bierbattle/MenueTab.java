@@ -1,6 +1,5 @@
 package com.fantavier.bierbattle.bierbattle;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.fantavier.bierbattle.bierbattle.model.UserProvider;
 import com.google.firebase.database.DatabaseReference;
 
 

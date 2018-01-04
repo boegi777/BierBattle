@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 /**
@@ -18,6 +19,7 @@ public class TermineTab extends Fragment {
 
     private static final String TAG = "TermineTab";
     public static ListView appointmentList;
+    public static Button createAppointmentButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,12 +37,22 @@ public class TermineTab extends Fragment {
             }
         });
 
+        createAppointmentButton = (Button) rootView.findViewById(R.id.terminErstellen);
+
+        createAppointmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createAppointment = new Intent(rootView.getContext(), TerminErstellen.class);
+                startActivity((createAppointment));
+            }
+        });
+
         return rootView;
     }
 
     @Override
-    public void onStart(){
-        super.onStart();
+    public void onResume(){
+        super.onResume();
         MainActivity main = (MainActivity) getActivity();
         main.setGroupListener();
     }

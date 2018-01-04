@@ -41,7 +41,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
                 android:layout_row="0"
-                android:text="Abstimmung"
+                android:lines="2"
+                android:text="Abstimmung\n00:00"
                 android:textAlignment="center"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -59,7 +60,7 @@
                 android:textStyle="bold" />
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/positivButton"
                 android:layout_width="180dp"
                 android:layout_height="60dp"
                 android:layout_column="0"
@@ -74,7 +75,7 @@
                 app:srcCompat="@drawable/plus" />
 
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/negativButton"
                 android:layout_width="180dp"
                 android:layout_height="60dp"
                 android:layout_column="2"
@@ -194,7 +195,6 @@
             android:buttonTint="@color/colorPrimary"
             android:clickable="false"
             android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-            android:focusable="false"
             android:paddingHorizontal="5dp"
             android:paddingVertical="10dp"
             android:text="Wöchentlich"
