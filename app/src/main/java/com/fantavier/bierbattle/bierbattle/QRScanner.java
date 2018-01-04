@@ -123,7 +123,7 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
 
         final String result = rawResult.getText();
         vibrator.vibrate(100);
-        beerBottleSound.start();
+        //beerBottleSound.start();
         Log.d("QRCodeScanner", rawResult.getText());
         Log.d("QRCodeScanner", rawResult.getBarcodeFormat().toString());
 
