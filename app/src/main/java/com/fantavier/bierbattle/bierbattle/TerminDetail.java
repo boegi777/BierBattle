@@ -49,7 +49,7 @@ public class TerminDetail extends AppCompatActivity {
     public ImageButton positivButton;
     public ImageButton negativButton;
     public boolean running;
-    public static final long SLEEPTIME = 1000;
+    public static final long SLEEPTIME = 10;
     public String votingText;
     public Long serverTime = 0l;
 
@@ -185,16 +185,20 @@ public class TerminDetail extends AppCompatActivity {
 
         long plus24 = appointment.getCreatetime() + daysInMilli;
 
-        try {
-            URL url = new URL("https://us-central1-bierbattle.cloudfunctions.net/getServerTime");
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+        if(serverTime == 0l){
+            try {
+                URL url = new URL("https://us-central1-bierbattle.cloudfunctions.net/getServerTime");
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
-            JSONObject timeObj = new JSONObject(in.readLine());
-            serverTime = Long.parseLong(timeObj.get("dateNow").toString());
+                JSONObject timeObj = new JSONObject(in.readLine());
+                serverTime = Long.parseLong(timeObj.get("dateNow").toString());
 
-        } catch (IOException | JSONException ex) {
-            Log.d(TAG, ex.getMessage());
+            } catch (IOException | JSONException ex) {
+                Log.d(TAG, ex.getMessage());
+            }
+        } else {
+            serverTime += TerminDetail.SLEEPTIME;
         }
 
         long timeDiff = plus24 - serverTime;
