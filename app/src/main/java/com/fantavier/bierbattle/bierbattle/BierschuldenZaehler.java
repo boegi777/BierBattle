@@ -48,7 +48,7 @@ public class BierschuldenZaehler extends AppCompatActivity {
         listView.setAdapter(adapter);
         min.setAdapter(bdapter);
 
-
+/*
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapter, View v, int position){
@@ -59,7 +59,7 @@ public class BierschuldenZaehler extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+*/
 
 
     }

@@ -58,11 +58,11 @@ public class TerminErstellen extends AppCompatActivity {
         super.onStart();
 
 
-        datePicker = new DatePickerDialog.OnDateSetListener() {
+        datePicker = new DatePickerDialog.OnDateSetListener(){
+
 
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
 
                 // TODO Auto-generated method stub
@@ -74,6 +74,8 @@ public class TerminErstellen extends AppCompatActivity {
 
         };
 
+
+
         timePicker = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
@@ -82,6 +84,8 @@ public class TerminErstellen extends AppCompatActivity {
                 updateTime();
             }
         };
+
+
 
         date.setOnClickListener(new View.OnClickListener() {
 
