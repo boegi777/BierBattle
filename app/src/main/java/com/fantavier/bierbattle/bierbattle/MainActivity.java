@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     public static UserProvider userProvider = null;
     public static GroupProvider groupProvider = null;
     public static Group activeGroup;
+    public static Location location;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        location = new Location();
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
             Intent i = new Intent(this, Login.class);
