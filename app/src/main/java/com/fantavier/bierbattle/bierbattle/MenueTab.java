@@ -14,12 +14,8 @@ import android.widget.Toast;
 
 import com.fantavier.bierbattle.bierbattle.model.UserProvider;
 import com.google.firebase.database.DatabaseReference;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
-/**
- * Created by Mir on 14.12.2017.
- */
+
 
 public class MenueTab extends Fragment {
 
