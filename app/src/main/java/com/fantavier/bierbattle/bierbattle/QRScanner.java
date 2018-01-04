@@ -27,7 +27,7 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView mScannerView;
     private Vibrator vibrator;
-    final MediaPlayer beerBottleSound = MediaPlayer.create(this,R.raw.opening_a_bottle);
+    //final MediaPlayer beerBottleSound = MediaPlayer.create(this,R.raw.opening_a_bottle);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +123,7 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
 
         final String result = rawResult.getText();
         vibrator.vibrate(100);
-        beerBottleSound.start();
+        //beerBottleSound.start();
         Log.d("QRCodeScanner", rawResult.getText());
         Log.d("QRCodeScanner", rawResult.getBarcodeFormat().toString());
 
