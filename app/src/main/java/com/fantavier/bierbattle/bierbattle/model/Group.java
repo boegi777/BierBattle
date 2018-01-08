@@ -8,12 +8,25 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class Group implements GroupProvider.DatabaseReferenceObject{
     private static final String TAG = "Group";
@@ -77,12 +90,38 @@ public class Group implements GroupProvider.DatabaseReferenceObject{
     public ArrayList<String> getAppointmentTitles(){
         ArrayList<String> appointmentStrings = new ArrayList<String>();
         try {
+
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        groupId = Group.this.getGroupId();
+                        URL url = new URL("https://us-central1-bierbattle.cloudfunctions.net/checkAppointments");
+                        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                        urlConnection.setRequestMethod("POST");
+                        //urlConnection.setRequestProperty("Content-Type", "application/json");
+
+                        BufferedWriter httpRequestBodyWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
+                        httpRequestBodyWriter.write("groupId="+groupId);
+                        httpRequestBodyWriter.close();
+
+                        BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                        //JSONObject timeObj = new JSONObject(in.readLine());
+
+                    } catch(IOException ex){
+                        Log.d(TAG, ex.getMessage());
+                    }
+                }
+            });
+            thread.start();
+
             for (Appointment appointment : this.appointments) {
-                appointmentStrings.add(appointment.toString());
+                if(appointment.getActive() || !appointment.getVotingend())
+                    appointmentStrings.add(appointment.toString());
             }
 
-        } catch (Exception e) {
-            Log.d(TAG, e.getMessage());
+        } catch (Exception ex) {
+            Log.d(TAG, ex.getMessage());
         }
         return appointmentStrings;
     }

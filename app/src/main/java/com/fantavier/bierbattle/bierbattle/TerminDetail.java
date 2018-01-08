@@ -1,5 +1,6 @@
 package com.fantavier.bierbattle.bierbattle;
 
+import android.content.res.Resources;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -149,32 +150,36 @@ public class TerminDetail extends AppCompatActivity {
                     TerminDetail.this.appointment.setVoting(uid, false);
                 }
             });
+        } else {
+            votingTitle.setText("Termin aktiv");
         }
     }
 
     private void setVotingTitle(){
         running = true;
 
-        refreshThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(running){
-                    try {
-                        votingText = getVotingText();
-                        Thread.sleep(TerminDetail.SLEEPTIME);
-                    } catch (InterruptedException ex){
-                        Logger.getLogger(TerminErstellen.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            votingTitle.setText(votingText);
+        if (refreshThread == null) {
+            refreshThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (running) {
+                        try {
+                            votingText = getVotingText();
+                            Thread.sleep(TerminDetail.SLEEPTIME);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(TerminErstellen.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    });
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                votingTitle.setText(votingText);
+                            }
+                        });
+                    }
                 }
-            }
-        });
-        refreshThread.start();
+            });
+            refreshThread.start();
+        }
     }
 
     private String getVotingText(){
@@ -185,39 +190,25 @@ public class TerminDetail extends AppCompatActivity {
 
         long plus24 = appointment.getCreatetime() + daysInMilli;
 
-        if(serverTime == 0l){
-            try {
-                URL url = new URL("https://us-central1-bierbattle.cloudfunctions.net/getServerTime");
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-
-                JSONObject timeObj = new JSONObject(in.readLine());
-                serverTime = Long.parseLong(timeObj.get("dateNow").toString());
-
-            } catch (IOException | JSONException ex) {
-                Log.d(TAG, ex.getMessage());
-            }
-        } else {
-            serverTime += TerminDetail.SLEEPTIME;
-        }
+        serverTime = System.currentTimeMillis();
 
         long timeDiff = plus24 - serverTime;
 
-        if(timeDiff < 0){
-            running = false;
-            appointment.setVotingend(true);
+        if(timeDiff > 0) {
+
+            timeDiff = timeDiff % daysInMilli;
+
+            Long hours = timeDiff / hoursInMilli;
+            timeDiff = timeDiff % hoursInMilli;
+
+            Long minutes = timeDiff / minutesInMilli;
+            timeDiff = timeDiff % minutesInMilli;
+
+            Long seconds = timeDiff / secondsInMilli;
+
+            return "Abstimmung\n" + hours + ":" + minutes + ":" + seconds;
+        } else {
+            return "Abstimmung beendet";
         }
-
-        timeDiff = timeDiff % daysInMilli;
-
-        Long hours = timeDiff / hoursInMilli;
-        timeDiff = timeDiff % hoursInMilli;
-
-        Long minutes = timeDiff / minutesInMilli;
-        timeDiff = timeDiff % minutesInMilli;
-
-        Long seconds = timeDiff / secondsInMilli;
-
-        return "Abstimmung\n" + hours + ":" + minutes + ":" + seconds;
     }
 }

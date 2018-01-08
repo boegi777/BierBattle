@@ -20,6 +20,7 @@ public class Appointment implements GroupProvider.DatabaseReferenceObject {
     private String location;
     private HashMap<String, Boolean> votings = null;
     private Group parentRef = null;
+    private Boolean active;
 
     public Appointment(String appointmentId, Group parentRef){
         try {
@@ -73,6 +74,9 @@ public class Appointment implements GroupProvider.DatabaseReferenceObject {
     public Boolean getVotingend(){ return this.votingend; }
     public void setVotingend(Boolean votingend){ dbRef.child("votingend").setValue(votingend); }
 
+    public Boolean getActive(){ return this.active; }
+    public void setActive(Boolean active){ dbRef.child("active").setValue(active); }
+
     public void setVoting(String uid, Boolean voting){
         this.dbRef.child("votings").child(uid).setValue(voting);
     }
@@ -121,6 +125,9 @@ public class Appointment implements GroupProvider.DatabaseReferenceObject {
                             break;
                         case "location":
                             Appointment.this.location = appointmentData.getValue().toString();
+                            break;
+                        case "active":
+                            Appointment.this.active  = Boolean.parseBoolean(appointmentData.getValue().toString());
                             break;
                     }
                 }
