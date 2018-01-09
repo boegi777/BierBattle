@@ -22,27 +22,13 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    public static String activeGroupId;
     public static DataProvider dataProvider = null;
     public static Group activeGroup;
     public static Location location;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
+    private static final String TAG = "MainActivity";
+    private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -71,38 +54,29 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         mViewPager.setOffscreenPageLimit(4);
 
+        setListener();
 
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
             FirebaseAuth.getInstance().signOut();
             finish();
         }
 
-
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -131,43 +105,59 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 4;
         }
     }
 
-    public void setGroupListener(){
+    public void setListener(){
         try {
             if (MainActivity.dataProvider == null) {
                 MainActivity.dataProvider = new DataProvider();
+                MainActivity.dataProvider.init();
             }
-            MainActivity.dataProvider.setGroupDataListener(new DataProvider.GroupDataListener() {
-                @Override
-                public void onGroupeDataChanged(Group group) {
-                    activeGroup = group;
 
-                    MainActivity.dataProvider.setAppointmentDataListener(new DataProvider.AppointmentDataListener() {
-                        @Override
-                        public void onAppointmentDataChangedListener() {
-                            List<String> appointments = activeGroup.getAppointmentTitles();
-                            ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
-                            TermineTab.appointmentList.setAdapter(appointmentAdapter);
-                        }
-                    });
+            setUsernameListener();
+            setGroupDataListener();
 
-                    MainActivity.dataProvider.setMemberDataListener(new DataProvider.MemberDataListener() {
-                        @Override
-                        public void onMemberDataChangedListener() {
-                            List<String> members = activeGroup.getMemberTitles();
-                            ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, members);
-                            GruppeTab.groupList.setAdapter(groupMemberAdapter);
-                        }
-                    });
-                }
-            });
         } catch (Exception e){
             Log.d(TAG, e.getMessage());
         }
+    }
+
+    private void setUsernameListener(){
+        MainActivity.dataProvider.setUsernameListener(new DataProvider.UsernameListener(){
+            @Override
+            public void onUsernameChanged(String username) {
+                MenueTab.username.setText(username);
+            }
+        });
+    }
+
+    private void setGroupDataListener(){
+        MainActivity.dataProvider.setGroupDataListener(new DataProvider.GroupDataListener() {
+            @Override
+            public void onGroupeDataChanged(Group group) {
+                activeGroup = group;
+
+                MainActivity.dataProvider.setAppointmentDataListener(new DataProvider.AppointmentDataListener() {
+                    @Override
+                    public void onAppointmentDataChangedListener() {
+                        List<String> appointments = activeGroup.getAppointmentTitles();
+                        ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
+                        TermineTab.appointmentList.setAdapter(appointmentAdapter);
+                    }
+                });
+
+                MainActivity.dataProvider.setMemberDataListener(new DataProvider.MemberDataListener() {
+                    @Override
+                    public void onMemberDataChangedListener() {
+                        List<String> members = activeGroup.getMemberTitles();
+                        ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, members);
+                        GruppeTab.groupList.setAdapter(groupMemberAdapter);
+                    }
+                });
+            }
+        });
     }
 
     @Override

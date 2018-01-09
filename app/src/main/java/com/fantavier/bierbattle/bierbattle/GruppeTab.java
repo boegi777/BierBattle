@@ -23,11 +23,4 @@ public class GruppeTab extends Fragment {
         groupList = (ListView) rootView.findViewById(R.id.GroupList);
         return rootView;
     }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        MainActivity main = (MainActivity) getActivity();
-        main.setGroupListener();
-    }
 }

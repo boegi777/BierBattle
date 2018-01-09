@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
  */
 
 public class Member implements Comparable, DataProvider.DatabaseReferenceObject {
+
     private static final String TAG = "Member";
     private DatabaseReference dbRef;
     private String memberId;
@@ -21,13 +22,8 @@ public class Member implements Comparable, DataProvider.DatabaseReferenceObject 
     private boolean active;
     private Group parentRef = null;
 
-    public Member(String memberId, Group parentRef){
-        try {
-            this.parentRef = parentRef;
-            this.initObjectProperties(memberId);
-        } catch (Exception e){
-            throw e;
-        }
+    public Member(Group parentRef){
+        this.parentRef = parentRef;
     }
 
     public void setMemberName(String memberId){

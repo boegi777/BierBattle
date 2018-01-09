@@ -12,18 +12,19 @@ import java.util.Map;
 
 public class DataProvider {
 
-    private static final String TAG = "DataProvider";
-    private static DatabaseReference mDbRef;
-    private static DatabaseReference userRef;
-    private static DatabaseReference groupRef;
-    private static DataProvider.UsernameListener usernameListener;
-    public static DataProvider.GroupDataListener groupListener;
-    public static DataProvider.MemberDataListener memberDataListener;
-    public static DataProvider.AppointmentDataListener appointmentDataListener;
-    private static String groupId;
-    private static Group group;
+    public static DataProvider.UsernameListener usernameListener = null;
+    public static DataProvider.GroupDataListener groupListener = null;
+    public static DataProvider.MemberDataListener memberDataListener = null;
+    public static DataProvider.AppointmentDataListener appointmentDataListener = null;
 
-    public DataProvider(){
+    private static final String TAG = "DataProvider";
+    private static DatabaseReference mDbRef = null;
+    private static DatabaseReference userRef = null;
+    private static DatabaseReference groupRef = null;
+    private static String groupId = "";
+    private static Group group = null;
+
+    public void init(){
         loadUserData();
     }
 
@@ -64,6 +65,14 @@ public class DataProvider {
         }
     }
 
+    public DatabaseReference getUserRef(){
+        return userRef;
+    }
+
+    public DatabaseReference getGroupRef(){
+        return groupRef;
+    }
+
     private void loadUserData() {
         try {
             setUserRef();
@@ -85,7 +94,8 @@ public class DataProvider {
 
     private void setGroupData(DataSnapshot dataSnapshot){
         if(DataProvider.group == null){
-            DataProvider.group = new Group(dataSnapshot.getKey());
+            DataProvider.group = new Group();
+            DataProvider.group.initObjectProperties(groupId);
         }
     }
 

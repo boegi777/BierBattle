@@ -49,11 +49,4 @@ public class TermineTab extends Fragment {
 
         return rootView;
     }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        MainActivity main = (MainActivity) getActivity();
-        main.setGroupListener();
-    }
 }

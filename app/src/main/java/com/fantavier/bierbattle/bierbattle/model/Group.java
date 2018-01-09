@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Group implements DataProvider.DatabaseReferenceObject{
+
     private static final String TAG = "Group";
     private DatabaseReference dbRef;
     private String groupId;
@@ -31,14 +32,6 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     private boolean active;
     private List<Member> members = null;
     private List<Appointment> appointments = null;
-
-    public Group(String groupId) {
-        try {
-            this.initObjectProperties(groupId);
-        } catch(Exception e){
-            throw e;
-        }
-    }
 
     public String getGroupId(){ return this.groupId; }
 
@@ -194,7 +187,9 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     private List<Appointment> getAppointments(DataSnapshot appointmentsDS){
         List<Appointment> appointments = new ArrayList<Appointment>();
         for(DataSnapshot appointmentDS : appointmentsDS.getChildren()){
-            appointments.add(new Appointment(appointmentDS.getKey(), this));
+            Appointment appointment = new Appointment(this);
+            appointment.initObjectProperties(appointmentDS.getKey());
+            appointments.add(appointment);
         }
         return appointments;
     }
@@ -202,7 +197,9 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     private List<Member> getMembers(DataSnapshot membersDS){
         List<Member> members = new ArrayList<Member>();
         for(DataSnapshot memberDS : membersDS.getChildren()){
-            members.add(new Member(memberDS.getKey(), this));
+            Member member = new Member( this);
+            member.initObjectProperties(memberDS.getKey());
+            members.add(member);
         }
         return members;
     }

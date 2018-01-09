@@ -9,6 +9,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
 public class Appointment implements DataProvider.DatabaseReferenceObject {
+
     private DatabaseReference dbRef;
     private String appointmentId;
     private String title;
@@ -22,13 +23,8 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     private Group parentRef = null;
     private Boolean active;
 
-    public Appointment(String appointmentId, Group parentRef){
-        try {
-            this.parentRef = parentRef;
-            this.initObjectProperties(appointmentId);
-        } catch(Exception e){
-            throw e;
-        }
+    public Appointment(Group parentRef){
+        this.parentRef = parentRef;
     }
 
     public String getTitle(){
