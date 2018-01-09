@@ -14,12 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
+import com.fantavier.bierbattle.bierbattle.model.DataProvider;
 import com.fantavier.bierbattle.bierbattle.model.Group;
-import com.fantavier.bierbattle.bierbattle.model.GroupProvider;
-import com.fantavier.bierbattle.bierbattle.model.UserProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,8 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     public static String activeGroupId;
-    public static UserProvider userProvider = null;
-    public static GroupProvider groupProvider = null;
+    public static DataProvider dataProvider = null;
     public static Group activeGroup;
     public static Location location;
 
@@ -141,38 +138,29 @@ public class MainActivity extends AppCompatActivity {
 
     public void setGroupListener(){
         try {
-            if (MainActivity.userProvider == null) {
-                MainActivity.userProvider = new UserProvider();
+            if (MainActivity.dataProvider == null) {
+                MainActivity.dataProvider = new DataProvider();
             }
-            MainActivity.userProvider.setActiveGroupListener(new UserProvider.ActiveGroupListener() {
+            MainActivity.dataProvider.setGroupDataListener(new DataProvider.GroupDataListener() {
                 @Override
-                public void onActiveGroupChanged(String groupId) {
-                    MainActivity.activeGroupId = groupId;
-                    if (MainActivity.groupProvider == null) {
-                        MainActivity.groupProvider = new GroupProvider(MainActivity.activeGroupId);
-                    }
-                    MainActivity.groupProvider.setGroupDataListener(new GroupProvider.GroupDataListener() {
+                public void onGroupeDataChanged(Group group) {
+                    activeGroup = group;
+
+                    MainActivity.dataProvider.setAppointmentDataListener(new DataProvider.AppointmentDataListener() {
                         @Override
-                        public void onGroupeDataChanged(Group group) {
-                            activeGroup = group;
+                        public void onAppointmentDataChangedListener() {
+                            List<String> appointments = activeGroup.getAppointmentTitles();
+                            ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
+                            TermineTab.appointmentList.setAdapter(appointmentAdapter);
+                        }
+                    });
 
-                            MainActivity.groupProvider.setAppointmentDataListener(new GroupProvider.AppointmentDataListener() {
-                                @Override
-                                public void onAppointmentDataChangedListener() {
-                                    List<String> appointments = activeGroup.getAppointmentTitles();
-                                    ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
-                                    TermineTab.appointmentList.setAdapter(appointmentAdapter);
-                                }
-                            });
-
-                            MainActivity.groupProvider.setMemberDataListener(new GroupProvider.MemberDataListener() {
-                                @Override
-                                public void onMemberDataChangedListener() {
-                                    List<String> members = activeGroup.getMemberTitles();
-                                    ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, members);
-                                    GruppeTab.groupList.setAdapter(groupMemberAdapter);
-                                }
-                            });
+                    MainActivity.dataProvider.setMemberDataListener(new DataProvider.MemberDataListener() {
+                        @Override
+                        public void onMemberDataChangedListener() {
+                            List<String> members = activeGroup.getMemberTitles();
+                            ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, members);
+                            GruppeTab.groupList.setAdapter(groupMemberAdapter);
                         }
                     });
                 }

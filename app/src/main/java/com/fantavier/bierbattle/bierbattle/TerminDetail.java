@@ -1,10 +1,8 @@
 package com.fantavier.bierbattle.bierbattle;
 
-import android.content.res.Resources;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -12,26 +10,9 @@ import android.widget.TextView;
 
 import com.fantavier.bierbattle.bierbattle.model.Appointment;
 import com.fantavier.bierbattle.bierbattle.model.Group;
-import com.fantavier.bierbattle.bierbattle.model.GroupProvider;
-import com.google.firebase.FirebaseApp;
+import com.fantavier.bierbattle.bierbattle.model.DataProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
@@ -86,7 +67,7 @@ public class TerminDetail extends AppCompatActivity {
     public void onResume(){
         super.onResume();
 
-        MainActivity.groupProvider.setGroupDataListener(new GroupProvider.GroupDataListener() {
+        MainActivity.dataProvider.setGroupDataListener(new DataProvider.GroupDataListener() {
             @Override
             public void onGroupeDataChanged(Group group) {
                 setAppointmentViewData(group);

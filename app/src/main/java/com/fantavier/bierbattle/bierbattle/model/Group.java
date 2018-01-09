@@ -8,9 +8,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -19,16 +16,12 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
-import javax.net.ssl.HttpsURLConnection;
-
-public class Group implements GroupProvider.DatabaseReferenceObject{
+public class Group implements DataProvider.DatabaseReferenceObject{
     private static final String TAG = "Group";
     private DatabaseReference dbRef;
     private String groupId;

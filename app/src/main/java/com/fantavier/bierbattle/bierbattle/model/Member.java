@@ -1,7 +1,6 @@
 package com.fantavier.bierbattle.bierbattle.model;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -13,7 +12,7 @@ import com.google.firebase.database.ValueEventListener;
  * Created by Paul on 04.01.2018.
  */
 
-public class Member implements Comparable, GroupProvider.DatabaseReferenceObject {
+public class Member implements Comparable, DataProvider.DatabaseReferenceObject {
     private static final String TAG = "Member";
     private DatabaseReference dbRef;
     private String memberId;
@@ -40,7 +39,7 @@ public class Member implements Comparable, GroupProvider.DatabaseReferenceObject
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Member.this.name = dataSnapshot.getValue().toString();
-                    GroupProvider.memberDataListener.onMemberDataChangedListener();
+                    DataProvider.memberDataListener.onMemberDataChangedListener();
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -97,7 +96,7 @@ public class Member implements Comparable, GroupProvider.DatabaseReferenceObject
                             break;
                     }
                 }
-                GroupProvider.memberDataListener.onMemberDataChangedListener();
+                DataProvider.memberDataListener.onMemberDataChangedListener();
             }
 
             @Override

@@ -8,7 +8,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
-public class Appointment implements GroupProvider.DatabaseReferenceObject {
+public class Appointment implements DataProvider.DatabaseReferenceObject {
     private DatabaseReference dbRef;
     private String appointmentId;
     private String title;
@@ -131,7 +131,7 @@ public class Appointment implements GroupProvider.DatabaseReferenceObject {
                             break;
                     }
                 }
-                GroupProvider.appointmentDataListener.onAppointmentDataChangedListener();
+                DataProvider.appointmentDataListener.onAppointmentDataChangedListener();
             }
 
             @Override

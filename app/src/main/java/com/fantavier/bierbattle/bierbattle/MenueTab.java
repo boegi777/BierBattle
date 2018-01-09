@@ -1,6 +1,5 @@
 package com.fantavier.bierbattle.bierbattle;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,9 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.fantavier.bierbattle.bierbattle.model.UserProvider;
+import com.fantavier.bierbattle.bierbattle.model.DataProvider;
 import com.google.firebase.database.DatabaseReference;
 
 
@@ -41,10 +39,10 @@ public class MenueTab extends Fragment {
 
         try {
             username = (TextView) rootView.findViewById(R.id.username);
-            if(MainActivity.userProvider == null){
-                MainActivity.userProvider = new UserProvider();
+            if(MainActivity.dataProvider == null){
+                MainActivity.dataProvider = new DataProvider();
             }
-            MainActivity.userProvider.setUsernameListener(new UserProvider.UsernameListener(){
+            MainActivity.dataProvider.setUsernameListener(new DataProvider.UsernameListener(){
                 @Override
                 public void onUsernameChanged(String username) {
                     MenueTab.this.username.setText(username);
@@ -75,10 +73,10 @@ public class MenueTab extends Fragment {
     public void onStart(){
         super.onStart();
         try {
-            if(MainActivity.userProvider == null){
-                MainActivity.userProvider = new UserProvider();
+            if(MainActivity.dataProvider == null){
+                MainActivity.dataProvider = new DataProvider();
             }
-            MainActivity.userProvider.setUsernameListener(new UserProvider.UsernameListener(){
+            MainActivity.dataProvider.setUsernameListener(new DataProvider.UsernameListener(){
                 @Override
                 public void onUsernameChanged(String username) {
                     MenueTab.this.username.setText(username);

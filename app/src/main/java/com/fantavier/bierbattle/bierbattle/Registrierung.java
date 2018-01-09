@@ -11,7 +11,7 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fantavier.bierbattle.bierbattle.model.UserProvider;
+import com.fantavier.bierbattle.bierbattle.model.DataProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -126,7 +126,7 @@ public class Registrierung extends AppCompatActivity {
 
                                 userData.put("category", categoryId.toString());
 
-                                UserProvider.createUser(userData);
+                                DataProvider.createUser(userData);
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
                                 Toast.makeText(Registrierung.this, "Registration completed",
