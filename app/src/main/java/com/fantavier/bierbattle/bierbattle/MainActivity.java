@@ -1,6 +1,9 @@
 package com.fantavier.bierbattle.bierbattle;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
@@ -16,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.fantavier.bierbattle.bierbattle.model.Group;
 import com.fantavier.bierbattle.bierbattle.model.GroupProvider;
@@ -43,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     public static GroupProvider groupProvider = null;
     public static Group activeGroup;
     public static Location location;
+    private Intent location_service;
+    private BroadcastReceiver broadcastReceiver;
+
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -185,19 +192,74 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, e.getMessage());
         }
     }
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!requestLocationUpdates()) {
+            location_service = new Intent(getApplicationContext(), Location.class);
+            startService(location_service);
+        }
+    }
 
     @Override
-    public void onDestroy(){
+    protected void onDestroy(){
+        super.onDestroy();
+        if(broadcastReceiver !=null){
+            unregisterReceiver(broadcastReceiver);
+        }
+        stopService(location_service);
         moveTaskToBack(true);
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(1);
-        super.onDestroy();
     }
-    //hallooo
 
 
-}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(broadcastReceiver == null){
+            broadcastReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+
+                        //Punktevergabe hier
+                        //text.append("\n"+intent.getExtras().get("location"));
+
+
+                    }
+                };
+                registerReceiver(broadcastReceiver,new IntentFilter("location_update"));
+            }
+            requestLocationUpdates();
+        }
+
+    private boolean requestLocationUpdates() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                        android.Manifest.permission.INTERNET}, 1);
+                return true;
+                }
+            }
+        return false;
+        }
+
+    public void onRequestPermissionResults(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    requestLocationUpdates();
+                    }
+                break;
+            }
+        }
+
+
+
+
+    }
 
 
 

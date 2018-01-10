@@ -38,16 +38,24 @@ public class Location extends Service {
     @SuppressLint("MissingPermission")
     @Override
     public void onCreate() {
+
+        locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
         listener = new LocationListener() {
+
             @Override
             public void onLocationChanged(android.location.Location location) {
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
 
-                if (distance(destLatitudeValue, destLongitudeValue, latitude, longitude) < 0.1) {
+                if (distance(destLatitudeValue, destLongitudeValue, latitude, longitude) > 0.1) {
+                    Intent i = new Intent("score_update");
+                    i.putExtra("score_point",1);
+                    sendBroadcast(i);
 
-                    //An der Stelle sollte dann der Punkt vergeben werden.
+
                 }
+
             }
 
             @Override
@@ -67,7 +75,7 @@ public class Location extends Service {
 
             }
         };
-        locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,3000,0,listener);
 
     }

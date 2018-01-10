@@ -1,8 +1,14 @@
 package com.fantavier.bierbattle.bierbattle;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,14 +31,12 @@ public class MenueTab extends Fragment {
 
     public TextView username;
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.menue_tab, container, false);
-         /*if(!requestLocationUpdates()){
-            Intent j = new Intent(getApplicationContext(),Location.class);
-            startService(j);
-        }*/
         ImageButton zurueck = (ImageButton) rootView.findViewById(R.id.bier);
         kamera_btn = (ImageButton) rootView.findViewById(R.id.kamera);
         kamera_btn.setOnClickListener(new View.OnClickListener() {
@@ -42,7 +46,6 @@ public class MenueTab extends Fragment {
                 startActivity(scanner);
             }
         });
-
         try {
             username = (TextView) rootView.findViewById(R.id.username);
             if(MainActivity.userProvider == null){
@@ -92,34 +95,9 @@ public class MenueTab extends Fragment {
             Log.d(TAG, e.getMessage());
         }
     }
-    /* @Override
-    protected void onResume() {
-        super.onResume();
-        requestLocationUpdates();
-    }*/
 
-    /* private boolean requestLocationUpdates() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                        android.Manifest.permission.INTERNET}, 1);
-                return true;
-            }
-        }
-        return false;
-    }
 
-    public void onRequestPermissionResults(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 1:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    requestLocationUpdates();
-                }
-                break;
-        }
-    hhh}*/
+
 }
 
 
