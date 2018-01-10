@@ -8,13 +8,11 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
 import com.fantavier.bierbattle.bierbattle.model.Appointment;
-import com.fantavier.bierbattle.bierbattle.model.Group;
 import com.fantavier.bierbattle.bierbattle.model.DataProvider;
-import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.Iterator;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,17 +63,9 @@ public class TerminDetail extends AppCompatActivity {
     }
 
     public void onResume(){
-        super.onResume();
-
-        MainActivity.dataProvider.setGroupDataListener(new DataProvider.GroupDataListener() {
-            @Override
-            public void onGroupeDataChanged(Group group) {
-                setAppointmentViewData(group);
-            }
-        });
-
-        setAppointmentViewData(MainActivity.activeGroup);
-    }
+       super.onResume();
+        setAppointmentViewData();
+    };
 
     public void onPause(){
         super.onPause();
@@ -87,11 +77,12 @@ public class TerminDetail extends AppCompatActivity {
 
         running = false;
     }
-    private void setAppointmentViewData(Group group){
-        Integer positiv = 0;
-        Integer negativ = 0;
+    public Appointment getAppointment(){
+        return appointment;
+    }
 
-        appointment = group.getAppointment(index);
+    private void setAppointmentViewData(){
+        appointment = MainActivity.dataProvider.getActiveGroup().getAppointment(Integer.parseInt(index));
 
         title.setText(appointment.getTitle());
         datum.setText(appointment.getDate());
@@ -99,20 +90,9 @@ public class TerminDetail extends AppCompatActivity {
         weekly.setChecked(appointment.getWeekly());
         location.setText(appointment.getLocation());
 
-        if(appointment.getVotings() != null){
-            Iterator it = appointment.getVotings().entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
-                if((Boolean) pair.getValue()){
-                    positiv += 1;
-                } else {
-                    negativ += 1;
-                }
-            }
-        }
-
-        TerminDetail.this.positivText.setText(positiv.toString());
-        TerminDetail.this.negativText.setText(negativ.toString());
+        TerminDetail.this.positivText.setText(appointment.getPositivVotings());
+        TerminDetail.this.negativText.setText(appointment.getNegativVotings());
+        setVotingListener();
 
         if(!appointment.getVotingend()){
             setVotingTitle();
@@ -120,20 +100,32 @@ public class TerminDetail extends AppCompatActivity {
             positivButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    TerminDetail.this.appointment.setVoting(uid, true);
+                    String uid = MainActivity.dataProvider.getActiveUser().getUserId();
+                    TerminDetail.this.getAppointment().setVoting(uid, true);
                 }
             });
             negativButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    TerminDetail.this.appointment.setVoting(uid, false);
+                    String uid = MainActivity.dataProvider.getActiveUser().getUserId();
+                    TerminDetail.this.getAppointment().setVoting(uid, false);
                 }
             });
         } else {
             votingTitle.setText("Termin aktiv");
         }
+    }
+
+    private void setVotingListener(){
+        MainActivity.dataProvider.setGroupDataListener(new DataProvider.GroupDataListener() {
+            @Override
+            public void onGroupeDataChanged() {
+                if(appointment.getVotings() != null){
+                    TerminDetail.this.positivText.setText(appointment.getPositivVotings());
+                    TerminDetail.this.negativText.setText(appointment.getNegativVotings());
+                }
+            }
+        });
     }
 
     private void setVotingTitle(){
@@ -164,32 +156,11 @@ public class TerminDetail extends AppCompatActivity {
     }
 
     private String getVotingText(){
-        long secondsInMilli = 1000;
-        long minutesInMilli = secondsInMilli * 60;
-        long hoursInMilli = minutesInMilli * 60;
-        long daysInMilli = hoursInMilli * 24;
-
-        long plus24 = appointment.getCreatetime() + daysInMilli;
-
-        serverTime = System.currentTimeMillis();
-
-        long timeDiff = plus24 - serverTime;
-
-        if(timeDiff > 0) {
-
-            timeDiff = timeDiff % daysInMilli;
-
-            Long hours = timeDiff / hoursInMilli;
-            timeDiff = timeDiff % hoursInMilli;
-
-            Long minutes = timeDiff / minutesInMilli;
-            timeDiff = timeDiff % minutesInMilli;
-
-            Long seconds = timeDiff / secondsInMilli;
-
-            return "Abstimmung\n" + hours + ":" + minutes + ":" + seconds;
-        } else {
-            return "Abstimmung beendet";
+        try {
+            HashMap<String, String> timeDiff = appointment.getVotingtimeLeft();
+            return "Abstimmung\n" + timeDiff.get("hours") + ":" + timeDiff.get("minutes") + ":" + timeDiff.get("seconds");
+        } catch(ExceptionHelper.VotingendException ex){
+            return ex.getMessage();
         }
     }
 }

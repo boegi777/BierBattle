@@ -1,96 +1,63 @@
 package com.fantavier.bierbattle.bierbattle.model;
 
+import android.provider.ContactsContract;
+
+import com.fantavier.bierbattle.bierbattle.helper.DateHelper;
+import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class Appointment implements DataProvider.DatabaseReferenceObject {
 
-    private DatabaseReference dbRef;
-    private String appointmentId;
-    private String title;
-    private Long createtime;
-    private String date;
-    private String time;
-    private Boolean votingend;
-    private Boolean weekly;
-    private String location;
+    private DatabaseReference dbRef = null;
     private HashMap<String, Boolean> votings = null;
     private Group parentRef = null;
-    private Boolean active;
+    private Long createtime = 0l;
+    private String appointmentId = "";
+    private String title = "";
+    private String date = "";
+    private String time = "";
+    private String location = "";
+    private Boolean votingend = false;
+    private Boolean weekly = false;
+    private Boolean active = false;
 
     public Appointment(Group parentRef){
         this.parentRef = parentRef;
     }
 
-    public String getTitle(){
-        return this.title;
-    }
-    public void setTitle(String title) {
-        dbRef.child("title").setValue(title);
-    }
-
     public Long getCreatetime() { return this.createtime; }
-    public void setCreatetime(Long createtime) {
-        dbRef.child("createtime").setValue(createtime);
-    }
-
+    public String getTitle() { return this.title; }
     public String getDate(){
         return this.date;
     }
-    public void setDate(String date){
-        dbRef.child("date").setValue(date);
-    }
-
     public String getTime(){
         return this.time;
     }
-
-    public void setTime(String time){ dbRef.child("time").setValue(time); }
-
-    public boolean getWeekly(){
-        return this.weekly;
-    }
-    public void setWeekly(boolean weekly){
-        dbRef.child("weekly").setValue(weekly);
-    }
-
     public String getLocation(){
         return this.location;
     }
-    public void setLocation(String location) { dbRef.child("location").setValue(location); }
-
-    public HashMap<String, Boolean> getVotings(){ return this.votings; }
-    public void setVotings(HashMap<String, Boolean> votings){ dbRef.child("votings").setValue(votings); }
-
     public Boolean getVotingend(){ return this.votingend; }
-    public void setVotingend(Boolean votingend){ dbRef.child("votingend").setValue(votingend); }
-
     public Boolean getActive(){ return this.active; }
-    public void setActive(Boolean active){ dbRef.child("active").setValue(active); }
-
-    public void setVoting(String uid, Boolean voting){
-        this.dbRef.child("votings").child(uid).setValue(voting);
+    public Boolean getWeekly(){
+        return this.weekly;
     }
+    public HashMap<String, Boolean> getVotings(){ return this.votings; }
 
-    private HashMap<String, Boolean> initVotings(DataSnapshot votingsDS){
-        HashMap<String, Boolean> votings = new HashMap<>();
-
-        for(DataSnapshot voting : votingsDS.getChildren()){
-            boolean value = (boolean) voting.getValue();
-            votings.put(voting.getKey().toString(), value);
-        }
-
-        return votings;
-
+    public void setVoting(String uid, Boolean vote){
+        dbRef.child("votings").child(uid).setValue(vote);
     }
 
     @Override
-    public void initObjectProperties(String id) {
+    public void loadObjectProperties(String id) {
         this.appointmentId = id;
         this.dbRef = getDbRef();
         this.dbRef.addValueEventListener(new ValueEventListener() {
@@ -127,7 +94,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
                             break;
                     }
                 }
-                DataProvider.appointmentDataListener.onAppointmentDataChangedListener();
+                DataProvider.appointmentListener.onAppointmentDataChangedListener();
             }
 
             @Override
@@ -152,6 +119,72 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
             builder.append("   -- Abstimmung -- ");
         }
         return builder.toString();
+    }
+
+    public Long getDateInMilliSec() {
+        return DateHelper.convertDateToMilliSec(getDate(), getTime());
+    }
+
+    public String getPositivVotings(){
+        if(this.getVotings() == null){
+            return "0";
+        }
+        Integer positiv = 0;
+        Iterator it = this.getVotings().entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            if((Boolean) pair.getValue())
+                positiv += 1;
+        }
+        return positiv.toString();
+    }
+
+    public String getNegativVotings(){
+        if(this.getVotings() == null){
+            return "0";
+        }
+        Integer negativ = 0;
+        Iterator it = this.getVotings().entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            if(!(Boolean) pair.getValue())
+                negativ += 1;
+        }
+        return negativ.toString();
+    }
+
+    public Long getVotingtimeLeftInMilli(){
+        Long plusTime = this.getCreatetime() + 600000;
+        return plusTime - System.currentTimeMillis();
+    }
+
+    public HashMap<String, String> getVotingtimeLeft() throws ExceptionHelper.VotingendException{
+        HashMap<String, String> timeDiffStrings = new HashMap<>();
+        HashMap<String, Long> timeDiffLongs = new HashMap<>();
+        Long timeDiffMilli = this.getVotingtimeLeftInMilli();
+
+        if(timeDiffMilli > 0) {
+            timeDiffLongs = DateHelper.getTimeLeft(timeDiffMilli);
+            timeDiffStrings.put("hours", timeDiffLongs.get("hours").toString());
+            timeDiffStrings.put("minutes", timeDiffLongs.get("minutes").toString());
+            timeDiffStrings.put("seconds", timeDiffLongs.get("seconds").toString());
+            return timeDiffStrings;
+        } else {
+            throw new ExceptionHelper.VotingendException();
+        }
+
+    }
+
+    private HashMap<String, Boolean> initVotings(DataSnapshot votingsDS){
+        HashMap<String, Boolean> votings = new HashMap<>();
+
+        for(DataSnapshot voting : votingsDS.getChildren()){
+            boolean value = (boolean) voting.getValue();
+            votings.put(voting.getKey().toString(), value);
+        }
+
+        return votings;
+
     }
 
 }

@@ -26,27 +26,6 @@ public class Member implements Comparable, DataProvider.DatabaseReferenceObject 
         this.parentRef = parentRef;
     }
 
-    public void setMemberName(String memberId){
-        try {
-            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
-            DatabaseReference userRef = usersRef.child(memberId);
-
-            userRef.child("username").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Member.this.name = dataSnapshot.getValue().toString();
-                    DataProvider.memberDataListener.onMemberDataChangedListener();
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    throw databaseError.toException();
-                }
-            });
-        } catch (Exception e){
-            throw e;
-        }
-    }
-
     public int getPoints(){
         return this.points;
     }
@@ -75,10 +54,10 @@ public class Member implements Comparable, DataProvider.DatabaseReferenceObject 
     }
 
     @Override
-    public void initObjectProperties(String id) {
+    public void loadObjectProperties(String id) {
         this.memberId = id;
         this.dbRef = getDbRef();
-        setMemberName(id);
+        loadMemberName(id);
         this.dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot memberDS) {
@@ -92,7 +71,6 @@ public class Member implements Comparable, DataProvider.DatabaseReferenceObject 
                             break;
                     }
                 }
-                DataProvider.memberDataListener.onMemberDataChangedListener();
             }
 
             @Override
@@ -100,5 +78,26 @@ public class Member implements Comparable, DataProvider.DatabaseReferenceObject 
                 throw databaseError.toException();
             }
         });
+    }
+
+    private void loadMemberName(String memberId){
+        try {
+            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+            DatabaseReference userRef = usersRef.child(memberId);
+
+            userRef.child("username").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Member.this.name = dataSnapshot.getValue().toString();
+                    DataProvider.memberDataListener.onMemberDataChangedListener();
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    throw databaseError.toException();
+                }
+            });
+        } catch (Exception e){
+            throw e;
+        }
     }
 }

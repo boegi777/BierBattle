@@ -1,5 +1,6 @@
 package com.fantavier.bierbattle.bierbattle;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
+import com.fantavier.bierbattle.bierbattle.helper.NotificationHelper;
+import com.fantavier.bierbattle.bierbattle.model.Appointment;
 import com.fantavier.bierbattle.bierbattle.model.DataProvider;
 import com.fantavier.bierbattle.bierbattle.model.Group;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,8 +26,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static DataProvider dataProvider = null;
-    public static Group activeGroup;
-    public static Location location;
+    public static NotificationHelper notificationHelper = null;
+    public static Location location = null;
 
     private static final String TAG = "MainActivity";
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -34,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dataProvider = new DataProvider();
+        //notificationHelper = new NotificationHelper(this);
+        //Notification.Builder notificationBuilder = notificationHelper.getNotification1("Ein Titel", "Ein Test bla sülz");
         location = new Location();
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
@@ -54,8 +61,27 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         mViewPager.setOffscreenPageLimit(4);
 
-        setListener();
+    }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        initDataManagement();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        dataProvider.getActiveGroup().checkAppointmentStatus();
+    }
+
+    @Override
+    public void onDestroy(){
+        dataProvider.setAppointmentWatcherActive(false);
+        moveTaskToBack(true);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
+        super.onDestroy();
     }
 
 
@@ -109,26 +135,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setListener(){
+    public void initDataManagement(){
         try {
-            if (MainActivity.dataProvider == null) {
-                MainActivity.dataProvider = new DataProvider();
-                MainActivity.dataProvider.init();
-            }
-
-            setUsernameListener();
+            setUserDataListener();
             setGroupDataListener();
-
+            setAppointmentStartListener();
+            MainActivity.dataProvider.loadData();
         } catch (Exception e){
             Log.d(TAG, e.getMessage());
         }
     }
 
-    private void setUsernameListener(){
-        MainActivity.dataProvider.setUsernameListener(new DataProvider.UsernameListener(){
+    private void setUserDataListener(){
+        MainActivity.dataProvider.setUserDataListener(new DataProvider.UserDataListener(){
             @Override
-            public void onUsernameChanged(String username) {
-                MenueTab.username.setText(username);
+            public void onUserDataChanged() {
+                MenueTab.username.setText(dataProvider.getActiveUser().getUsername());
             }
         });
     }
@@ -136,13 +158,11 @@ public class MainActivity extends AppCompatActivity {
     private void setGroupDataListener(){
         MainActivity.dataProvider.setGroupDataListener(new DataProvider.GroupDataListener() {
             @Override
-            public void onGroupeDataChanged(Group group) {
-                activeGroup = group;
-
+            public void onGroupeDataChanged() {
                 MainActivity.dataProvider.setAppointmentDataListener(new DataProvider.AppointmentDataListener() {
                     @Override
                     public void onAppointmentDataChangedListener() {
-                        List<String> appointments = activeGroup.getAppointmentTitles();
+                        List<String> appointments = dataProvider.getActiveGroup().getAppointmentTitles();
                         ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
                         TermineTab.appointmentList.setAdapter(appointmentAdapter);
                     }
@@ -151,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.dataProvider.setMemberDataListener(new DataProvider.MemberDataListener() {
                     @Override
                     public void onMemberDataChangedListener() {
-                        List<String> members = activeGroup.getMemberTitles();
+                        List<String> members = dataProvider.getActiveGroup().getMemberTitles();
                         ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, members);
                         GruppeTab.groupList.setAdapter(groupMemberAdapter);
                     }
@@ -160,14 +180,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onDestroy(){
-        moveTaskToBack(true);
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
-        super.onDestroy();
+    private void setAppointmentStartListener(){
+        MainActivity.dataProvider.setAppointmentStartListener(new DataProvider.AppointmentStartListener() {
+            @Override
+            public void onAppointmentStart(Appointment appointment) {
+                //Notification.Builder notificationBuilder = notificationHelper.getNotification1("Ein Titel", "Ein Test bla sülz");
+            }
+        });
     }
-
 }
 
 

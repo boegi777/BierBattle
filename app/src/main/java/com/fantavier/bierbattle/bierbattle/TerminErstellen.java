@@ -107,7 +107,7 @@ public class TerminErstellen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    boolean result = MainActivity.activeGroup.createAppointment(
+                    boolean result = MainActivity.dataProvider.getActiveGroup().createAppointment(
                             title.getText().toString(),
                             date.getText().toString(),
                             time.getText().toString(),

@@ -1,5 +1,9 @@
 package com.fantavier.bierbattle.bierbattle.model;
 
+import android.provider.ContactsContract;
+import android.util.Log;
+
+import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -7,38 +11,41 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DataProvider {
 
-    public static DataProvider.UsernameListener usernameListener = null;
-    public static DataProvider.GroupDataListener groupListener = null;
-    public static DataProvider.MemberDataListener memberDataListener = null;
-    public static DataProvider.AppointmentDataListener appointmentDataListener = null;
+    public static UserDataListener userListener = null;
+    public static GroupDataListener groupListener = null;
+    public static MemberDataListener memberDataListener = null;
+    public static AppointmentDataListener appointmentListener = null;
+    public static AppointmentStartListener appointmentStartListener = null;
 
     private static final String TAG = "DataProvider";
-    private static DatabaseReference mDbRef = null;
-    private static DatabaseReference userRef = null;
-    private static DatabaseReference groupRef = null;
     private static String groupId = "";
+    private static DatabaseReference mDbRef = null;
     private static Group group = null;
+    private static User user = null;
+    private static Boolean appointmentWatcherActive = true;
 
-    public void init(){
-        loadUserData();
+    public DataProvider(){
+        DataProvider.group = new Group();
+        DataProvider.user = new User();
     }
 
     public interface DatabaseReferenceObject{
         DatabaseReference getDbRef();
-        void initObjectProperties(String id);
+        void loadObjectProperties(String id);
     }
 
-    public interface UsernameListener {
-        void onUsernameChanged(String username);
+    public interface UserDataListener {
+        void onUserDataChanged();
     }
 
     public interface GroupDataListener {
-        void onGroupeDataChanged(Group group);
+        void onGroupeDataChanged();
     }
 
     public interface MemberDataListener {
@@ -49,10 +56,15 @@ public class DataProvider {
         void onAppointmentDataChangedListener();
     }
 
-    public void setUsernameListener(DataProvider.UsernameListener listener) { usernameListener = listener; }
+    public interface AppointmentStartListener{
+        void onAppointmentStart(Appointment appointment);
+    }
+
+    public void setUserDataListener(UserDataListener listener) { userListener = listener; }
     public void setGroupDataListener(GroupDataListener listener){ groupListener = listener; }
     public void setMemberDataListener(MemberDataListener listener) { memberDataListener = listener; }
-    public void setAppointmentDataListener(AppointmentDataListener listener) { appointmentDataListener = listener; }
+    public void setAppointmentDataListener(AppointmentDataListener listener) { appointmentListener = listener; }
+    public void setAppointmentStartListener(AppointmentStartListener listener) { appointmentStartListener = listener; }
 
     public static void createUser(Map<String, String> userData) {
         try {
@@ -65,64 +77,92 @@ public class DataProvider {
         }
     }
 
-    public DatabaseReference getUserRef(){
-        return userRef;
+    public Group getActiveGroup(){
+        return group;
     }
 
-    public DatabaseReference getGroupRef(){
-        return groupRef;
+    public User getActiveUser(){
+        return user;
     }
 
-    private void loadUserData() {
-        try {
-            setUserRef();
-            initUsernameChangedListener();
-            setActiveGroupId();
-        } catch(Exception e){
-            throw e;
+    public void setAppointmentWatcherActive(Boolean active){
+        appointmentWatcherActive = active;
+    }
+
+    public void loadData() {
+        loadUserData();
+        setActiveGroupId();
+        watchActiveGroupAppointments();
+    }
+
+    private void watchActiveGroupAppointments(){
+        for(final Appointment appointment : group.getAppointments()){
+            if(!appointment.getVotingend()){
+                final Long timeLeft = appointment.getVotingtimeLeftInMilli();
+                try {
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(timeLeft);
+                                Log.d(TAG, "votingend!");
+                                DataProvider.appointmentStartListener.onAppointmentStart(appointment);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    thread.start();
+                } catch(Exception ex){
+                    Log.d(TAG, ex.getMessage());
+                }
+            }
         }
+
+        /*Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Long appointmentTime = 0l;
+                    Long plusHour = 0l;
+                    Long currentTime = 0l;
+                    while(appointmentWatcherActive) {
+                        currentTime = Calendar.getInstance().getTimeInMillis();
+                        plusHour = appointmentTime + 3600000;
+                        if(group.getAppointments() != null) {
+                            for (Appointment appointment : group.getAppointments()) {
+                                appointmentTime = appointment.getDateInMilliSec();
+                                if(appointment.getVotingend() && appointment.getActive()){
+                                    if (currentTime  >= appointmentTime && currentTime < plusHour) {
+                                        DataProvider.appointmentStartListener.onAppointmentStart(appointment);
+                                    }
+                                } else if(!appointment.getVotingend()) {
+
+                                }
+                            }
+                        }
+                        Thread.sleep(10000);
+                    }
+                } catch (Exception ex) {
+                    Log.d(TAG, ex.getMessage());
+                }
+            }
+        });
+
+        thread.start();*/
+    }
+
+    private void loadUserData(){
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        user.loadObjectProperties(uid);
     }
 
     private void loadGroupData(){
-        try {
-            setGroupRef();
-            initGroupDataChangedListener();
-        } catch (Exception e){
-            throw e;
-        }
-    }
-
-    private void setGroupData(DataSnapshot dataSnapshot){
-        if(DataProvider.group == null){
-            DataProvider.group = new Group();
-            DataProvider.group.initObjectProperties(groupId);
-        }
-    }
-
-    private void setUserRef(){
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mDbRef = FirebaseDatabase.getInstance().getReference("users");
-        userRef = mDbRef.child(uid);
-    }
-
-    private void initUsernameChangedListener(){
-        userRef.child("username").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (usernameListener != null) {
-                    usernameListener.onUsernameChanged(dataSnapshot.getValue().toString());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                throw databaseError.toException();
-            }
-        });
+        DataProvider.group.loadObjectProperties(groupId);
     }
 
     private void setActiveGroupId(){
-        userRef.child("groups").addValueEventListener(new ValueEventListener() {
+        user.getDbRef().child("groups").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String, Boolean> groups = (HashMap<String, Boolean>) dataSnapshot.getValue();
@@ -132,28 +172,6 @@ public class DataProvider {
                         loadGroupData();
                         break;
                     }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                throw databaseError.toException();
-            }
-        });
-    }
-
-    private void setGroupRef(){
-        mDbRef = FirebaseDatabase.getInstance().getReference("groups");
-        groupRef = mDbRef.child(DataProvider.groupId);
-    }
-
-    private void initGroupDataChangedListener(){
-        groupRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (groupListener != null) {
-                    setGroupData(dataSnapshot);
-                    groupListener.onGroupeDataChanged(DataProvider.group);
                 }
             }
 

@@ -16,6 +16,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,42 +25,25 @@ import java.util.List;
 public class Group implements DataProvider.DatabaseReferenceObject{
 
     private static final String TAG = "Group";
-    private DatabaseReference dbRef;
-    private String groupId;
-    private String category;
-    private String starttime;
-    private String endtime;
-    private boolean active;
+    private DatabaseReference dbRef = null;
+    private String groupId = "";
+    //private String category = "";
+    //private String starttime = "";
+    //private String endtime = "";
+    //private boolean active = false;
     private List<Member> members = null;
     private List<Appointment> appointments = null;
 
     public String getGroupId(){ return this.groupId; }
+    //public String getCategory() { return this.category; }
 
-    public void setActive(boolean active){
-        dbRef.child("active").setValue(active); }
-
-    public void setCategory(String category){
-        dbRef.child("category").setValue(category);
+    public List<Appointment> getAppointments(){
+        return appointments;
     }
 
-    public void setStarttime(String starttime){
-        dbRef.child("starttime").setValue(starttime);
-    }
-
-    public void setEndtime(String endtime){
-        dbRef.child("endtime").setValue(endtime);
-    }
-
-    public void setMembers(List<Member> members){
-        dbRef.child("members").setValue(members);
-    }
-
-    public void setAppointments(List<Appointment> appointments){
-        dbRef.child("appointments").setValue(appointments);
-    }
-
-    public Appointment getAppointment(String index){
-        return this.appointments.get(Integer.parseInt(index));
+    public Appointment getAppointment(Integer index){
+        checkAppointmentActiveStatus(index);
+        return this.appointments.get(index);
     }
 
     public ArrayList<String> getMemberTitles(){
@@ -76,31 +60,6 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     public ArrayList<String> getAppointmentTitles(){
         ArrayList<String> appointmentStrings = new ArrayList<String>();
         try {
-
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        groupId = Group.this.getGroupId();
-                        URL url = new URL("https://us-central1-bierbattle.cloudfunctions.net/checkAppointments");
-                        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                        urlConnection.setRequestMethod("POST");
-                        //urlConnection.setRequestProperty("Content-Type", "application/json");
-
-                        BufferedWriter httpRequestBodyWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
-                        httpRequestBodyWriter.write("groupId="+groupId);
-                        httpRequestBodyWriter.close();
-
-                        BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                        //JSONObject timeObj = new JSONObject(in.readLine());
-
-                    } catch(IOException ex){
-                        Log.d(TAG, ex.getMessage());
-                    }
-                }
-            });
-            thread.start();
-
             for (Appointment appointment : this.appointments) {
                 if(appointment.getActive() || !appointment.getVotingend())
                     appointmentStrings.add(appointment.toString());
@@ -127,6 +86,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
             }
             Long currentTime = new Date().getTime();
 
+            appointment.put("active", "false");
             appointment.put("title", title);
             appointment.put("date", date);
             appointment.put("time", time);
@@ -147,7 +107,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     }
 
     @Override
-    public void initObjectProperties(String id) {
+    public void loadObjectProperties(String id) {
         this.groupId = id;
         this.dbRef = getDbRef();
         this.dbRef.addValueEventListener(new ValueEventListener() {
@@ -155,7 +115,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
             public void onDataChange(DataSnapshot groupDS) {
                 for (DataSnapshot groupData : groupDS.getChildren()) {
                     switch (groupData.getKey()) {
-                        case "active":
+                        /*case "active":
                             Group.this.active = Boolean.parseBoolean(groupData.getValue().toString());
                             break;
                         case "category":
@@ -166,7 +126,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
                             break;
                         case "endtime":
                             Group.this.endtime = groupData.getValue().toString();
-                            break;
+                            break;*/
                         case "members":
                             Group.this.members = getMembers(groupData);
                             break;
@@ -175,6 +135,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
                             break;
                     }
                 }
+                DataProvider.groupListener.onGroupeDataChanged();
             }
 
             @Override
@@ -184,12 +145,41 @@ public class Group implements DataProvider.DatabaseReferenceObject{
         });
     }
 
+    public void checkAppointmentActiveStatus(int index){
+        if(!appointments.get(index).getActive() && appointments.get(index).getVotingend())
+            appointments.remove(index);
+    }
+
+    public void checkAppointmentStatus(){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    groupId = Group.this.getGroupId();
+                    URL url = new URL("https://us-central1-bierbattle.cloudfunctions.net/checkAppointments");
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("POST");
+
+                    BufferedWriter httpRequestBodyWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
+                    httpRequestBodyWriter.write("groupId="+groupId);
+                    httpRequestBodyWriter.close();
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+                } catch(IOException ex){
+                    Log.d(TAG, ex.getMessage());
+                }
+            }
+        });
+        thread.start();
+    }
+
     private List<Appointment> getAppointments(DataSnapshot appointmentsDS){
         List<Appointment> appointments = new ArrayList<Appointment>();
         for(DataSnapshot appointmentDS : appointmentsDS.getChildren()){
             Appointment appointment = new Appointment(this);
-            appointment.initObjectProperties(appointmentDS.getKey());
-            appointments.add(appointment);
+            appointment.loadObjectProperties(appointmentDS.getKey());
+                appointments.add(appointment);
         }
         return appointments;
     }
@@ -198,7 +188,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
         List<Member> members = new ArrayList<Member>();
         for(DataSnapshot memberDS : membersDS.getChildren()){
             Member member = new Member( this);
-            member.initObjectProperties(memberDS.getKey());
+            member.loadObjectProperties(memberDS.getKey());
             members.add(member);
         }
         return members;
