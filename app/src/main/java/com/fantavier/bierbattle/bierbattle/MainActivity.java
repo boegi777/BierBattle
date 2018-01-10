@@ -1,7 +1,10 @@
 package com.fantavier.bierbattle.bierbattle;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        location = new Location();
+
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
             Intent i = new Intent(this, Login.class);
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         mViewPager.setOffscreenPageLimit(4);
+
 
 
     }
@@ -182,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public void onDestroy(){
         moveTaskToBack(true);
@@ -189,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         System.exit(1);
         super.onDestroy();
     }
+
 
 }
 
