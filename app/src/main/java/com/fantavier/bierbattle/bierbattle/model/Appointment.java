@@ -1,6 +1,7 @@
 package com.fantavier.bierbattle.bierbattle.model;
 
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import com.fantavier.bierbattle.bierbattle.helper.DateHelper;
 import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
@@ -10,6 +11,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,6 +25,7 @@ import java.util.Map;
 
 public class Appointment implements DataProvider.DatabaseReferenceObject {
 
+    private static final String TAG = "Appointment";
     private DatabaseReference dbRef = null;
     private HashMap<String, Boolean> votings = null;
     private Group parentRef = null;
@@ -29,6 +38,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     private Boolean votingend = false;
     private Boolean weekly = false;
     private Boolean active = false;
+    private Boolean watcher = false;
 
     public Appointment(Group parentRef){
         this.parentRef = parentRef;
@@ -54,6 +64,10 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
 
     public void setVoting(String uid, Boolean vote){
         dbRef.child("votings").child(uid).setValue(vote);
+    }
+
+    public void cancelWatcher(){
+        this.watcher = false;
     }
 
     @Override
@@ -94,6 +108,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
                             break;
                     }
                 }
+                Appointment.this.watchAppointment();
                 DataProvider.appointmentListener.onAppointmentDataChangedListener();
             }
 
@@ -187,4 +202,58 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
 
     }
 
+    public void watchAppointment(){
+        if(!getVotingend()) {
+            final Long timeLeft = this.getVotingtimeLeftInMilli();
+            if (timeLeft > 0) {
+                try {
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Appointment.this.watcher = true;
+                                Thread.sleep(timeLeft);
+                                if(Appointment.this.watcher == true) {
+                                    Appointment.this.checkAppointmentStatus();
+                                    DataProvider.votingEndsListener.onVotingEnds(Appointment.this);
+                                }
+                            } catch (InterruptedException e) {
+                                Log.d(TAG, "Appointment sleeps");
+                            }
+                        }
+                    });
+                    thread.start();
+                } catch (Exception ex) {
+                    throw ex;
+                }
+            } else {
+                checkAppointmentStatus();
+            }
+        }
+    }
+
+    public void checkAppointmentStatus(){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String appointmentId = Appointment.this.appointmentId;
+                    String groupId = Appointment.this.parentRef.getGroupId();
+                    URL url = new URL("https://us-central1-bierbattle.cloudfunctions.net/checkAppointment");
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("POST");
+
+                    BufferedWriter httpRequestBodyWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
+                    httpRequestBodyWriter.write("groupId="+groupId+"&appointmentId="+appointmentId);
+                    httpRequestBodyWriter.close();
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+                } catch(IOException ex){
+                    Log.d(TAG, ex.getMessage());
+                }
+            }
+        });
+        thread.start();
+    }
 }

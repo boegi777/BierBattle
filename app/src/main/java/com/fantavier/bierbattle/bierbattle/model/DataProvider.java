@@ -22,6 +22,7 @@ public class DataProvider {
     public static MemberDataListener memberDataListener = null;
     public static AppointmentDataListener appointmentListener = null;
     public static AppointmentStartListener appointmentStartListener = null;
+    public static VotingEndsListener votingEndsListener = null;
 
     private static final String TAG = "DataProvider";
     private static String groupId = "";
@@ -60,11 +61,16 @@ public class DataProvider {
         void onAppointmentStart(Appointment appointment);
     }
 
+    public interface VotingEndsListener{
+        void onVotingEnds(Appointment appointment);
+    }
+
     public void setUserDataListener(UserDataListener listener) { userListener = listener; }
     public void setGroupDataListener(GroupDataListener listener){ groupListener = listener; }
     public void setMemberDataListener(MemberDataListener listener) { memberDataListener = listener; }
     public void setAppointmentDataListener(AppointmentDataListener listener) { appointmentListener = listener; }
     public void setAppointmentStartListener(AppointmentStartListener listener) { appointmentStartListener = listener; }
+    public void setVotingEndsListener(VotingEndsListener listener) { votingEndsListener = listener; }
 
     public static void createUser(Map<String, String> userData) {
         try {
@@ -92,31 +98,11 @@ public class DataProvider {
     public void loadData() {
         loadUserData();
         setActiveGroupId();
-        watchActiveGroupAppointments();
     }
 
-    private void watchActiveGroupAppointments(){
-        for(final Appointment appointment : group.getAppointments()){
-            if(!appointment.getVotingend()){
-                final Long timeLeft = appointment.getVotingtimeLeftInMilli();
-                try {
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(timeLeft);
-                                Log.d(TAG, "votingend!");
-                                DataProvider.appointmentStartListener.onAppointmentStart(appointment);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                    thread.start();
-                } catch(Exception ex){
-                    Log.d(TAG, ex.getMessage());
-                }
-            }
+    private void watchActiveAppointment(final Appointment appointment){
+        if(!appointment.getVotingend()){
+
         }
 
         /*Thread thread = new Thread(new Runnable() {

@@ -8,6 +8,8 @@ import android.content.ContextWrapper;
 import android.graphics.Color;
 import android.os.Build;
 
+import com.fantavier.bierbattle.bierbattle.R;
+
 /**
  * Created by Paul on 09.01.2018.
  */
@@ -40,6 +42,7 @@ public class NotificationHelper extends ContextWrapper {
             return new Notification.Builder(getApplicationContext(), CHANNEL_ONE_ID)
                     .setContentTitle(title)
                     .setContentText(body)
+                    .setSmallIcon(R.drawable.beer)
                     .setAutoCancel(true);
         } else {
             return null;

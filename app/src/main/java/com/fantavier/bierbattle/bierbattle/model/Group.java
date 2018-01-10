@@ -150,36 +150,12 @@ public class Group implements DataProvider.DatabaseReferenceObject{
             appointments.remove(index);
     }
 
-    public void checkAppointmentStatus(){
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    groupId = Group.this.getGroupId();
-                    URL url = new URL("https://us-central1-bierbattle.cloudfunctions.net/checkAppointments");
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.setRequestMethod("POST");
-
-                    BufferedWriter httpRequestBodyWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
-                    httpRequestBodyWriter.write("groupId="+groupId);
-                    httpRequestBodyWriter.close();
-
-                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-
-                } catch(IOException ex){
-                    Log.d(TAG, ex.getMessage());
-                }
-            }
-        });
-        thread.start();
-    }
-
     private List<Appointment> getAppointments(DataSnapshot appointmentsDS){
         List<Appointment> appointments = new ArrayList<Appointment>();
         for(DataSnapshot appointmentDS : appointmentsDS.getChildren()){
             Appointment appointment = new Appointment(this);
             appointment.loadObjectProperties(appointmentDS.getKey());
-                appointments.add(appointment);
+            appointments.add(appointment);
         }
         return appointments;
     }

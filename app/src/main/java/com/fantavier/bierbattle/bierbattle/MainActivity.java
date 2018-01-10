@@ -18,7 +18,6 @@ import android.widget.ArrayAdapter;
 import com.fantavier.bierbattle.bierbattle.helper.NotificationHelper;
 import com.fantavier.bierbattle.bierbattle.model.Appointment;
 import com.fantavier.bierbattle.bierbattle.model.DataProvider;
-import com.fantavier.bierbattle.bierbattle.model.Group;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -39,8 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         dataProvider = new DataProvider();
-        //notificationHelper = new NotificationHelper(this);
-        //Notification.Builder notificationBuilder = notificationHelper.getNotification1("Ein Titel", "Ein Test bla sülz");
+        notificationHelper = new NotificationHelper(MainActivity.this);
         location = new Location();
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
@@ -72,12 +70,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-        dataProvider.getActiveGroup().checkAppointmentStatus();
+        //dataProvider.getActiveGroup().checkAppointmentStatus();
     }
 
     @Override
     public void onDestroy(){
-        dataProvider.setAppointmentWatcherActive(false);
         moveTaskToBack(true);
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(1);
@@ -139,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             setUserDataListener();
             setGroupDataListener();
-            setAppointmentStartListener();
+            setAppointmentListener();
             MainActivity.dataProvider.loadData();
         } catch (Exception e){
             Log.d(TAG, e.getMessage());
@@ -180,11 +177,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setAppointmentStartListener(){
+    private void setAppointmentListener(){
         MainActivity.dataProvider.setAppointmentStartListener(new DataProvider.AppointmentStartListener() {
             @Override
             public void onAppointmentStart(Appointment appointment) {
                 //Notification.Builder notificationBuilder = notificationHelper.getNotification1("Ein Titel", "Ein Test bla sülz");
+            }
+        });
+
+        MainActivity.dataProvider.setVotingEndsListener(new DataProvider.VotingEndsListener() {
+            @Override
+            public void onVotingEnds(Appointment appointment) {
+                Notification.Builder notificationBuilder = notificationHelper.getNotification1("Abstimmung beendet", "Abstimmung für "+appointment.getTitle()+ " wurde beendet");
+                notificationHelper.notify(101, notificationBuilder);
+                appointment.cancelWatcher();
             }
         });
     }
