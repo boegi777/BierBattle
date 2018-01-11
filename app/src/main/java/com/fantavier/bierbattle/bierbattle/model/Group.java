@@ -63,6 +63,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
             for (Appointment appointment : this.appointments) {
                 if(appointment.getActive() || !appointment.getVotingend())
                     appointmentStrings.add(appointment.toString());
+
             }
 
         } catch (Exception ex) {
@@ -79,20 +80,20 @@ public class Group implements DataProvider.DatabaseReferenceObject{
             Boolean weekly
     ){
         try {
-            HashMap<String, String> appointment = new HashMap<>();
+            HashMap<String, Object> appointment = new HashMap<>();
 
             if(title.isEmpty() || date.isEmpty() || time.isEmpty()){
                 throw new ExceptionInInitializerError("missing values");
             }
             Long currentTime = new Date().getTime();
 
-            appointment.put("active", "false");
+            appointment.put("active", false);
             appointment.put("title", title);
             appointment.put("date", date);
             appointment.put("time", time);
             appointment.put("location", location);
-            appointment.put("votingend", "false");
-            appointment.put("weekly", weekly.toString());
+            appointment.put("votingend", false);
+            appointment.put("weekly", weekly);
             appointment.put("createtime", currentTime.toString());
 
             return dbRef.child("appointments").push().setValue(appointment).isSuccessful();

@@ -39,6 +39,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     private Boolean weekly = false;
     private Boolean active = false;
     private Boolean watcher = false;
+    private Boolean dataLoaded = false;
 
     public Appointment(Group parentRef){
         this.parentRef = parentRef;
@@ -60,6 +61,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     public Boolean getWeekly(){
         return this.weekly;
     }
+    public Boolean isDataLoaded() { return this.dataLoaded; }
     public HashMap<String, Boolean> getVotings(){ return this.votings; }
 
     public void setVoting(String uid, Boolean vote){
@@ -74,6 +76,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     public void loadObjectProperties(String id) {
         this.appointmentId = id;
         this.dbRef = getDbRef();
+        //this.dbRef.addValueEventListener(new ValueEventListener() {
         this.dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot appointmentDS) {
@@ -108,6 +111,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
                             break;
                     }
                 }
+                Appointment.this.dataLoaded = true;
                 Appointment.this.watchAppointment();
                 DataProvider.appointmentListener.onAppointmentDataChangedListener();
             }
@@ -169,8 +173,13 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     }
 
     public Long getVotingtimeLeftInMilli(){
-        Long plusTime = this.getCreatetime() + 600000;
+        Long plusTime = this.getCreatetime() + 60000;
         return plusTime - System.currentTimeMillis();
+    }
+
+    public Long getTimeUntilStart() {
+        Long startTimeMilli = DateHelper.convertDateToMilliSec(getDate(), getTime());
+        return startTimeMilli - System.currentTimeMillis();
     }
 
     public HashMap<String, String> getVotingtimeLeft() throws ExceptionHelper.VotingendException{
@@ -190,45 +199,11 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
 
     }
 
-    private HashMap<String, Boolean> initVotings(DataSnapshot votingsDS){
-        HashMap<String, Boolean> votings = new HashMap<>();
-
-        for(DataSnapshot voting : votingsDS.getChildren()){
-            boolean value = (boolean) voting.getValue();
-            votings.put(voting.getKey().toString(), value);
-        }
-
-        return votings;
-
-    }
-
     public void watchAppointment(){
         if(!getVotingend()) {
-            final Long timeLeft = this.getVotingtimeLeftInMilli();
-            if (timeLeft > 0) {
-                try {
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Appointment.this.watcher = true;
-                                Thread.sleep(timeLeft);
-                                if(Appointment.this.watcher == true) {
-                                    Appointment.this.checkAppointmentStatus();
-                                    DataProvider.votingEndsListener.onVotingEnds(Appointment.this);
-                                }
-                            } catch (InterruptedException e) {
-                                Log.d(TAG, "Appointment sleeps");
-                            }
-                        }
-                    });
-                    thread.start();
-                } catch (Exception ex) {
-                    throw ex;
-                }
-            } else {
-                checkAppointmentStatus();
-            }
+            watchVotingEnd();
+        } else if(getActive()){
+            watchAppointmentStart();
         }
     }
 
@@ -251,6 +226,58 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
 
                 } catch(IOException ex){
                     Log.d(TAG, ex.getMessage());
+                }
+            }
+        });
+        thread.start();
+    }
+
+    private HashMap<String, Boolean> initVotings(DataSnapshot votingsDS){
+        HashMap<String, Boolean> votings = new HashMap<>();
+
+        for(DataSnapshot voting : votingsDS.getChildren()){
+            boolean value = (boolean) voting.getValue();
+            votings.put(voting.getKey().toString(), value);
+        }
+
+        return votings;
+
+    }
+
+    private void watchVotingEnd(){
+        final Long timeLeft = this.getVotingtimeLeftInMilli();
+        if (timeLeft > 0) {
+            createWatcherThread(timeLeft, true);
+        } else {
+            checkAppointmentStatus();
+        }
+    }
+
+    private void watchAppointmentStart(){
+        final Long timeLeft = this.getTimeUntilStart();
+        if(timeLeft > 0){
+            createWatcherThread(timeLeft, false);
+        } else {
+            checkAppointmentStatus();
+        }
+    }
+
+    private void createWatcherThread(final Long timeLeft, final Boolean votingend){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Appointment.this.watcher = true;
+                    Thread.sleep(timeLeft);
+                    if(Appointment.this.watcher == true) {
+                        if(votingend){
+                            DataProvider.votingEndsListener.onVotingEnds(Appointment.this);
+                        } else {
+                            DataProvider.appointmentStartListener.onAppointmentStart(Appointment.this);
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    Log.d(TAG, e.getMessage());
                 }
             }
         });

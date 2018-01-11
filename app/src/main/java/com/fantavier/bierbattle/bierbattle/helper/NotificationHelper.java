@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.fantavier.bierbattle.bierbattle.R;
 
@@ -37,16 +38,13 @@ public class NotificationHelper extends ContextWrapper {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public Notification.Builder getNotification1(String title, String body) {
-        if (Build.VERSION.SDK_INT >= 26) {
-            return new Notification.Builder(getApplicationContext(), CHANNEL_ONE_ID)
-                    .setContentTitle(title)
-                    .setContentText(body)
-                    .setSmallIcon(R.drawable.beer)
-                    .setAutoCancel(true);
-        } else {
-            return null;
-        }
+        return new Notification.Builder(getApplicationContext(), CHANNEL_ONE_ID)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setSmallIcon(R.drawable.beer)
+                .setAutoCancel(true);
     }
 
     public void notify(int id, Notification.Builder notification) {

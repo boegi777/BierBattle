@@ -181,16 +181,20 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.dataProvider.setAppointmentStartListener(new DataProvider.AppointmentStartListener() {
             @Override
             public void onAppointmentStart(Appointment appointment) {
-                //Notification.Builder notificationBuilder = notificationHelper.getNotification1("Ein Titel", "Ein Test bla sülz");
+                appointment.checkAppointmentStatus();
+                appointment.cancelWatcher();
+                Notification.Builder notificationBuilder = notificationHelper.getNotification1("Termin gestartet", "Termin "+appointment.getTitle()+ " ist gestartet");
+                notificationHelper.notify(102, notificationBuilder);
             }
         });
 
         MainActivity.dataProvider.setVotingEndsListener(new DataProvider.VotingEndsListener() {
             @Override
             public void onVotingEnds(Appointment appointment) {
+                appointment.checkAppointmentStatus();
+                appointment.cancelWatcher();
                 Notification.Builder notificationBuilder = notificationHelper.getNotification1("Abstimmung beendet", "Abstimmung für "+appointment.getTitle()+ " wurde beendet");
                 notificationHelper.notify(101, notificationBuilder);
-                appointment.cancelWatcher();
             }
         });
     }
