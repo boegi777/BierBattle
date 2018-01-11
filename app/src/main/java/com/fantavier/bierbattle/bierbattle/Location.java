@@ -17,7 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 
 public class Location extends Service {
@@ -48,10 +48,12 @@ public class Location extends Service {
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
 
-                if (distance(destLatitudeValue, destLongitudeValue, latitude, longitude) > 0.1) {
-                    Intent i = new Intent("score_update");
+                if (distance(destLatitudeValue, destLongitudeValue, latitude, longitude) < 0.1) {
+                    /*Intent i = new Intent("score_update");
                     i.putExtra("score_point",1);
-                    sendBroadcast(i);
+                    sendBroadcast(i);*/
+                    Toast.makeText(getApplicationContext(),
+                            "You have a Score", Toast.LENGTH_LONG).show();
 
 
                 }

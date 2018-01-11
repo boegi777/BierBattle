@@ -20,11 +20,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fantavier.bierbattle.bierbattle.model.Group;
 import com.fantavier.bierbattle.bierbattle.model.GroupProvider;
 import com.fantavier.bierbattle.bierbattle.model.UserProvider;
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.w3c.dom.Text;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     public static Location location;
     private Intent location_service;
     private BroadcastReceiver broadcastReceiver;
+    private TextView text;
 
 
     /**
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(this, Login.class);
             startActivity(i);
         }
-
+        text = (TextView)findViewById(R.id.text);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -222,8 +226,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onReceive(Context context, Intent intent) {
 
+
+
                         //Punktevergabe hier
-                        //text.append("\n"+intent.getExtras().get("location"));
+                        //text.append("\n"+ intent.getExtras().get("location"));
 
 
                     }
