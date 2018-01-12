@@ -22,6 +22,7 @@ public class DataProvider {
     public static MemberDataListener memberDataListener = null;
     public static AppointmentDataListener appointmentListener = null;
     public static AppointmentStartListener appointmentStartListener = null;
+    public static AppointmentEndsListener appointmentEndsListener = null;
     public static VotingEndsListener votingEndsListener = null;
 
     private static final String TAG = "DataProvider";
@@ -61,6 +62,10 @@ public class DataProvider {
         void onAppointmentStart(Appointment appointment);
     }
 
+    public interface AppointmentEndsListener{
+        void onAppointmentEnds(Appointment appointment);
+    }
+
     public interface VotingEndsListener{
         void onVotingEnds(Appointment appointment);
     }
@@ -70,6 +75,7 @@ public class DataProvider {
     public void setMemberDataListener(MemberDataListener listener) { memberDataListener = listener; }
     public void setAppointmentDataListener(AppointmentDataListener listener) { appointmentListener = listener; }
     public void setAppointmentStartListener(AppointmentStartListener listener) { appointmentStartListener = listener; }
+    public void setAppointmentEndsListener(AppointmentEndsListener listener) { appointmentEndsListener = listener; }
     public void setVotingEndsListener(VotingEndsListener listener) { votingEndsListener = listener; }
 
     public static void createUser(Map<String, String> userData) {
@@ -91,51 +97,22 @@ public class DataProvider {
         return user;
     }
 
-    public void setAppointmentWatcherActive(Boolean active){
-        appointmentWatcherActive = active;
-    }
-
     public void loadData() {
         loadUserData();
         setActiveGroupId();
     }
 
-    private void watchActiveAppointment(final Appointment appointment){
-        if(!appointment.getVotingend()){
-
+    public void setPointForActiveUser(int points)
+            throws ExceptionHelper.AppointmentStartsException, ExceptionHelper.MemberNotFoundException{
+        if(!getActiveGroup().checkAppointmentStarts()){
+            throw new ExceptionHelper.AppointmentStartsException();
         }
+        Member member = getActiveGroup().getMember(getActiveUser().getUserId());
+        member.setPoints(points);
+    }
 
-        /*Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Long appointmentTime = 0l;
-                    Long plusHour = 0l;
-                    Long currentTime = 0l;
-                    while(appointmentWatcherActive) {
-                        currentTime = Calendar.getInstance().getTimeInMillis();
-                        plusHour = appointmentTime + 3600000;
-                        if(group.getAppointments() != null) {
-                            for (Appointment appointment : group.getAppointments()) {
-                                appointmentTime = appointment.getDateInMilliSec();
-                                if(appointment.getVotingend() && appointment.getActive()){
-                                    if (currentTime  >= appointmentTime && currentTime < plusHour) {
-                                        DataProvider.appointmentStartListener.onAppointmentStart(appointment);
-                                    }
-                                } else if(!appointment.getVotingend()) {
-
-                                }
-                            }
-                        }
-                        Thread.sleep(10000);
-                    }
-                } catch (Exception ex) {
-                    Log.d(TAG, ex.getMessage());
-                }
-            }
-        });
-
-        thread.start();*/
+    public String getUserrank() throws ExceptionHelper.MemberNotFoundException{
+        return getActiveGroup().getRankOfMember(getActiveUser().getUserId()).toString();
     }
 
     private void loadUserData(){

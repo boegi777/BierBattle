@@ -18,7 +18,7 @@ public class Member implements Comparable, DataProvider.DatabaseReferenceObject 
     private DatabaseReference dbRef;
     private String memberId;
     private String name = "";
-    private int points;
+    private int points = 0;
     private boolean active;
     private Group parentRef = null;
 
@@ -26,8 +26,13 @@ public class Member implements Comparable, DataProvider.DatabaseReferenceObject 
         this.parentRef = parentRef;
     }
 
+    public String getMemberId(){ return this.memberId; }
     public int getPoints(){
         return this.points;
+    }
+    public void setPoints(Integer points) {
+        points += getPoints();
+        dbRef.child("points").setValue(points.toString());
     }
 
     @Override
@@ -57,7 +62,6 @@ public class Member implements Comparable, DataProvider.DatabaseReferenceObject 
     public void loadObjectProperties(String id) {
         this.memberId = id;
         this.dbRef = getDbRef();
-        loadMemberName(id);
         this.dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot memberDS) {
@@ -71,6 +75,7 @@ public class Member implements Comparable, DataProvider.DatabaseReferenceObject 
                             break;
                     }
                 }
+                Member.this.loadMemberName(Member.this.getMemberId());
             }
 
             @Override
