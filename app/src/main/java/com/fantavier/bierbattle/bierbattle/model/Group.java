@@ -49,7 +49,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
 
     public Member getMember(String uid) throws ExceptionHelper.MemberNotFoundException{
         for(Member member : members){
-            if(member.getMemberId() == uid){
+            if(member.getMemberId().equals(uid)){
                 return member;
             }
         }

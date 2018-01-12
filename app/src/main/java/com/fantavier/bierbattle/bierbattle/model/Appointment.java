@@ -175,7 +175,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     }
 
     public Long getVotingtimeLeftInMilli(){
-        Long plusTime = this.getCreatetime() + 600000;
+        Long plusTime = this.getCreatetime() + 60000;
         return plusTime - System.currentTimeMillis();
     }
 

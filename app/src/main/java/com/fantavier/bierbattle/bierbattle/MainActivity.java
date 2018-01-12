@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
+import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
 import com.fantavier.bierbattle.bierbattle.helper.NotificationHelper;
 import com.fantavier.bierbattle.bierbattle.model.Appointment;
 import com.fantavier.bierbattle.bierbattle.model.DataProvider;
@@ -156,23 +157,33 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.dataProvider.setGroupDataListener(new DataProvider.GroupDataListener() {
             @Override
             public void onGroupeDataChanged() {
-                MainActivity.dataProvider.setAppointmentDataListener(new DataProvider.AppointmentDataListener() {
+            MainActivity.dataProvider.setAppointmentDataListener(new DataProvider.AppointmentDataListener() {
+                @Override
+                public void onAppointmentDataChangedListener() {
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void onAppointmentDataChangedListener() {
+                    public void run() {
                         List<String> appointments = dataProvider.getActiveGroup().getAppointmentTitles();
                         ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
                         TermineTab.appointmentList.setAdapter(appointmentAdapter);
                     }
                 });
+                }
+            });
 
-                MainActivity.dataProvider.setMemberDataListener(new DataProvider.MemberDataListener() {
+            MainActivity.dataProvider.setMemberDataListener(new DataProvider.MemberDataListener() {
+                @Override
+                public void onMemberDataChangedListener() {
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void onMemberDataChangedListener() {
+                    public void run() {
                         List<String> members = dataProvider.getActiveGroup().getMemberTitles();
                         ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, members);
                         GruppeTab.groupList.setAdapter(groupMemberAdapter);
                     }
                 });
+                }
+            });
             }
         });
     }
