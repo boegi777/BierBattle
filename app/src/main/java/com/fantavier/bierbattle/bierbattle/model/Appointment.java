@@ -111,11 +111,10 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
 
                 if(Appointment.this.getActive() || !Appointment.this.getVotingend()){
                     Appointment.this.watchAppointment();
-                    DataProvider.appointmentListener.onAppointmentDataChangedListener();
                 } else {
                     parentRef.getAppointments().remove(Appointment.this);
                 }
-
+                DataProvider.appointmentListener.onAppointmentDataChangedListener();
             }
 
             @Override
@@ -270,16 +269,18 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
             public void run() {
                 try {
                     Thread.sleep(timeLeft);
+                    Appointment.this.checkAppointmentStatus();
                     if(votingend){
                         DataProvider.votingEndsListener.onVotingEnds(Appointment.this);
                     } else {
                         Appointment.this.started = true;
-                        DataProvider.appointmentStartListener.onAppointmentStart(Appointment.this);
                         Thread.sleep(600000);
+                        Appointment.this.checkAppointmentStatus();
                         DataProvider.appointmentEndsListener.onAppointmentEnds(Appointment.this);
                         Appointment.this.started = false;
+
                     }
-                    Appointment.this.checkAppointmentStatus();
+
                 } catch (InterruptedException e) {
                     Log.d(TAG, e.getMessage());
                 }
