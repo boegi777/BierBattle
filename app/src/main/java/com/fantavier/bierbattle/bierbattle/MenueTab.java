@@ -1,7 +1,14 @@
 package com.fantavier.bierbattle.bierbattle;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,8 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.fantavier.bierbattle.bierbattle.model.DataProvider;
+import com.fantavier.bierbattle.bierbattle.model.UserProvider;
 import com.google.firebase.database.DatabaseReference;
 
 
@@ -21,14 +29,14 @@ public class MenueTab extends Fragment {
     private DatabaseReference usersRef;
     private ImageButton kamera_btn;
 
-    public static TextView username;
+    public TextView username;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.menue_tab, container, false);
-
-        username = rootView.findViewById(R.id.username);
         ImageButton zurueck = (ImageButton) rootView.findViewById(R.id.bier);
         kamera_btn = (ImageButton) rootView.findViewById(R.id.kamera);
         kamera_btn.setOnClickListener(new View.OnClickListener() {
@@ -38,6 +46,22 @@ public class MenueTab extends Fragment {
                 startActivity(scanner);
             }
         });
+        try {
+            username = (TextView) rootView.findViewById(R.id.username);
+            if(MainActivity.userProvider == null){
+                MainActivity.userProvider = new UserProvider();
+            }
+            MainActivity.userProvider.setUsernameListener(new UserProvider.UsernameListener(){
+                @Override
+                public void onUsernameChanged(String username) {
+                    MenueTab.this.username.setText(username);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+        }
+
 
         zurueck.setOnClickListener(new View.OnClickListener() {
 
@@ -53,6 +77,27 @@ public class MenueTab extends Fragment {
          return rootView;
 
     }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        try {
+            if(MainActivity.userProvider == null){
+                MainActivity.userProvider = new UserProvider();
+            }
+            MainActivity.userProvider.setUsernameListener(new UserProvider.UsernameListener(){
+                @Override
+                public void onUsernameChanged(String username) {
+                    MenueTab.this.username.setText(username);
+                }
+            });
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+        }
+    }
+
+
+
 }
 
 
