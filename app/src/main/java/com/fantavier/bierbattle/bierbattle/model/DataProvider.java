@@ -108,9 +108,9 @@ public class DataProvider {
 
     public void setPointForActiveUser(int points)
             throws ExceptionHelper.AppointmentStartsException, ExceptionHelper.MemberNotFoundException{
-        //if(!getActiveGroup().checkAppointmentStarts()){
-           // throw new ExceptionHelper.AppointmentStartsException();
-        //}
+        if(!getActiveGroup().checkAppointmentStarts()){
+            throw new ExceptionHelper.AppointmentStartsException();
+        }
         Member member = getActiveGroup().getMember(getActiveUser().getUserId());
         member.setPoints(points);
     }
