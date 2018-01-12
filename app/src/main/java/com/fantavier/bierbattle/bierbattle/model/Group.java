@@ -9,6 +9,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -64,6 +66,7 @@ public class Group implements GroupProvider.DatabaseReferenceObject{
     public ArrayList<String> getMemberTitles(){
         ArrayList<String> memberStrings = new ArrayList<String>();
 
+        Collections.sort(members);
         for(Member member : this.members){
             memberStrings.add(member.toString());
         }

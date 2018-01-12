@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,6 +18,8 @@ import com.fantavier.bierbattle.bierbattle.model.Group;
 import com.fantavier.bierbattle.bierbattle.model.GroupProvider;
 import com.fantavier.bierbattle.bierbattle.model.UserProvider;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,16 +39,19 @@ public class MainActivity extends AppCompatActivity {
     public static UserProvider userProvider = null;
     public static GroupProvider groupProvider = null;
     public static Group activeGroup;
+    public static Location location;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        location = new Location();
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
             Intent i = new Intent(this, Login.class);
@@ -143,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.userProvider.setActiveGroupListener(new UserProvider.ActiveGroupListener() {
                 @Override
                 public void onActiveGroupChanged(String groupId) {
-                    Log.d(TAG, groupId);
                     MainActivity.activeGroupId = groupId;
                     if (MainActivity.groupProvider == null) {
                         MainActivity.groupProvider = new GroupProvider(MainActivity.activeGroupId);
@@ -153,18 +156,18 @@ public class MainActivity extends AppCompatActivity {
                         public void onGroupeDataChanged(Group group) {
                             activeGroup = group;
 
-                            MainActivity.groupProvider.setAppointmentTitleListener(new GroupProvider.AppointmentTitleListener() {
+                            MainActivity.groupProvider.setAppointmentDataListener(new GroupProvider.AppointmentDataListener() {
                                 @Override
-                                public void onAppointmentTitleChangedListener() {
+                                public void onAppointmentDataChangedListener() {
                                     List<String> appointments = activeGroup.getAppointmentTitles();
                                     ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
                                     TermineTab.appointmentList.setAdapter(appointmentAdapter);
                                 }
                             });
 
-                            MainActivity.groupProvider.setMemberTitleListener(new GroupProvider.MemberTitleListener() {
+                            MainActivity.groupProvider.setMemberDataListener(new GroupProvider.MemberDataListener() {
                                 @Override
-                                public void onMemberTitleChangedListener() {
+                                public void onMemberDataChangedListener() {
                                     List<String> members = activeGroup.getMemberTitles();
                                     ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, members);
                                     GruppeTab.groupList.setAdapter(groupMemberAdapter);
@@ -186,4 +189,8 @@ public class MainActivity extends AppCompatActivity {
         System.exit(1);
         super.onDestroy();
     }
+
 }
+
+
+

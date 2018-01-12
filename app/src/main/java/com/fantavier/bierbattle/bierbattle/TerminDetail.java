@@ -3,6 +3,7 @@ package com.fantavier.bierbattle.bierbattle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -11,8 +12,24 @@ import android.widget.TextView;
 import com.fantavier.bierbattle.bierbattle.model.Appointment;
 import com.fantavier.bierbattle.bierbattle.model.Group;
 import com.fantavier.bierbattle.bierbattle.model.GroupProvider;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -34,6 +51,7 @@ public class TerminDetail extends AppCompatActivity {
     public boolean running;
     public static final long SLEEPTIME = 10;
     public String votingText;
+    public Long serverTime = 0l;
 
     private static final String TAG = "TerminDetail";
     private static String index;
@@ -141,9 +159,9 @@ public class TerminDetail extends AppCompatActivity {
             @Override
             public void run() {
                 while(running){
-                    votingText = getVotingText();
                     try {
-                        Thread.sleep(SLEEPTIME);
+                        votingText = getVotingText();
+                        Thread.sleep(TerminDetail.SLEEPTIME);
                     } catch (InterruptedException ex){
                         Logger.getLogger(TerminErstellen.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -167,8 +185,23 @@ public class TerminDetail extends AppCompatActivity {
 
         long plus24 = appointment.getCreatetime() + daysInMilli;
 
+        if(serverTime == 0l){
+            try {
+                URL url = new URL("https://us-central1-bierbattle.cloudfunctions.net/getServerTime");
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
-        long timeDiff = plus24 - new Date().getTime();
+                JSONObject timeObj = new JSONObject(in.readLine());
+                serverTime = Long.parseLong(timeObj.get("dateNow").toString());
+
+            } catch (IOException | JSONException ex) {
+                Log.d(TAG, ex.getMessage());
+            }
+        } else {
+            serverTime += TerminDetail.SLEEPTIME;
+        }
+
+        long timeDiff = plus24 - serverTime;
 
         if(timeDiff < 0){
             running = false;

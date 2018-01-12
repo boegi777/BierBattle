@@ -13,7 +13,7 @@ import com.google.firebase.database.ValueEventListener;
  * Created by Paul on 04.01.2018.
  */
 
-public class Member implements GroupProvider.DatabaseReferenceObject, Comparable{
+public class Member implements Comparable, GroupProvider.DatabaseReferenceObject {
     private static final String TAG = "Member";
     private DatabaseReference dbRef;
     private String memberId;
@@ -31,10 +31,6 @@ public class Member implements GroupProvider.DatabaseReferenceObject, Comparable
         }
     }
 
-    public void setPoints(String points){ this.points = Integer.parseInt(points); }
-
-    public void setActive(Boolean active) { this.active = active; }
-
     public void setMemberName(String memberId){
         try {
             DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
@@ -43,15 +39,9 @@ public class Member implements GroupProvider.DatabaseReferenceObject, Comparable
             userRef.child("username").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    try {
-                        Member.this.name = dataSnapshot.getValue().toString();
-                        GroupProvider.memberTitleListener.onMemberTitleChangedListener();
-                    } catch (Exception e) {
-                        throw e;
-                    }
-
+                    Member.this.name = dataSnapshot.getValue().toString();
+                    GroupProvider.memberDataListener.onMemberDataChangedListener();
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     throw databaseError.toException();
@@ -107,6 +97,7 @@ public class Member implements GroupProvider.DatabaseReferenceObject, Comparable
                             break;
                     }
                 }
+                GroupProvider.memberDataListener.onMemberDataChangedListener();
             }
 
             @Override

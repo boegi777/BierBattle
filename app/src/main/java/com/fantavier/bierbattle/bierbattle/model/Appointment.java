@@ -124,7 +124,7 @@ public class Appointment implements GroupProvider.DatabaseReferenceObject {
                             break;
                     }
                 }
-                GroupProvider.appointmentTitleListener.onAppointmentTitleChangedListener();
+                GroupProvider.appointmentDataListener.onAppointmentDataChangedListener();
             }
 
             @Override

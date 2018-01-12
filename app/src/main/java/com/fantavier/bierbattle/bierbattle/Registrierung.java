@@ -42,8 +42,8 @@ public class Registrierung extends AppCompatActivity {
 
     private ExpandableListView listView;
     private ExpandableListAdapter listAdapter;
-    private List<String> listDataHeader;
-    private HashMap<String, List<String>> listHash;
+    private List<String> listDataHeader = null;
+    private HashMap<String, List<String>> listHash = null;
     private List<String> categorys = null;
     private Integer categoryId = 1;
 
@@ -54,6 +54,10 @@ public class Registrierung extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDbRef = FirebaseDatabase.getInstance().getReference("users");
+        listDataHeader = new ArrayList<>();
+        listHash = new HashMap<>();
+
+        initCategorys();
 
         email = (TextView) findViewById(R.id.email);
         username = (TextView) findViewById(R.id.username);
@@ -62,7 +66,6 @@ public class Registrierung extends AppCompatActivity {
         registrierungButton = (Button) findViewById(R.id.registrierung_button);
 
         listView = (ExpandableListView) findViewById(R.id.category);
-        initCategorys();
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listHash);
         listView.setAdapter(listAdapter);
 
@@ -91,9 +94,7 @@ public class Registrierung extends AppCompatActivity {
     }
 
     private void initCategorys(){
-        listDataHeader = new ArrayList<>();
-        listHash = new HashMap<>();
-
+        listDataHeader.add("Studiengang");
         DatabaseReference catRef = FirebaseDatabase.getInstance().getReference("categorys");
         catRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -101,15 +102,13 @@ public class Registrierung extends AppCompatActivity {
                 categorys = (List<String>) dataSnapshot.getValue();
 
                 categorys.remove(0);
-                listDataHeader.add("Studiengang");
-
 
                 listHash.put(listDataHeader.get(0), categorys);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, databaseError.getDetails());
+                throw databaseError.toException();
             }
         });
     }

@@ -20,8 +20,8 @@ public class GroupProvider {
     private static final String TAG = "GroupProvider";
     private static DatabaseReference mDbRef;
     public static GroupProvider.GroupDataListener groupListener;
-    public static GroupProvider.MemberTitleListener memberTitleListener;
-    public static GroupProvider.AppointmentTitleListener appointmentTitleListener;
+    public static GroupProvider.MemberDataListener memberDataListener;
+    public static GroupProvider.AppointmentDataListener appointmentDataListener;
     public static GroupProvider.VoteChangedListener voteChangedListener;
     private static String groupId;
     private static Group group;
@@ -40,12 +40,12 @@ public class GroupProvider {
         void onGroupeDataChanged(Group group);
     }
 
-    public interface MemberTitleListener {
-        void onMemberTitleChangedListener();
+    public interface MemberDataListener {
+        void onMemberDataChangedListener();
     }
 
-    public interface AppointmentTitleListener {
-        void onAppointmentTitleChangedListener();
+    public interface AppointmentDataListener {
+        void onAppointmentDataChangedListener();
     }
 
     public interface VoteChangedListener {
@@ -53,8 +53,8 @@ public class GroupProvider {
     }
 
     public void setGroupDataListener(GroupDataListener listener){ groupListener = listener; }
-    public void setMemberTitleListener(MemberTitleListener listener) { memberTitleListener = listener; }
-    public void setAppointmentTitleListener(AppointmentTitleListener listener) { appointmentTitleListener = listener; }
+    public void setMemberDataListener(MemberDataListener listener) { memberDataListener = listener; }
+    public void setAppointmentDataListener(AppointmentDataListener listener) { appointmentDataListener = listener; }
     //public void setVoteChangedListener(VoteChangedListener listener) { voteChangedListener = listener; }
 
     private void loadGroupData(){
