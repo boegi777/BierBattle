@@ -6,7 +6,7 @@
     <string name="tab_text_4">Teilnehmer</string>
     <string name="action_logout">Logout</string>
     <string name="section_format">Hello World from section: %1$d</string>
-    <string name="zurück">Zurück</string>
+    <string name="zurueck">Zurück</string>
 
     <string name="email">Email</string>
     <string name="zahl_plus">4</string>

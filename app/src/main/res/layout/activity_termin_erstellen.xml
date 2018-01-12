@@ -60,8 +60,6 @@
             android:textSize="30sp" />
 
 
-
-
         <EditText
             android:id="@+id/locationText"
             android:layout_width="match_parent"

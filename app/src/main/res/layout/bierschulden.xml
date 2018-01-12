@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:fontFamily="sans-serif-smallcaps"
-            android:text="@string/zurück"
+            android:text="@string/zurueck"
             android:textAllCaps="false"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
