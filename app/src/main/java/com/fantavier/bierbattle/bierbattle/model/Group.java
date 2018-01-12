@@ -41,6 +41,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     public List<Appointment> getAppointments(){
         return appointments;
     }
+    public List<Member> getMembers() { return members; }
 
     public Appointment getAppointment(Integer index) {
         checkAppointmentActiveStatus(index);
@@ -64,6 +65,15 @@ public class Group implements DataProvider.DatabaseReferenceObject{
             memberStrings.add(member.toString());
         }
         return memberStrings;
+    }
+
+    public Integer getRankOfMember(String uid) throws ExceptionHelper.MemberNotFoundException{
+        for(int i = 0; i < getMembers().size(); i++){
+            if(getMembers().get(i).getMemberId().equals(uid)){
+                return i+1;
+            }
+        }
+        throw new ExceptionHelper.MemberNotFoundException();
     }
 
 
@@ -139,10 +149,10 @@ public class Group implements DataProvider.DatabaseReferenceObject{
                             Group.this.endtime = groupData.getValue().toString();
                             break;*/
                         case "members":
-                            Group.this.members = getMembers(groupData);
+                            Group.this.members = loadMembers(groupData);
                             break;
                         case "appointments":
-                            Group.this.appointments = getAppointments(groupData);
+                            Group.this.appointments = loadAppointments(groupData);
                             break;
                     }
                 }
@@ -172,7 +182,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
             appointments.remove(index);
     }
 
-    private List<Appointment> getAppointments(DataSnapshot appointmentsDS){
+    private List<Appointment> loadAppointments(DataSnapshot appointmentsDS){
         List<Appointment> appointments = new ArrayList<Appointment>();
         for(DataSnapshot appointmentDS : appointmentsDS.getChildren()){
             Appointment appointment = new Appointment(this);
@@ -182,7 +192,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
         return appointments;
     }
 
-    private List<Member> getMembers(DataSnapshot membersDS){
+    private List<Member> loadMembers(DataSnapshot membersDS){
         List<Member> members = new ArrayList<Member>();
         for(DataSnapshot memberDS : membersDS.getChildren()){
             Member member = new Member( this);

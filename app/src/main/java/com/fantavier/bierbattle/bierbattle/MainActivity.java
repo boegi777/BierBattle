@@ -14,11 +14,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
 import com.fantavier.bierbattle.bierbattle.helper.NotificationHelper;
 import com.fantavier.bierbattle.bierbattle.model.Appointment;
 import com.fantavier.bierbattle.bierbattle.model.DataProvider;
+import com.fantavier.bierbattle.bierbattle.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -180,6 +183,15 @@ public class MainActivity extends AppCompatActivity {
                         List<String> members = dataProvider.getActiveGroup().getMemberTitles();
                         ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, members);
                         GruppeTab.groupList.setAdapter(groupMemberAdapter);
+                        try {
+                            MenueTab.rank.setText(MainActivity.dataProvider.getUserrank());
+                        } catch (NullPointerException e){
+                            Log.w(TAG, e.getMessage());
+                        } catch (ExceptionHelper.MemberNotFoundException e) {
+                            Log.w(TAG, e.getMessage());
+                            Toast.makeText(MainActivity.this, "Platzierung konnte nicht ermittelt werden.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 }

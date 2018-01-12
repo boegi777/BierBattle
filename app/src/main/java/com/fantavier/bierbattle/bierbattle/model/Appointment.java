@@ -175,7 +175,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     }
 
     public Long getVotingtimeLeftInMilli(){
-        Long plusTime = this.getCreatetime() + 60000;
+        Long plusTime = this.getCreatetime() + 600000;
         return plusTime - System.currentTimeMillis();
     }
 
@@ -275,7 +275,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
                     } else {
                         Appointment.this.started = true;
                         DataProvider.appointmentStartListener.onAppointmentStart(Appointment.this);
-                        Thread.sleep(60000);
+                        Thread.sleep(600000);
                         DataProvider.appointmentEndsListener.onAppointmentEnds(Appointment.this);
                         Appointment.this.started = false;
                     }

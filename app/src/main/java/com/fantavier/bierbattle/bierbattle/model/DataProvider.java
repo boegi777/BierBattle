@@ -97,10 +97,6 @@ public class DataProvider {
         return user;
     }
 
-    public void setAppointmentWatcherActive(Boolean active){
-        appointmentWatcherActive = active;
-    }
-
     public void loadData() {
         loadUserData();
         setActiveGroupId();
@@ -113,6 +109,10 @@ public class DataProvider {
         }
         Member member = getActiveGroup().getMember(getActiveUser().getUserId());
         member.setPoints(points);
+    }
+
+    public String getUserrank() throws ExceptionHelper.MemberNotFoundException{
+        return getActiveGroup().getRankOfMember(getActiveUser().getUserId()).toString();
     }
 
     private void loadUserData(){

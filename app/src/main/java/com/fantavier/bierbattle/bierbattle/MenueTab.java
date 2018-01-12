@@ -21,7 +21,8 @@ public class MenueTab extends Fragment {
     private DatabaseReference usersRef;
     private ImageButton kamera_btn;
 
-    public static TextView username;
+    public static TextView username = null;
+    public static TextView rank = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,6 +30,7 @@ public class MenueTab extends Fragment {
         View rootView = inflater.inflate(R.layout.menue_tab, container, false);
 
         username = rootView.findViewById(R.id.username);
+        rank = rootView.findViewById(R.id.rank);
         ImageButton zurueck = (ImageButton) rootView.findViewById(R.id.bier);
         kamera_btn = (ImageButton) rootView.findViewById(R.id.kamera);
         kamera_btn.setOnClickListener(new View.OnClickListener() {
