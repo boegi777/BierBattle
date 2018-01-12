@@ -38,8 +38,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     private Boolean votingend = false;
     private Boolean weekly = false;
     private Boolean active = false;
-    private Boolean watcher = false;
-    private Boolean dataLoaded = false;
+    private Boolean started = false;
 
     public Appointment(Group parentRef){
         this.parentRef = parentRef;
@@ -61,22 +60,20 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     public Boolean getWeekly(){
         return this.weekly;
     }
-    public Boolean isDataLoaded() { return this.dataLoaded; }
     public HashMap<String, Boolean> getVotings(){ return this.votings; }
 
     public void setVoting(String uid, Boolean vote){
         dbRef.child("votings").child(uid).setValue(vote);
     }
 
-    public void cancelWatcher(){
-        this.watcher = false;
+    public Boolean isStarted(){
+        return  this.started;
     }
 
     @Override
     public void loadObjectProperties(String id) {
         this.appointmentId = id;
         this.dbRef = getDbRef();
-        //this.dbRef.addValueEventListener(new ValueEventListener() {
         this.dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot appointmentDS) {
@@ -111,9 +108,14 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
                             break;
                     }
                 }
-                Appointment.this.dataLoaded = true;
-                Appointment.this.watchAppointment();
-                DataProvider.appointmentListener.onAppointmentDataChangedListener();
+
+                if(Appointment.this.getActive() || !Appointment.this.getVotingend()){
+                    Appointment.this.watchAppointment();
+                    DataProvider.appointmentListener.onAppointmentDataChangedListener();
+                } else {
+                    parentRef.getAppointments().remove(Appointment.this);
+                }
+
             }
 
             @Override
@@ -173,7 +175,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     }
 
     public Long getVotingtimeLeftInMilli(){
-        Long plusTime = this.getCreatetime() + 60000;
+        Long plusTime = this.getCreatetime() + 600000;
         return plusTime - System.currentTimeMillis();
     }
 
@@ -267,15 +269,17 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
             @Override
             public void run() {
                 try {
-                    Appointment.this.watcher = true;
                     Thread.sleep(timeLeft);
-                    if(Appointment.this.watcher == true) {
-                        if(votingend){
-                            DataProvider.votingEndsListener.onVotingEnds(Appointment.this);
-                        } else {
-                            DataProvider.appointmentStartListener.onAppointmentStart(Appointment.this);
-                        }
+                    if(votingend){
+                        DataProvider.votingEndsListener.onVotingEnds(Appointment.this);
+                    } else {
+                        Appointment.this.started = true;
+                        DataProvider.appointmentStartListener.onAppointmentStart(Appointment.this);
+                        Thread.sleep(60000);
+                        DataProvider.appointmentEndsListener.onAppointmentEnds(Appointment.this);
+                        Appointment.this.started = false;
                     }
+                    Appointment.this.checkAppointmentStatus();
                 } catch (InterruptedException e) {
                     Log.d(TAG, e.getMessage());
                 }

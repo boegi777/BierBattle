@@ -22,6 +22,7 @@ public class DataProvider {
     public static MemberDataListener memberDataListener = null;
     public static AppointmentDataListener appointmentListener = null;
     public static AppointmentStartListener appointmentStartListener = null;
+    public static AppointmentEndsListener appointmentEndsListener = null;
     public static VotingEndsListener votingEndsListener = null;
 
     private static final String TAG = "DataProvider";
@@ -61,6 +62,10 @@ public class DataProvider {
         void onAppointmentStart(Appointment appointment);
     }
 
+    public interface AppointmentEndsListener{
+        void onAppointmentEnds(Appointment appointment);
+    }
+
     public interface VotingEndsListener{
         void onVotingEnds(Appointment appointment);
     }
@@ -70,6 +75,7 @@ public class DataProvider {
     public void setMemberDataListener(MemberDataListener listener) { memberDataListener = listener; }
     public void setAppointmentDataListener(AppointmentDataListener listener) { appointmentListener = listener; }
     public void setAppointmentStartListener(AppointmentStartListener listener) { appointmentStartListener = listener; }
+    public void setAppointmentEndsListener(AppointmentEndsListener listener) { appointmentEndsListener = listener; }
     public void setVotingEndsListener(VotingEndsListener listener) { votingEndsListener = listener; }
 
     public static void createUser(Map<String, String> userData) {
