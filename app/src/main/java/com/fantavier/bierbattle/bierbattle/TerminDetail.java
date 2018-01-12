@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 public class TerminDetail extends AppCompatActivity {
 
-    public TextView votingTitle;
+    public TextView appointmentTitle;
     public TextView title;
     public TextView datum;
     public TextView time;
@@ -30,8 +30,7 @@ public class TerminDetail extends AppCompatActivity {
     public ImageButton negativButton;
     public boolean running;
     public static final long SLEEPTIME = 10;
-    public String votingText;
-    public Long serverTime = 0l;
+    public String appointmentTitleText;
 
     private static final String TAG = "TerminDetail";
     private static String index;
@@ -50,7 +49,7 @@ public class TerminDetail extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.action_bar);
         title = (TextView) getSupportActionBar().getCustomView().findViewById(R.id.actiontitle);
 
-        votingTitle = (TextView) findViewById(R.id.votingTitle);
+        appointmentTitle = (TextView) findViewById(R.id.votingTitle);
         datum = (TextView) findViewById(R.id.appointmentDate);
         time = (TextView) findViewById(R.id.appointmentTime);
         location = (TextView) findViewById(R.id.appointmentLocation);
@@ -70,8 +69,6 @@ public class TerminDetail extends AppCompatActivity {
 
     public void onPause(){
         super.onPause();
-
-        running = false;
     }
     public void onDestroy(){
         super.onDestroy();
@@ -96,7 +93,7 @@ public class TerminDetail extends AppCompatActivity {
         setVotingListener();
 
         if(!appointment.getVotingend()){
-            setVotingTitle();
+            setTitle();
 
             positivButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -113,7 +110,7 @@ public class TerminDetail extends AppCompatActivity {
                 }
             });
         } else {
-            votingTitle.setText("Termin aktiv");
+            appointmentTitle.setText("Termin aktiv");
         }
     }
 
@@ -129,7 +126,7 @@ public class TerminDetail extends AppCompatActivity {
         });
     }
 
-    private void setVotingTitle(){
+    private void setTitle(){
         running = true;
 
         if (refreshThread == null) {
@@ -138,7 +135,12 @@ public class TerminDetail extends AppCompatActivity {
                 public void run() {
                     while (running) {
                         try {
-                            votingText = getVotingText();
+                            if(appointment.getVotingend()){
+                                appointmentTitleText = getActiveCounterText();
+                            } else {
+                                appointmentTitleText = getVotingText();
+                            }
+
                             Thread.sleep(TerminDetail.SLEEPTIME);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(TerminErstellen.class.getName()).log(Level.SEVERE, null, ex);
@@ -146,13 +148,22 @@ public class TerminDetail extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                votingTitle.setText(votingText);
+                                appointmentTitle.setText(appointmentTitleText);
                             }
                         });
                     }
                 }
             });
             refreshThread.start();
+        }
+    }
+
+    private String getActiveCounterText(){
+        try {
+            HashMap<String, String> timeDiff = appointment.getActivetimeLeft();
+            return "Termindauer\n" + timeDiff.get("hours") + ":" + timeDiff.get("minutes") + ":" + timeDiff.get("seconds");
+        } catch(ExceptionHelper.StarttimeException ex) {
+            return ex.getMessage();
         }
     }
 

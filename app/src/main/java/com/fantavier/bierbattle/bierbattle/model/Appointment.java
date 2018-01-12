@@ -173,6 +173,12 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
         return negativ.toString();
     }
 
+    public Long getActivetimeLeftInMilli(){
+        Long starttimeMilli = DateHelper.convertDateToMilliSec(this.getDate(), this.getTime());
+        Long plusTime = starttimeMilli + 600000;
+        return plusTime - System.currentTimeMillis();
+    }
+
     public Long getVotingtimeLeftInMilli(){
         Long plusTime = this.getCreatetime() + 600000;
         return plusTime - System.currentTimeMillis();
@@ -181,6 +187,23 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     public Long getTimeUntilStart() {
         Long startTimeMilli = DateHelper.convertDateToMilliSec(getDate(), getTime());
         return startTimeMilli - System.currentTimeMillis();
+    }
+
+    public HashMap<String, String> getActivetimeLeft() throws ExceptionHelper.StarttimeException{
+        HashMap<String, String> timeDiffStrings = new HashMap<>();
+        HashMap<String, Long> timeDiffLongs = new HashMap<>();
+        Long timeDiffMilli = this.getActivetimeLeftInMilli();
+
+        if(timeDiffMilli > 0) {
+            timeDiffLongs = DateHelper.getTimeLeft(timeDiffMilli);
+            timeDiffStrings.put("hours", timeDiffLongs.get("hours").toString());
+            timeDiffStrings.put("minutes", timeDiffLongs.get("minutes").toString());
+            timeDiffStrings.put("seconds", timeDiffLongs.get("seconds").toString());
+            return timeDiffStrings;
+        } else {
+            throw new ExceptionHelper.StarttimeException();
+        }
+
     }
 
     public HashMap<String, String> getVotingtimeLeft() throws ExceptionHelper.VotingendException{
@@ -269,9 +292,9 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
             public void run() {
                 try {
                     Thread.sleep(timeLeft);
-                    Appointment.this.checkAppointmentStatus();
                     if(votingend){
                         DataProvider.votingEndsListener.onVotingEnds(Appointment.this);
+                        Appointment.this.checkAppointmentStatus();
                     } else {
                         Appointment.this.started = true;
                         Thread.sleep(600000);

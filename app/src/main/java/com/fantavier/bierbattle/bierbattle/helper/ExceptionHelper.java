@@ -11,6 +11,12 @@ public class ExceptionHelper {
         }
     }
 
+    public static class StarttimeException extends Exception {
+        public StarttimeException(){
+            super("Termin aktiv");
+        }
+    }
+
     public static class AppointmentStartsException extends Exception {
         public AppointmentStartsException(){
             super("Aktuell läuft kein Termin");

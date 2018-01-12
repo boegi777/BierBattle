@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
@@ -17,14 +18,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
 import com.fantavier.bierbattle.bierbattle.helper.NotificationHelper;
 import com.fantavier.bierbattle.bierbattle.model.Appointment;
 import com.fantavier.bierbattle.bierbattle.model.DataProvider;
-import com.fantavier.bierbattle.bierbattle.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -215,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.dataProvider.setAppointmentStartListener(new DataProvider.AppointmentStartListener() {
             @Override
             public void onAppointmentStart(Appointment appointment) {
-                Notification.Builder notificationBuilder = notificationHelper.getNotification1("Termin gestartet", "Termin "+appointment.getTitle()+ " ist gestartet");
+                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin gestartet", "Termin "+appointment.getTitle()+ " ist gestartet");
                 notificationHelper.notify(102, notificationBuilder);
             }
         });
@@ -223,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.dataProvider.setAppointmentEndsListener(new DataProvider.AppointmentEndsListener() {
             @Override
             public void onAppointmentEnds(Appointment appointment) {
-                Notification.Builder notificationBuilder = notificationHelper.getNotification1("Termin beendet", "Termin "+appointment.getTitle()+ " ist beendet");
+                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin beendet", "Termin "+appointment.getTitle()+ " ist beendet");
                 notificationHelper.notify(102, notificationBuilder);
             }
         });
@@ -231,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.dataProvider.setVotingEndsListener(new DataProvider.VotingEndsListener() {
             @Override
             public void onVotingEnds(Appointment appointment) {
-                Notification.Builder notificationBuilder = notificationHelper.getNotification1("Abstimmung beendet", "Abstimmung für "+appointment.getTitle()+ " wurde beendet");
+                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Abstimmung beendet", "Abstimmung für "+appointment.getTitle()+ " wurde beendet");
                 notificationHelper.notify(101, notificationBuilder);
             }
         });
