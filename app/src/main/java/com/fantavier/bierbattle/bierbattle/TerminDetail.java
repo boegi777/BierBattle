@@ -65,6 +65,7 @@ public class TerminDetail extends AppCompatActivity {
     public void onResume(){
        super.onResume();
         setAppointmentViewData();
+        setAppointmentListener();
     };
 
     public void onPause(){
@@ -162,5 +163,15 @@ public class TerminDetail extends AppCompatActivity {
         } catch(ExceptionHelper.VotingendException ex){
             return ex.getMessage();
         }
+    }
+
+    private void setAppointmentListener(){
+        MainActivity.dataProvider.setVotingEndsListener(new DataProvider.VotingEndsListener() {
+            @Override
+            public void onVotingEnds(Appointment appointment) {
+                positivButton.setOnClickListener(null);
+                negativButton.setOnClickListener(null);
+            }
+        });
     }
 }
