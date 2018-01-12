@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         requestLocationUpdates();
-        //dataProvider.getActiveGroup().checkAppointmentStatus();
     }
 
     @Override

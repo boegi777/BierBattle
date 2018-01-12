@@ -32,7 +32,6 @@ public class DataProvider {
     private static DatabaseReference mDbRef = null;
     private static Group group = null;
     private static User user = null;
-    private static Boolean appointmentWatcherActive = true;
 
     public DataProvider(){
         DataProvider.group = new Group();

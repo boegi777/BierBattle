@@ -110,7 +110,7 @@ public class TerminDetail extends AppCompatActivity {
                 }
             });
         } else {
-            appointmentTitle.setText("Termin aktiv");
+            appointmentTitle.setText("Abstimmung ");
         }
     }
 
@@ -135,9 +135,9 @@ public class TerminDetail extends AppCompatActivity {
                 public void run() {
                     while (running) {
                         try {
-                            if(appointment.getVotingend()){
+                            if(appointment.isStarted()){
                                 appointmentTitleText = getActiveCounterText();
-                            } else {
+                            } else if(!appointment.getVotingend()){
                                 appointmentTitleText = getVotingText();
                             }
 
@@ -161,7 +161,7 @@ public class TerminDetail extends AppCompatActivity {
     private String getActiveCounterText(){
         try {
             HashMap<String, String> timeDiff = appointment.getActivetimeLeft();
-            return "Termindauer\n" + timeDiff.get("hours") + ":" + timeDiff.get("minutes") + ":" + timeDiff.get("seconds");
+            return "Termin aktiv\n" + timeDiff.get("hours") + ":" + timeDiff.get("minutes") + ":" + timeDiff.get("seconds");
         } catch(ExceptionHelper.StarttimeException ex) {
             return ex.getMessage();
         }
