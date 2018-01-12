@@ -19,6 +19,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
+
 
 public class Location extends Service {
     private LocationManager locationManager;
@@ -48,12 +50,23 @@ public class Location extends Service {
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
 
-                if (distance(destLatitudeValue, destLongitudeValue, latitude, longitude) < 0.1) {
+                if (distance(destLatitudeValue, destLongitudeValue, latitude, longitude) > 0.1) {
+
+                    try {
+                        MainActivity.dataProvider.setPointForActiveUser(1);
+                        Toast.makeText(getApplicationContext(),
+                                "You have a Score", Toast.LENGTH_LONG).show();
+                    } catch (ExceptionHelper.AppointmentStartsException e) {
+                        e.printStackTrace();
+                    } catch (ExceptionHelper.MemberNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+
                     /*Intent i = new Intent("score_update");
                     i.putExtra("score_point",1);
                     sendBroadcast(i);*/
-                    Toast.makeText(getApplicationContext(),
-                            "You have a Score", Toast.LENGTH_LONG).show();
+
 
 
                 }

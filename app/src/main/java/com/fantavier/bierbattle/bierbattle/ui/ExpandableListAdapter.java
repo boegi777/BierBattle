@@ -1,4 +1,4 @@
-package com.fantavier.bierbattle.bierbattle;
+package com.fantavier.bierbattle.bierbattle.ui;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import com.fantavier.bierbattle.bierbattle.R;
 
 import java.util.HashMap;
 import java.util.List;

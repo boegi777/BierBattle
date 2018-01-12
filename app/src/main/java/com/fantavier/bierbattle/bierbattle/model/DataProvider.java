@@ -1,7 +1,9 @@
 package com.fantavier.bierbattle.bierbattle.model;
 
+import android.content.Context;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -109,6 +111,7 @@ public class DataProvider {
         }
         Member member = getActiveGroup().getMember(getActiveUser().getUserId());
         member.setPoints(points);
+
     }
 
     public String getUserrank() throws ExceptionHelper.MemberNotFoundException{

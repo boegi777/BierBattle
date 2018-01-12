@@ -119,24 +119,39 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
     }
     @Override
     public void handleResult(Result rawResult) {
-        beerBottleSound.start();
-        final String result = rawResult.getText();
-        vibrator.vibrate(500);
-        Log.d("QRCodeScanner", rawResult.getText());
-        Log.d("QRCodeScanner", rawResult.getBarcodeFormat().toString());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Scan Result");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mScannerView.resumeCameraPreview(QRScanner.this);
+        //final String result = rawResult.getText();
+        try {
+            if(rawResult.getText()=="MDI"){
+                MainActivity.dataProvider.setPointForActiveUser(1);
+                Toast.makeText(getApplicationContext(),
+                    "You have a Score", Toast.LENGTH_LONG).show();
             }
-        });
+            vibrator.vibrate(500);
+            beerBottleSound.start();
+            Log.d("QRCodeScanner", rawResult.getText());
+            Log.d("QRCodeScanner", rawResult.getBarcodeFormat().toString());
 
-        builder.setMessage(rawResult.getText());
-        AlertDialog alert1 = builder.create();
-        alert1.show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Scan Result");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mScannerView.resumeCameraPreview(QRScanner.this);
+                }
+            });
+
+            builder.setMessage(rawResult.getText());
+            AlertDialog alert1 = builder.create();
+            alert1.show();
+
+        } catch (ExceptionHelper.AppointmentStartsException e) {
+            e.printStackTrace();
+        } catch (ExceptionHelper.MemberNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }
 

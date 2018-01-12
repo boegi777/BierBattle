@@ -2,7 +2,10 @@ package com.fantavier.bierbattle.bierbattle;
 
 import android.app.Notification;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+    private Intent location_service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,17 +73,24 @@ public class MainActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         initDataManagement();
+        if (!requestLocationUpdates()) {
+            location_service = new Intent(getApplicationContext(), Location.class);
+            startService(location_service);
+        }
+
     }
 
     @Override
     public void onResume(){
         super.onResume();
+        requestLocationUpdates();
         //dataProvider.getActiveGroup().checkAppointmentStatus();
     }
 
     @Override
     public void onDestroy(){
         moveTaskToBack(true);
+        stopService(location_service);
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(1);
         super.onDestroy();
@@ -225,6 +236,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private boolean requestLocationUpdates() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                        android.Manifest.permission.INTERNET}, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+    public void onRequestPermissionResults(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    requestLocationUpdates();
+                }
+                break;
+        }
+    }
+
 }
 
 
