@@ -2,6 +2,7 @@ package com.fantavier.bierbattle.bierbattle.model;
 
 import android.util.Log;
 
+import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,9 +42,18 @@ public class Group implements DataProvider.DatabaseReferenceObject{
         return appointments;
     }
 
-    public Appointment getAppointment(Integer index){
+    public Appointment getAppointment(Integer index) {
         checkAppointmentActiveStatus(index);
         return this.appointments.get(index);
+    }
+
+    public Member getMember(String uid) throws ExceptionHelper.MemberNotFoundException{
+        for(Member member : members){
+            if(member.getMemberId() == uid){
+                return member;
+            }
+        }
+        throw new ExceptionHelper.MemberNotFoundException();
     }
 
     public ArrayList<String> getMemberTitles(){
@@ -144,6 +154,17 @@ public class Group implements DataProvider.DatabaseReferenceObject{
                 throw databaseError.toException();
             }
         });
+    }
+
+    public Boolean checkAppointmentStarts(){
+        Boolean starts = false;
+        for(Appointment appointment : getAppointments()){
+            if (appointment.isStarted()) {
+                starts =  true;
+                break;
+            }
+        }
+        return starts;
     }
 
     public void checkAppointmentActiveStatus(int index){

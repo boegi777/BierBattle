@@ -26,8 +26,13 @@ public class Member implements Comparable, DataProvider.DatabaseReferenceObject 
         this.parentRef = parentRef;
     }
 
+    public String getMemberId(){ return this.memberId; }
     public int getPoints(){
         return this.points;
+    }
+    public void setPoints(int points) {
+        points += getPoints();
+        dbRef.child("points").setValue(points);
     }
 
     @Override

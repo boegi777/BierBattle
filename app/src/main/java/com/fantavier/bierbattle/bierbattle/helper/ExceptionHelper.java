@@ -10,4 +10,16 @@ public class ExceptionHelper {
             super("Abstimmung \n beendet");
         }
     }
+
+    public static class AppointmentStartsException extends Exception {
+        public AppointmentStartsException(){
+            super("Aktuell läuft kein Termin");
+        }
+    }
+
+    public static class MemberNotFoundException extends Exception {
+        public MemberNotFoundException(){
+            super("Gruppenmitglied existiert nicht");
+        }
+    }
 }

@@ -106,42 +106,13 @@ public class DataProvider {
         setActiveGroupId();
     }
 
-    private void watchActiveAppointment(final Appointment appointment){
-        if(!appointment.getVotingend()){
-
+    public void setPointForActiveUser(int points)
+            throws ExceptionHelper.AppointmentStartsException, ExceptionHelper.MemberNotFoundException{
+        if(!getActiveGroup().checkAppointmentStarts()){
+            throw new ExceptionHelper.AppointmentStartsException();
         }
-
-        /*Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Long appointmentTime = 0l;
-                    Long plusHour = 0l;
-                    Long currentTime = 0l;
-                    while(appointmentWatcherActive) {
-                        currentTime = Calendar.getInstance().getTimeInMillis();
-                        plusHour = appointmentTime + 3600000;
-                        if(group.getAppointments() != null) {
-                            for (Appointment appointment : group.getAppointments()) {
-                                appointmentTime = appointment.getDateInMilliSec();
-                                if(appointment.getVotingend() && appointment.getActive()){
-                                    if (currentTime  >= appointmentTime && currentTime < plusHour) {
-                                        DataProvider.appointmentStartListener.onAppointmentStart(appointment);
-                                    }
-                                } else if(!appointment.getVotingend()) {
-
-                                }
-                            }
-                        }
-                        Thread.sleep(10000);
-                    }
-                } catch (Exception ex) {
-                    Log.d(TAG, ex.getMessage());
-                }
-            }
-        });
-
-        thread.start();*/
+        Member member = getActiveGroup().getMember(getActiveUser().getUserId());
+        member.setPoints(points);
     }
 
     private void loadUserData(){
