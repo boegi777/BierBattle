@@ -210,6 +210,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setAppointmentListener(){
+        MainActivity.dataProvider.setAppointmentCreatedListener(new DataProvider.AppointmentCreatedListener() {
+            @Override
+            public void onAppointmentCreatedListener() {
+                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin erstellt", "Ein Termin wurde erstellt");
+                notificationHelper.notify(102, notificationBuilder);
+            }
+        });
         MainActivity.dataProvider.setAppointmentStartListener(new DataProvider.AppointmentStartListener() {
             @Override
             public void onAppointmentStart(Appointment appointment) {

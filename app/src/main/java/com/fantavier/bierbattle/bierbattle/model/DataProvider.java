@@ -21,6 +21,7 @@ public class DataProvider {
 
     public static UserDataListener userListener = null;
     public static GroupDataListener groupListener = null;
+    public static AppointmentCreatedListener appointmentCreatedListener = null;
     public static MemberDataListener memberDataListener = null;
     public static AppointmentDataListener appointmentListener = null;
     public static AppointmentStartListener appointmentStartListener = null;
@@ -55,6 +56,10 @@ public class DataProvider {
         void onMemberDataChangedListener();
     }
 
+    public interface AppointmentCreatedListener {
+        void onAppointmentCreatedListener();
+    }
+
     public interface AppointmentDataListener {
         void onAppointmentDataChangedListener();
     }
@@ -74,6 +79,7 @@ public class DataProvider {
     public void setUserDataListener(UserDataListener listener) { userListener = listener; }
     public void setGroupDataListener(GroupDataListener listener){ groupListener = listener; }
     public void setMemberDataListener(MemberDataListener listener) { memberDataListener = listener; }
+    public void setAppointmentCreatedListener(AppointmentCreatedListener listener) { appointmentCreatedListener = listener; }
     public void setAppointmentDataListener(AppointmentDataListener listener) { appointmentListener = listener; }
     public void setAppointmentStartListener(AppointmentStartListener listener) { appointmentStartListener = listener; }
     public void setAppointmentEndsListener(AppointmentEndsListener listener) { appointmentEndsListener = listener; }

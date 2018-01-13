@@ -7,7 +7,7 @@ package com.fantavier.bierbattle.bierbattle.helper;
 public class ExceptionHelper {
     public static class VotingendException extends Exception {
         public VotingendException(){
-            super("Abstimmung \n beendet");
+            super("Abstimmung\n beendet");
         }
     }
 

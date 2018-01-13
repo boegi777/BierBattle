@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.fantavier.bierbattle.bierbattle.helper.DateHelper;
 import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
 import com.fantavier.bierbattle.bierbattle.model.Appointment;
 import com.fantavier.bierbattle.bierbattle.model.DataProvider;
@@ -65,6 +66,7 @@ public class TerminDetail extends AppCompatActivity {
        super.onResume();
         setAppointmentViewData();
         setAppointmentListener();
+        running = true;
     };
 
     public void onPause(){
@@ -72,7 +74,6 @@ public class TerminDetail extends AppCompatActivity {
     }
     public void onDestroy(){
         super.onDestroy();
-
         running = false;
     }
     public Appointment getAppointment(){
@@ -92,7 +93,7 @@ public class TerminDetail extends AppCompatActivity {
         TerminDetail.this.negativText.setText(appointment.getNegativVotings());
         setVotingListener();
 
-        if(!appointment.getVotingend()){
+        //if(!appointment.getVotingend() || appointment.isStarted()){
             setTitle();
 
             positivButton.setOnClickListener(new View.OnClickListener() {
@@ -109,9 +110,9 @@ public class TerminDetail extends AppCompatActivity {
                     TerminDetail.this.getAppointment().setVoting(uid, false);
                 }
             });
-        } else {
-            appointmentTitle.setText("Abstimmung ");
-        }
+        //} else {
+            //appointmentTitle.setText("Abstimmung\n beendet");
+        //}
     }
 
     private void setVotingListener(){
@@ -128,7 +129,6 @@ public class TerminDetail extends AppCompatActivity {
 
     private void setTitle(){
         running = true;
-
         if (refreshThread == null) {
             refreshThread = new Thread(new Runnable() {
                 @Override
@@ -139,6 +139,8 @@ public class TerminDetail extends AppCompatActivity {
                                 appointmentTitleText = getActiveCounterText();
                             } else if(!appointment.getVotingend()){
                                 appointmentTitleText = getVotingText();
+                            } else {
+                                appointmentTitleText = "Abstimmung\n beendet";
                             }
 
                             Thread.sleep(TerminDetail.SLEEPTIME);

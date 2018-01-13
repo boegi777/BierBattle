@@ -1,6 +1,19 @@
 package com.fantavier.bierbattle.bierbattle.helper;
 
 
+import android.util.Log;
+
+import com.fantavier.bierbattle.bierbattle.model.Appointment;
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.ServerValue;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -8,12 +21,18 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Paul on 09.01.2018.
  */
 
 public class DateHelper {
+
+    private static final String TAG = "DateHelper";
+    private static long serverTime = 0l;
+    private static Object timestampCreated;
 
     public static Long convertDateToMilliSec(String date, String time) {
         String[] dateArray = date.split("\\.");

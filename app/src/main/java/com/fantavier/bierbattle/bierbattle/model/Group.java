@@ -106,7 +106,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
             appointment.put("location", location);
             appointment.put("votingend", false);
             appointment.put("weekly", weekly);
-            appointment.put("createtime", currentTime.toString());
+            appointment.put("createtime", currentTime);
 
             return dbRef.child("appointments").push().setValue(appointment).isSuccessful();
         } catch(Exception  e){
@@ -175,6 +175,10 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     }
 
     private List<Appointment> loadAppointments(DataSnapshot appointmentsDS){
+            Integer oldCount = 0;
+            if(Appointment.count > 0){
+                oldCount = Appointment.count;
+            }
             appointments = new ArrayList<>();
             Appointment.clearThreadList();
             for(DataSnapshot appointmentDS : appointmentsDS.getChildren()) {
@@ -182,7 +186,10 @@ public class Group implements DataProvider.DatabaseReferenceObject{
                     appointment.loadObjectProperties(appointmentDS.getKey());
                     appointments.add(appointment);
             }
-
+            Appointment.count = appointments.size();
+            if(oldCount != 0 && oldCount < Appointment.count){
+                DataProvider.appointmentCreatedListener.onAppointmentCreatedListener();
+            }
         return appointments;
     }
 
