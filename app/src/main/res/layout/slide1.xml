@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_screen1">
+    android:background="@color/colorPrimary">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -15,7 +15,7 @@
         <ImageView
             android:layout_width="@dimen/img_width"
             android:layout_height="@dimen/img_height"
-            android:src="@drawable/ic_slide1" />
+            android:src="@drawable/toast" />
 
         <TextView
             android:layout_width="wrap_content"

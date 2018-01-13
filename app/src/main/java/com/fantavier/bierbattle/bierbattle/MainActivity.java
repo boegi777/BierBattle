@@ -98,6 +98,10 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
+        if (id == R.id.action_intro) {
+            startActivity(new Intent(this, IntroActivity.class));
+        }
+
 
         return super.onOptionsItemSelected(item);
     }

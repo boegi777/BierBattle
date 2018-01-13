@@ -39,7 +39,6 @@ public class IntroActivity extends Activity {
         setContentView(R.layout.activity_intro);
 
 
-
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
         btnSkip = (Button) findViewById(R.id.btn_skip);
@@ -48,7 +47,10 @@ public class IntroActivity extends Activity {
         layouts = new int[]{
                 R.layout.slide1,
                 R.layout.slide2,
-                R.layout.slide3};
+                R.layout.slide3,
+                R.layout.slide4,
+                R.layout.slide5,
+                R.layout.slide6};
 
         // adding bottom dots
         addBottomDots(0);
