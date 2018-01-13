@@ -9,15 +9,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -183,12 +175,14 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     }
 
     private List<Appointment> loadAppointments(DataSnapshot appointmentsDS){
-        List<Appointment> appointments = new ArrayList<Appointment>();
-        for(DataSnapshot appointmentDS : appointmentsDS.getChildren()){
-            Appointment appointment = new Appointment(this);
-            appointment.loadObjectProperties(appointmentDS.getKey());
-            appointments.add(appointment);
-        }
+            appointments = new ArrayList<>();
+            Appointment.clearThreadList();
+            for(DataSnapshot appointmentDS : appointmentsDS.getChildren()) {
+                    Appointment appointment = new Appointment(this);
+                    appointment.loadObjectProperties(appointmentDS.getKey());
+                    appointments.add(appointment);
+            }
+
         return appointments;
     }
 

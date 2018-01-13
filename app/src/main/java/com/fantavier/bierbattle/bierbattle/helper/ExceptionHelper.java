@@ -28,4 +28,10 @@ public class ExceptionHelper {
             super("Gruppenmitglied existiert nicht");
         }
     }
+
+    public static class ThreadListException extends Exception {
+        public ThreadListException(){
+            super("ThreadList wurde nicht initialisiert");
+        }
+    }
 }

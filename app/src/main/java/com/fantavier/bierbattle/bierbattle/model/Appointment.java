@@ -19,13 +19,16 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class Appointment implements DataProvider.DatabaseReferenceObject {
 
     private static final String TAG = "Appointment";
+    static private List<Thread> threads = null;
     private DatabaseReference dbRef = null;
     private HashMap<String, Boolean> votings = null;
     private Group parentRef = null;
@@ -65,6 +68,17 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
 
     public void setVoting(String uid, Boolean vote){
         dbRef.child("votings").child(uid).setValue(vote);
+    }
+
+    public static void clearThreadList(){
+        if(threads == null){
+            threads = new ArrayList<Thread>();
+        }
+        for(Thread thread : threads){
+            if(thread != null)
+                thread.interrupt();
+        }
+        threads.clear();
     }
 
     public Boolean isStarted(){
@@ -181,7 +195,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     }
 
     public Long getVotingtimeLeftInMilli(){
-        Long plusTime = this.getCreatetime() + 6000;
+        Long plusTime = this.getCreatetime() + 600000;
         return plusTime - System.currentTimeMillis();
     }
 
@@ -248,7 +262,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
                     httpRequestBodyWriter.close();
 
                     BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-
+                    Thread.interrupted();
                 } catch(IOException ex){
                     Log.d(TAG, ex.getMessage());
                 }
@@ -273,8 +287,6 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
         final Long timeLeft = this.getVotingtimeLeftInMilli();
         if (timeLeft > 0) {
             createWatcherThread(timeLeft, true);
-        } else {
-            checkAppointmentStatus();
         }
     }
 
@@ -282,13 +294,21 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
         final Long timeLeft = this.getTimeUntilStart();
         if(timeLeft > 0){
             createWatcherThread(timeLeft, false);
-        } else {
-            checkAppointmentStatus();
         }
     }
 
-    private void createWatcherThread(final Long timeLeft, final Boolean votingend) {
-        if(!watcherRuns){
+    private void createWatcherThread(final Long timeLeft, final Boolean votingend){
+        boolean runs = false;
+        if(threads == null){
+            threads = new ArrayList<>();
+        } else {
+            for(Thread thread : threads){
+                if(thread.getName().equals(Appointment.this.appointmentId)){
+                    runs = true;
+                }
+            }
+        }
+        if(!runs) {
             final Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -307,12 +327,13 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
                         checkAppointmentStatus();
                         watcherRuns = false;
                         Thread.interrupted();
-                    } catch (InterruptedException e) {
-                        Log.d(TAG, e.getMessage());
+                    } catch (InterruptedException ex) {
+                        Log.d(TAG, "Thread interrupted");
                     }
                 }
             });
             thread.setName(Appointment.this.appointmentId);
+            Appointment.threads.add(thread);
             thread.start();
         }
     }
