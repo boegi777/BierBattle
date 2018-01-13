@@ -3,6 +3,8 @@ package com.fantavier.bierbattle.bierbattle;
 import android.*;
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -15,11 +17,14 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.fantavier.bierbattle.bierbattle.helper.NotificationHelper;
 
 import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
+import com.fantavier.bierbattle.bierbattle.helper.NotificationHelper;
 
 
 public class Location extends Service {
@@ -29,6 +34,9 @@ public class Location extends Service {
     final double destLongitudeValue = 9.724079;
     private double latitude;
     private double longitude;
+    public static NotificationHelper notificationHelper = null;
+    private NotificationManager notif;
+    private Notification not;
 
 
     @Nullable
@@ -56,6 +64,10 @@ public class Location extends Service {
                         MainActivity.dataProvider.setPointForActiveUser(1);
                         Toast.makeText(getApplicationContext(),
                                 "You have a Score", Toast.LENGTH_LONG).show();
+                        //NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Punkterhalten","Du hast ein Punkt bekommen.");
+                        //notificationHelper.notify(103, notificationBuilder);
+
+
                     } catch (ExceptionHelper.AppointmentStartsException e) {
                         e.printStackTrace();
                     } catch (ExceptionHelper.MemberNotFoundException e) {
