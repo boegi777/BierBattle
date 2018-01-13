@@ -33,13 +33,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username"
-        app:layout_constraintVertical_bias="0.025" />
+        app:layout_constraintVertical_bias="0.016" />
 
     <ImageButton
         android:id="@+id/kamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:background="@android:color/background_light"
         android:contentDescription="@string/zxing_app_name"
@@ -47,7 +47,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintVertical_bias="0.18" />
 
     <TextView
         android:id="@+id/rank"
@@ -68,8 +69,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout2"
-        android:layout_width="383dp"
-        android:layout_height="163dp"
+        android:layout_width="0dp"
+        android:layout_height="166dp"
         android:layout_marginTop="8dp"
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -77,7 +78,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/kreis"
-        app:layout_constraintVertical_bias="0.06">
+        app:layout_constraintVertical_bias="0.029">
 
         <TextView
             android:id="@+id/textView"
