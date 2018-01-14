@@ -23,6 +23,7 @@ public class DataProvider {
 
     public static UserDataListener userListener = null;
     public static GroupDataListener groupListener = null;
+    public static RankingDataListener rankingDataListener = null;
     public static AppointmentCreatedListener appointmentCreatedListener = null;
     public static MemberDataListener memberDataListener = null;
     public static AppointmentDataListener appointmentListener = null;
@@ -32,13 +33,14 @@ public class DataProvider {
 
     private static final String TAG = "DataProvider";
     private static String groupId = "";
-    private static DatabaseReference mDbRef = null;
     private static Group group = null;
     private static User user = null;
+    private static List<User> ranking = null;
 
     public DataProvider(){
         DataProvider.group = new Group();
         DataProvider.user = new User();
+        DataProvider.ranking = new ArrayList<User>();
     }
 
     public interface DatabaseReferenceObject{
@@ -52,6 +54,10 @@ public class DataProvider {
 
     public interface GroupDataListener {
         void onGroupeDataChanged();
+    }
+
+    public interface RankingDataListener{
+        void onRankingDataListenerChanged();
     }
 
     public interface MemberDataListener {
@@ -80,6 +86,7 @@ public class DataProvider {
 
     public void setUserDataListener(UserDataListener listener) { userListener = listener; }
     public void setGroupDataListener(GroupDataListener listener){ groupListener = listener; }
+    public void setRankingDataListener(RankingDataListener listener) { rankingDataListener = listener; }
     public void setMemberDataListener(MemberDataListener listener) { memberDataListener = listener; }
     public void setAppointmentCreatedListener(AppointmentCreatedListener listener) { appointmentCreatedListener = listener; }
     public void setAppointmentDataListener(AppointmentDataListener listener) { appointmentListener = listener; }
@@ -90,11 +97,19 @@ public class DataProvider {
     public static void createUser(Map<String, String> userData) {
         try {
             /* Daten überprüfen */
-            mDbRef = FirebaseDatabase.getInstance().getReference("users").child(userData.get("uid"));
+            DatabaseReference createUser = FirebaseDatabase.getInstance().getReference("users").child(userData.get("uid"));
             userData.remove("uid");
-            mDbRef.setValue(userData);
+            createUser.setValue(userData);
         } catch(Exception ex){
             throw ex;
+        }
+    }
+
+    public static Boolean isActiveUser(String uid){
+        if(user.getUserId().equals((uid))){
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -109,6 +124,7 @@ public class DataProvider {
     public void loadData() {
         loadUserData();
         setActiveGroupId();
+        loadRankingData();
     }
 
     public void setPointForActiveUser(int points)
@@ -132,6 +148,72 @@ public class DataProvider {
 
     private void loadGroupData(){
         DataProvider.group.loadObjectProperties(groupId);
+    }
+
+    private void loadRankingData(){
+        FirebaseDatabase.getInstance().getReference("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot userDS : dataSnapshot.getChildren()){
+                    User user = new User();
+                    user.loadObjectProperties(userDS.getKey());
+                    ranking.add(user);
+                }
+                watchRanking();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                throw databaseError.toException();
+            }
+        });
+    }
+
+    private void watchRanking(){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Boolean running = true;
+                    while(running){
+                        if(checkRankingLoaded()){
+                            if(DataProvider.rankingDataListener != null){
+                                running = false;
+                                DataProvider.rankingDataListener.onRankingDataListenerChanged();
+                                Thread.interrupted();
+                            }
+                        }
+                        Thread.sleep(1000);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.setName("WatchRanking");
+        thread.start();
+    }
+
+    private boolean checkRankingLoaded(){
+        for(User user : ranking){
+            if(!user.isLoaded()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public ArrayList<String> getRankingStrings(){
+        ArrayList<String> userStrings = new ArrayList<String>();
+        try {
+            for (User user : ranking) {
+                if(user.getActive())
+                    userStrings.add(user.toString());
+            }
+        } catch (Exception ex) {
+            Log.d(TAG, ex.getMessage());
+        }
+        return userStrings;
     }
 
     private void setActiveGroupId(){

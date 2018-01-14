@@ -7,6 +7,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Paul on 09.01.2018.
@@ -18,12 +20,16 @@ public class User implements DataProvider.DatabaseReferenceObject {
     private String userId;
     private String username;
     private String category;
-    private HashMap<String, Boolean> groups;
+    private Boolean active = false;
+    private Boolean loaded = true;
+    private HashMap<String, HashMap<String, Object>> groups;
 
     public String getUserId(){ return userId; }
     public String getUsername() { return username; }
     public String getCategory() { return category; }
-    public HashMap<String, Boolean> getGroups(){ return groups; }
+    public Boolean getActive() { return active; }
+    public Boolean isLoaded() { return loaded; }
+    public HashMap<String, HashMap<String, Object>> getGroups(){ return groups; }
 
     @Override
     public DatabaseReference getDbRef() {
@@ -36,20 +42,24 @@ public class User implements DataProvider.DatabaseReferenceObject {
         this.dbRef = getDbRef();
         this.dbRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot appointmentDS) {
-                for(DataSnapshot appointmentData : appointmentDS.getChildren()) {
-                    switch (appointmentData.getKey()) {
+            public void onDataChange(DataSnapshot userDS) {
+                for(DataSnapshot userData : userDS.getChildren()) {
+                    switch (userData.getKey()) {
                         case "username":
-                            User.this.username = appointmentData.getValue().toString();
+                            User.this.username = userData.getValue().toString();
                             break;
+                        case "active":
+                            User.this.active = Boolean.parseBoolean(userData.getValue().toString());
                         case "groups":
-                            User.this.groups = initGroups(appointmentData);
+                            User.this.groups = initGroups(userData);
                             break;
                         case "category":
-                            User.this.category = appointmentData.getValue().toString();
+                            User.this.category = userData.getValue().toString();
                             break;
                     }
-                    DataProvider.userListener.onUserDataChanged();
+                    loaded = true;
+                    if(DataProvider.isActiveUser(userId));
+                        DataProvider.userListener.onUserDataChanged();
                 }
             }
 
@@ -60,12 +70,34 @@ public class User implements DataProvider.DatabaseReferenceObject {
         });
     }
 
-    private HashMap<String, Boolean> initGroups(DataSnapshot groupsDS){
-        HashMap<String, Boolean> groups = new HashMap<>();
+    @Override
+    public String toString(){
+        StringBuilder builder = new StringBuilder();
+        builder.append("Name: ");
+        builder.append(this.username);
+        builder.append(" Punkte: ");
+        builder.append(getPoints());
+        return builder.toString();
+    }
+
+    public int getPoints(){
+        Integer points = 0;
+        for(Map.Entry<String, HashMap<String, Object>> group : groups.entrySet()){
+            for(Map.Entry<String, Object> groupData : group.getValue().entrySet()){
+                if(groupData.getKey().equals("points")){
+                    points += Integer.parseInt(groupData.getValue().toString());
+                }
+            }
+        }
+        return points;
+    }
+
+    private HashMap<String, HashMap<String, Object>> initGroups(DataSnapshot groupsDS){
+        HashMap<String, HashMap<String, Object>> groups = new HashMap<>();
 
         for(DataSnapshot group : groupsDS.getChildren()){
             HashMap<String, Object> value = (HashMap<String, Object>) group.getValue();
-            groups.put(group.getKey().toString(), (Boolean) value.get("active"));
+            groups.put(group.getKey().toString(), value);
         }
 
         return groups;

@@ -65,7 +65,6 @@ public class TerminDetail extends AppCompatActivity {
     public void onResume(){
        super.onResume();
         setAppointmentViewData();
-        setAppointmentListener();
         running = true;
     };
 
@@ -91,7 +90,9 @@ public class TerminDetail extends AppCompatActivity {
 
         TerminDetail.this.positivText.setText(appointment.getPositivVotings());
         TerminDetail.this.negativText.setText(appointment.getNegativVotings());
+
         setVotingListener();
+        setAppointmentListener();
 
         //if(!appointment.getVotingend() || appointment.isStarted()){
             setTitle();

@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
-        initDataManagement();
         if (!requestLocationUpdates()) {
             location_service = new Intent(getApplicationContext(), Location.class);
             startService(location_service);
@@ -82,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
+        initDataManagement();
         requestLocationUpdates();
     }
 
@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
             setUserDataListener();
             setGroupDataListener();
             setAppointmentListener();
+            setRankingDataListener();
             MainActivity.dataProvider.loadData();
         } catch (Exception e){
             Log.d(TAG, e.getMessage());
@@ -161,6 +162,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onUserDataChanged() {
                 MenueTab.username.setText(dataProvider.getActiveUser().getUsername());
+            }
+        });
+    }
+
+    private void setRankingDataListener(){
+        MainActivity.dataProvider.setRankingDataListener(new DataProvider.RankingDataListener() {
+            @Override
+            public void onRankingDataListenerChanged() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<String> users = dataProvider.getRankingStrings();
+                        ArrayAdapter<String> rankingMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, users);
+                        TeilnehmerTab.memberList.setAdapter(rankingMemberAdapter);
+                    }
+                });
             }
         });
     }
@@ -214,14 +231,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAppointmentCreatedListener() {
                 NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin erstellt", "Ein Termin wurde erstellt");
-                notificationHelper.notify(102, notificationBuilder);
+                notificationHelper.notify(105, notificationBuilder);
             }
         });
         MainActivity.dataProvider.setAppointmentStartListener(new DataProvider.AppointmentStartListener() {
             @Override
             public void onAppointmentStart(Appointment appointment) {
                 NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin gestartet", "Termin "+appointment.getTitle()+ " ist gestartet");
-                notificationHelper.notify(102, notificationBuilder);
+                notificationHelper.notify(104, notificationBuilder);
             }
         });
 
@@ -229,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAppointmentEnds(Appointment appointment) {
                 NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin beendet", "Termin "+appointment.getTitle()+ " ist beendet");
-                notificationHelper.notify(102, notificationBuilder);
+                notificationHelper.notify(103, notificationBuilder);
             }
         });
 
