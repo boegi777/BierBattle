@@ -133,11 +133,11 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
                             break;
                     }
                 }
+                loaded = true;
                 if(Appointment.this.getActive() || !Appointment.this.getVotingend()){
-                    loaded = true;
                     Appointment.this.watchAppointment();
                 } else {
-                    parentRef.getAppointments().remove(Appointment.this);
+                    parentRef.getAppointments().remove(appointmentId);
                 }
             }
 

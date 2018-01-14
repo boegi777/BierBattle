@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Group implements DataProvider.DatabaseReferenceObject{
 
@@ -25,19 +26,26 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     //private String endtime = "";
     //private boolean active = false;
     private List<Member> members = null;
-    private List<Appointment> appointments = null;
+    private HashMap<String, Appointment> appointments = null;
+
+    public Group(){
+        appointments = new HashMap<>();
+    }
 
     public String getGroupId(){ return this.groupId; }
     //public String getCategory() { return this.category; }
 
-    public List<Appointment> getAppointments(){
+    public HashMap<String, Appointment> getAppointments(){
         return appointments;
     }
     public List<Member> getMembers() { return members; }
 
     public Appointment getAppointment(Integer index) {
-        checkAppointmentActiveStatus(index);
-        return this.appointments.get(index);
+
+        List keys = new ArrayList(this.appointments.keySet());
+        String appointmentId = keys.get(index).toString();
+        checkAppointmentActiveStatus(appointmentId);
+        return this.appointments.get(appointmentId);
     }
 
     public Member getMember(String uid) throws ExceptionHelper.MemberNotFoundException{
@@ -72,9 +80,9 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     public ArrayList<String> getAppointmentTitles(){
         ArrayList<String> appointmentStrings = new ArrayList<String>();
         try {
-            for (Appointment appointment : this.appointments) {
-                if(appointment.getActive() || !appointment.getVotingend())
-                    appointmentStrings.add(appointment.toString());
+            for (Map.Entry<String, Appointment> appointment : this.appointments.entrySet()) {
+                if(appointment.getValue().getActive() || !appointment.getValue().getVotingend())
+                    appointmentStrings.add(appointment.getValue().toString());
 
             }
 
@@ -160,9 +168,9 @@ public class Group implements DataProvider.DatabaseReferenceObject{
 
     public Boolean checkAppointmentStarts(){
         Boolean starts = false;
-        for(Appointment appointment : getAppointments()){
-            if (appointment.isStarted() && !appointment.isBlocked()) {
-                appointment.setBlocked(true);
+        for(Map.Entry<String, Appointment> appointment : appointments.entrySet()){
+            if (appointment.getValue().isStarted() && !appointment.getValue().isBlocked()) {
+                appointment.getValue().setBlocked(true);
                 starts =  true;
                 break;
             }
@@ -170,18 +178,22 @@ public class Group implements DataProvider.DatabaseReferenceObject{
         return starts;
     }
 
-    public void checkAppointmentActiveStatus(int index){
-        if(!appointments.get(index).getActive() && appointments.get(index).getVotingend())
-            appointments.remove(index);
+    public void checkAppointmentActiveStatus(String appointmentId){
+        if(!appointments.get(appointmentId).getActive() && appointments.get(appointmentId).getVotingend())
+            appointments.remove(appointmentId);
     }
 
-    private List<Appointment> loadAppointments(DataSnapshot appointmentsDS){
-            appointments = new ArrayList<>();
+    private HashMap<String, Appointment> loadAppointments(DataSnapshot appointmentsDS){
             Appointment.clearThreadList();
             for(DataSnapshot appointmentDS : appointmentsDS.getChildren()) {
-                    Appointment appointment = new Appointment(this);
-                    appointment.loadObjectProperties(appointmentDS.getKey());
-                    appointments.add(appointment);
+                    Appointment appointment = appointments.get(appointmentDS.getKey().toString());
+                    if(appointment == null){
+                        appointment = new Appointment(this);
+                        appointment.loadObjectProperties(appointmentDS.getKey());
+                        appointments.put(appointmentDS.getKey(), appointment);
+                    } else {
+                        appointment.loadObjectProperties(appointmentDS.getKey());
+                    }
             }
             watchAppointments();
         return appointments;
@@ -213,8 +225,8 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     }
 
     private boolean checkAppointmentsLoaded(){
-        for(Appointment appointment : appointments){
-            if(!appointment.isLoaded()){
+        for(Map.Entry<String, Appointment> appointment : appointments.entrySet()){
+            if(!appointment.getValue().isLoaded()){
                 return false;
             }
         }

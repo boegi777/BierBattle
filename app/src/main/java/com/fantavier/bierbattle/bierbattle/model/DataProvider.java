@@ -148,7 +148,6 @@ public class DataProvider {
         return getActiveGroup().getRankOfMember(getActiveUser().getUserId()).toString();
     }
 
-
     public void checkAppointments(){
         Thread thread = new Thread(new Runnable() {
             @Override
