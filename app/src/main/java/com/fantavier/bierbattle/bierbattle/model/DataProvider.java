@@ -13,8 +13,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DataProvider {
@@ -136,9 +138,10 @@ public class DataProvider {
         user.getDbRef().child("groups").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, Boolean> groups = (HashMap<String, Boolean>) dataSnapshot.getValue();
-                for (Map.Entry<String, Boolean> entry : groups.entrySet()) {
-                    if (entry.getValue() == true) {
+                HashMap<String, HashMap<String, Object>> groups = (HashMap<String, HashMap<String, Object>>) dataSnapshot.getValue();
+                for (Map.Entry<String, HashMap<String, Object>> entry : groups.entrySet()) {
+                    Boolean active = (Boolean) entry.getValue().get("active");
+                    if (active == true) {
                         DataProvider.groupId = entry.getKey().toString();
                         loadGroupData();
                         break;

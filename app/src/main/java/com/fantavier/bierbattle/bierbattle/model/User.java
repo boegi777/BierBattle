@@ -64,8 +64,8 @@ public class User implements DataProvider.DatabaseReferenceObject {
         HashMap<String, Boolean> groups = new HashMap<>();
 
         for(DataSnapshot group : groupsDS.getChildren()){
-            boolean value = (boolean) group.getValue();
-            groups.put(group.getKey().toString(), value);
+            HashMap<String, Object> value = (HashMap<String, Object>) group.getValue();
+            groups.put(group.getKey().toString(), (Boolean) value.get("active"));
         }
 
         return groups;
