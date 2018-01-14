@@ -29,7 +29,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:fontFamily="sans-serif-condensed"
-            android:hint="Email"
+            android:hint="@string/email"
             android:inputType="textPersonName"
             android:textColor="?attr/colorPrimary"
             android:textSize="24sp" />

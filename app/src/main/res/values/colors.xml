@@ -4,4 +4,18 @@
     <color name="colorPrimaryDark">#303f9f</color>
     <color name="colorAccent">#ff4081</color>
     <color name="Logo_gelb">#ffee58</color>
+
+    <!-- Screens background -->
+    <color name="bg_screen1">#FFBB33</color>
+    <color name="bg_screen2">#FFA500</color>
+    <color name="bg_screen3">#FFBB00</color>
+    <color name="bg_screen4">#FFA500</color>
+    <color name="bg_screen5">#DAA520</color>
+
+    <!-- dots active colors -->
+    <color name="dot_active">#000000</color>
+
+    <!-- dots inactive colors -->
+    <color name="dot_inactive">#cccccc</color>
+
 </resources>
