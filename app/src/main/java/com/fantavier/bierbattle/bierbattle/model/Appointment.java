@@ -329,6 +329,9 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
             @Override
             public void run() {
                 try {
+                    if(alreadyStarts){
+                        Appointment.this.started = true;
+                    }
                     Thread.sleep(timeLeft);
                     if(alreadyStarts){
                         DataProvider.appointmentEndsListener.onAppointmentEnds(Appointment.this);
