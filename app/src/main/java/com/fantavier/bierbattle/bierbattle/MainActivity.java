@@ -239,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAppointmentStart(Appointment appointment) {
                 NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin gestartet", "Termin "+appointment.getTitle()+ " ist gestartet");
                 notificationHelper.notify(104, notificationBuilder);
+                appointment.checkAppointmentStatus();
             }
         });
 
@@ -247,6 +248,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAppointmentEnds(Appointment appointment) {
                 NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin beendet", "Termin "+appointment.getTitle()+ " ist beendet");
                 notificationHelper.notify(103, notificationBuilder);
+                appointment.checkAppointmentStatus();
             }
         });
 
@@ -255,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
             public void onVotingEnds(Appointment appointment) {
                 NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Abstimmung beendet", "Abstimmung für "+appointment.getTitle()+ " wurde beendet");
                 notificationHelper.notify(101, notificationBuilder);
+                appointment.checkAppointmentStatus();
             }
         });
     }

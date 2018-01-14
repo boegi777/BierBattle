@@ -13,6 +13,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -141,6 +148,30 @@ public class DataProvider {
         return getActiveGroup().getRankOfMember(getActiveUser().getUserId()).toString();
     }
 
+
+    public void checkAppointments(){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String groupId = getActiveGroup().getGroupId();
+                    URL url = new URL("https://us-central1-bierbattle.cloudfunctions.net/checkAppointments");
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("POST");
+
+                    BufferedWriter httpRequestBodyWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
+                    httpRequestBodyWriter.write("groupId="+groupId);
+                    httpRequestBodyWriter.close();
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                } catch(IOException ex){
+                    Thread.interrupted();
+                    Log.d(TAG, ex.getMessage());
+                }
+            }
+        });
+        thread.start();
+    }
     private void loadUserData(){
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         user.loadObjectProperties(uid);

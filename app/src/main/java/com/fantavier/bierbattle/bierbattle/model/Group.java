@@ -161,7 +161,8 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     public Boolean checkAppointmentStarts(){
         Boolean starts = false;
         for(Appointment appointment : getAppointments()){
-            if (appointment.isStarted()) {
+            if (appointment.isStarted() && !appointment.isBlocked()) {
+                appointment.setBlocked(true);
                 starts =  true;
                 break;
             }
