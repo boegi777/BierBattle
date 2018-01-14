@@ -118,7 +118,7 @@
             android:background="@color/colorPrimary"
             android:contentDescription="@string/zahl_plus"
             android:scaleType="fitCenter"
-            android:src="@drawable/plusweiss"
+            android:src="@drawable/weissplus"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.099"
