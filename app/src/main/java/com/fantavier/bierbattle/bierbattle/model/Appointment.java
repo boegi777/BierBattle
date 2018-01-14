@@ -45,7 +45,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     private Boolean weekly = false;
     private Boolean active = false;
     private Boolean started = false;
-    private Boolean watcherRuns = false;
+    private Boolean loaded = false;
 
     public Appointment(Group parentRef){
         this.parentRef = parentRef;
@@ -67,6 +67,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     public Boolean getWeekly(){
         return this.weekly;
     }
+    public Boolean isLoaded() { return this.loaded; }
     public HashMap<String, Boolean> getVotings(){ return this.votings; }
 
     public void setVoting(String uid, Boolean vote){
@@ -127,11 +128,11 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
                     }
                 }
                 if(Appointment.this.getActive() || !Appointment.this.getVotingend()){
+                    loaded = true;
                     Appointment.this.watchAppointment();
                 } else {
                     parentRef.getAppointments().remove(Appointment.this);
                 }
-                DataProvider.appointmentListener.onAppointmentDataChangedListener();
             }
 
             @Override
@@ -305,54 +306,56 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     }
 
     private void createVotingWatcherThread(final Long timeLeft){
-        checkThreadIsRunning("voting");
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(timeLeft);
-                    DataProvider.votingEndsListener.onVotingEnds(Appointment.this);
-                    checkAppointmentStatus();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        if(!checkThreadIsRunning("voting")) {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(timeLeft);
+                        DataProvider.votingEndsListener.onVotingEnds(Appointment.this);
+                        checkAppointmentStatus();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
-        thread.setName(Appointment.this.appointmentId + "-voting");
-        Appointment.threads.add(thread);
-        thread.start();
+            });
+            thread.setName(Appointment.this.appointmentId + "-voting");
+            Appointment.threads.add(thread);
+            thread.start();
+        }
     }
 
     private void createWatcherStartThread(final Long timeLeft, final Boolean alreadyStarts) {
-        checkThreadIsRunning("start");
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if(alreadyStarts){
-                        Appointment.this.started = true;
+        if(!checkThreadIsRunning("start")) {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (alreadyStarts) {
+                            Appointment.this.started = true;
+                        }
+                        Thread.sleep(timeLeft);
+                        if (alreadyStarts) {
+                            DataProvider.appointmentEndsListener.onAppointmentEnds(Appointment.this);
+                            Appointment.this.started = false;
+                            checkAppointmentStatus();
+                        } else {
+                            Appointment.this.started = true;
+                            DataProvider.appointmentStartListener.onAppointmentStart(Appointment.this);
+                            Thread.sleep(600000);
+                            DataProvider.appointmentEndsListener.onAppointmentEnds(Appointment.this);
+                            Appointment.this.started = false;
+                            checkAppointmentStatus();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    Thread.sleep(timeLeft);
-                    if(alreadyStarts){
-                        DataProvider.appointmentEndsListener.onAppointmentEnds(Appointment.this);
-                        Appointment.this.started = false;
-                        checkAppointmentStatus();
-                    } else {
-                        Appointment.this.started = true;
-                        DataProvider.appointmentStartListener.onAppointmentStart(Appointment.this);
-                        Thread.sleep(600000);
-                        DataProvider.appointmentEndsListener.onAppointmentEnds(Appointment.this);
-                        Appointment.this.started = false;
-                        checkAppointmentStatus();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
-            }
-        });
-        thread.setName(Appointment.this.appointmentId + "-start");
-        Appointment.threads.add(thread);
-        thread.start();
+            });
+            thread.setName(Appointment.this.appointmentId + "-start");
+            Appointment.threads.add(thread);
+            thread.start();
+        }
     }
 
     private Boolean checkThreadIsRunning(String threadSuffix){

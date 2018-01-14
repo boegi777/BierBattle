@@ -175,10 +175,6 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     }
 
     private List<Appointment> loadAppointments(DataSnapshot appointmentsDS){
-            Integer oldCount = 0;
-            if(Appointment.count > 0){
-                oldCount = Appointment.count;
-            }
             appointments = new ArrayList<>();
             Appointment.clearThreadList();
             for(DataSnapshot appointmentDS : appointmentsDS.getChildren()) {
@@ -186,11 +182,42 @@ public class Group implements DataProvider.DatabaseReferenceObject{
                     appointment.loadObjectProperties(appointmentDS.getKey());
                     appointments.add(appointment);
             }
-            Appointment.count = appointments.size();
-            if(oldCount != 0 && oldCount < Appointment.count){
-                DataProvider.appointmentCreatedListener.onAppointmentCreatedListener();
-            }
+            watchAppointments();
         return appointments;
+    }
+
+    private void watchAppointments(){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Boolean running = true;
+                    while(running){
+                        if(checkAppointmentsLoaded()){
+                            if(DataProvider.appointmentListener != null){
+                                running = false;
+                                DataProvider.appointmentListener.onAppointmentDataChangedListener();
+                                Thread.interrupted();
+                            }
+                        }
+                        Thread.sleep(1000);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.setName("WatchAppointments");
+        thread.start();
+    }
+
+    private boolean checkAppointmentsLoaded(){
+        for(Appointment appointment : appointments){
+            if(!appointment.isLoaded()){
+                return false;
+            }
+        }
+        return true;
     }
 
     private List<Member> loadMembers(DataSnapshot membersDS){

@@ -154,6 +154,7 @@ public class DataProvider {
         FirebaseDatabase.getInstance().getReference("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                ranking.clear();
                 for(DataSnapshot userDS : dataSnapshot.getChildren()){
                     User user = new User();
                     user.loadObjectProperties(userDS.getKey());

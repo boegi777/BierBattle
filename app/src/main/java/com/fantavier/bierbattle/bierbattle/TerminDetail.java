@@ -95,9 +95,7 @@ public class TerminDetail extends AppCompatActivity {
         setAppointmentListener();
         setTitle();
 
-        if(!appointment.getVotingend() || appointment.isStarted()){
-
-
+        if(!appointment.getVotingend()){
             positivButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -112,8 +110,6 @@ public class TerminDetail extends AppCompatActivity {
                     TerminDetail.this.getAppointment().setVoting(uid, false);
                 }
             });
-        //} else {
-            //appointmentTitle.setText("Abstimmung\n beendet");
         }
     }
 
