@@ -58,6 +58,8 @@ public class DateHelper {
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DATE, day);
+        calendar.set(Calendar.HOUR, hour);
+        calendar.set(Calendar.MINUTE, minute);
 
         return calendar.getTimeInMillis();
     }
