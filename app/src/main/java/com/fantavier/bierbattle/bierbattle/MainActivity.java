@@ -41,10 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private Intent location_service;
 
-   // boolean locked = false;
-   //SharedPreferences prefs = PreferenceManager
-    //        .getDefaultSharedPreferences(getApplicationContext());
-    //Boolean statusLocked = prefs.edit().putBoolean("locked", locked).commit();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +50,9 @@ public class MainActivity extends AppCompatActivity {
                 .getDefaultSharedPreferences(this);
 
         if (!prefs.getBoolean("locked", false)){
-//            Log.d("hallo", String.valueOf(prefs.getBoolean("locked", false)));
             SharedPreferences.Editor editor = prefs.edit();
-            //editor.putBoolean("locked", false);
             editor.putBoolean("locked", true);
             editor.apply();
-  //          Log.d("hallo", String.valueOf(prefs.getBoolean("locked", false)));
             startActivity(new Intent(this, IntroActivity.class));
         }
 
