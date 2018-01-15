@@ -46,7 +46,6 @@ public class DateHelper {
 
         SimpleDateFormat df = new SimpleDateFormat("hh:mm");
         Date d1 = null;
-
         try {
             d1 = df.parse(time);
         } catch (ParseException e) {
@@ -54,12 +53,12 @@ public class DateHelper {
         }
 
         Calendar calendar = Calendar.getInstance();
-        //calendar.setTime(d1);
+        calendar.setTime(d1);
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
-        calendar.set(Calendar.HOUR_OF_DAY, d1.getHours());
-        calendar.set(Calendar.MINUTE, d1.getMinutes());
+        //calendar.set(Calendar.HOUR_OF_DAY, d1.getHours());
+        //calendar.set(Calendar.MINUTE, d1.getMinutes());
 
         return calendar.getTimeInMillis();
     }
