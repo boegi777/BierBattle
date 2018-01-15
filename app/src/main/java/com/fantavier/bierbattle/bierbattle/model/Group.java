@@ -184,7 +184,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     }
 
     private HashMap<String, Appointment> loadAppointments(DataSnapshot appointmentsDS){
-            //Appointment.clearThreadList();
+            Appointment.clearThreadList();
             for(DataSnapshot appointmentDS : appointmentsDS.getChildren()) {
                     Appointment appointment = appointments.get(appointmentDS.getKey().toString());
                     if(appointment == null){
