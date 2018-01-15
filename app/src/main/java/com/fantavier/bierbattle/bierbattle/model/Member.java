@@ -21,6 +21,7 @@ public class Member implements Comparable, DataProvider.DatabaseReferenceObject 
     private int points = 0;
     private boolean active;
     private Group parentRef = null;
+    private DataProvider.PropertiesLoaded propertiesLoaded = null;
 
     public Member(Group parentRef){
         this.parentRef = parentRef;
@@ -83,6 +84,11 @@ public class Member implements Comparable, DataProvider.DatabaseReferenceObject 
                 throw databaseError.toException();
             }
         });
+    }
+
+    @Override
+    public void setPropertiesLoaded(DataProvider.PropertiesLoaded listener) {
+        propertiesLoaded = listener;
     }
 
     private void loadMemberName(String memberId){

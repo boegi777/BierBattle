@@ -7,19 +7,25 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.fantavier.bierbattle.bierbattle.model.DataProvider;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Mir on 14.12.2017.
  */
 
 public class BierschuldenZaehler extends AppCompatActivity {
-    ListView listView ;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bierschulden);
         Button buttonNew = (Button) findViewById(R.id.zurueck);
         ListView simpleList;
-        ListView min;
-
 
         buttonNew.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -28,21 +34,47 @@ public class BierschuldenZaehler extends AppCompatActivity {
             }
         });
 
+        MainActivity.dataProvider.getActiveUserBeerResults();
 
-        listView = (ListView) findViewById(R.id.plusview);
-        min = (ListView) findViewById(R.id.minusview);
+        final ListView max = (ListView) findViewById(R.id.plusview);
+        final ListView min = (ListView) findViewById(R.id.minusview);
 
-        String[] plus = new String[] { "Paul   3", "Juri   1", "Peter   2"};
+        //final String[] plus = new String[];
 
-        String[] minus = new String[] { "Ursula   1", "Anja   5", "Frank   1", "Ulf   2"};
+        MainActivity.dataProvider.setUsersBeercountLoadedListener(new DataProvider.UsersBeercountLoadedListener() {
+            @Override
+            public void onUsersBeercountLoaded(final HashMap<String, Integer> userData, final Boolean debts) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(debts == true){
+                            final List<String> minus = new ArrayList<>();
+                            Iterator it = userData.entrySet().iterator();
+                            while(it.hasNext()){
+                                Map.Entry entry = (Map.Entry) it.next();
+                                String item = entry.getKey() + " " + entry.getValue().toString();
+                                minus.add(item);
+                            }
+                            ArrayAdapter<String> bdapter = new ArrayAdapter<String>(BierschuldenZaehler.this,
+                                    android.R.layout.simple_list_item_1, android.R.id.text1, minus);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_list_item_1, android.R.id.text1, plus);
+                            min.setAdapter(bdapter);
+                        } else {
+                            final List<String> plus = new ArrayList<>();
+                            Iterator it = userData.entrySet().iterator();
+                            while(it.hasNext()){
+                                Map.Entry entry = (Map.Entry) it.next();
+                                String item = entry.getKey() + " " + entry.getValue().toString();
+                                plus.add(item);
+                            }
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(BierschuldenZaehler.this,
+                                    android.R.layout.simple_list_item_1, android.R.id.text1, plus);
 
-        ArrayAdapter<String> bdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, minus);
-
-        listView.setAdapter(adapter);
-        min.setAdapter(bdapter);
+                            max.setAdapter(adapter);
+                        }
+                    }
+                });
+            }
+        });
     }
 }

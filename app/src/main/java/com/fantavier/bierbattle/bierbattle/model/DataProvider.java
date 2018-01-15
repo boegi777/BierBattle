@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +39,7 @@ public class DataProvider {
     public static AppointmentStartListener appointmentStartListener = null;
     public static AppointmentEndsListener appointmentEndsListener = null;
     public static VotingEndsListener votingEndsListener = null;
+    public static UsersBeercountLoadedListener usersBeercountLoadedListener = null;
 
     private static final String TAG = "DataProvider";
     private static String groupId = "";
@@ -53,6 +56,11 @@ public class DataProvider {
     public interface DatabaseReferenceObject{
         DatabaseReference getDbRef();
         void loadObjectProperties(String id);
+        void setPropertiesLoaded(PropertiesLoaded listener);
+    }
+
+    public interface PropertiesLoaded {
+        void onPropertiesLoaded();
     }
 
     public interface UserDataListener {
@@ -91,6 +99,10 @@ public class DataProvider {
         void onVotingEnds(Appointment appointment);
     }
 
+    public interface UsersBeercountLoadedListener{
+        void onUsersBeercountLoaded(HashMap<String, Integer> userData, Boolean debts);
+    }
+
     public void setUserDataListener(UserDataListener listener) { userListener = listener; }
     public void setGroupDataListener(GroupDataListener listener){ groupListener = listener; }
     public void setRankingDataListener(RankingDataListener listener) { rankingDataListener = listener; }
@@ -100,6 +112,7 @@ public class DataProvider {
     public void setAppointmentStartListener(AppointmentStartListener listener) { appointmentStartListener = listener; }
     public void setAppointmentEndsListener(AppointmentEndsListener listener) { appointmentEndsListener = listener; }
     public void setVotingEndsListener(VotingEndsListener listener) { votingEndsListener = listener; }
+    public void setUsersBeercountLoadedListener(UsersBeercountLoadedListener listener) { usersBeercountLoadedListener = listener; }
 
     public static void createUser(Map<String, String> userData) {
         try {
@@ -142,6 +155,59 @@ public class DataProvider {
         Member member = getActiveGroup().getMember(getActiveUser().getUserId());
         member.setPoints(points);
 
+    }
+
+    public void getActiveUserBeerResults(){
+        FirebaseDatabase.getInstance().getReference().child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final HashMap<String, Integer> debts = getActiveUser().getDepts();
+                final HashMap<String, Integer> debtsWithNames = new HashMap<>();
+
+                final HashMap<String, Integer> earnings = getActiveUser().getEarnings();
+                final HashMap<String, Integer> earningsWithNames = new HashMap<>();
+
+                Iterator itDebts = debts.entrySet().iterator();
+                while(itDebts.hasNext()){
+                    Map.Entry debt = (Map.Entry) itDebts.next();
+                    final Integer value = Integer.parseInt(debt.getValue().toString());
+                    final User user = new User();
+                    user.loadObjectProperties(debt.getKey().toString());
+                    user.setPropertiesLoaded(new PropertiesLoaded() {
+                        @Override
+                        public void onPropertiesLoaded() {
+                            debtsWithNames.put(user.getUsername(), value);
+                            if(debtsWithNames.size() == debts.size()){
+                                DataProvider.usersBeercountLoadedListener.onUsersBeercountLoaded(debtsWithNames, true);
+                            }
+                        }
+                    });
+
+                }
+
+                Iterator itEarnings = earnings.entrySet().iterator();
+                while(itEarnings.hasNext()){
+                    Map.Entry entry = (Map.Entry) itEarnings.next();
+                    final Integer value = Integer.parseInt(entry.getValue().toString());
+                    final User user = new User();
+                    user.loadObjectProperties(entry.getKey().toString());
+                    user.setPropertiesLoaded(new PropertiesLoaded() {
+                        @Override
+                        public void onPropertiesLoaded() {
+                            earningsWithNames.put(user.getUsername(), value);
+                            if(earningsWithNames.size() == earnings.size()){
+                                DataProvider.usersBeercountLoadedListener.onUsersBeercountLoaded(earningsWithNames, false);
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                throw databaseError.toException();
+            }
+        });
     }
 
     public String getUserrank() throws ExceptionHelper.MemberNotFoundException{

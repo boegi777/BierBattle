@@ -20,6 +20,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
 
     private static final String TAG = "Group";
     private DatabaseReference dbRef = null;
+    private DataProvider.PropertiesLoaded propertiesLoaded = null;
     private String groupId = "";
     //private String category = "";
     //private String starttime = "";
@@ -164,6 +165,11 @@ public class Group implements DataProvider.DatabaseReferenceObject{
                 throw databaseError.toException();
             }
         });
+    }
+
+    @Override
+    public void setPropertiesLoaded(DataProvider.PropertiesLoaded listener) {
+        propertiesLoaded = listener;
     }
 
     public Boolean checkAppointmentStarts(){
