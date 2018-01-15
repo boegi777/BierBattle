@@ -35,6 +35,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     private DatabaseReference dbRef = null;
     private HashMap<String, Boolean> votings = null;
     private Group parentRef = null;
+    private DataProvider.PropertiesLoaded propertiesLoaded = null;
     private Long createtime = 0l;
     private String appointmentId = "";
     private String title = "";
@@ -146,6 +147,11 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
                 throw databaseError.toException();
             }
         });
+    }
+
+    @Override
+    public void setPropertiesLoaded(DataProvider.PropertiesLoaded listener) {
+        propertiesLoaded = listener;
     }
 
     @Override

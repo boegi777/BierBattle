@@ -20,13 +20,18 @@ public class User implements DataProvider.DatabaseReferenceObject {
     private String userId;
     private String username;
     private String category;
+    private HashMap<String, Integer> debts = null;
+    private HashMap<String, Integer> earnings = null;
     private Boolean active = false;
     private Boolean loaded = true;
     private HashMap<String, HashMap<String, Object>> groups;
+    private DataProvider.PropertiesLoaded propertiesLoaded = null;
 
     public String getUserId(){ return userId; }
     public String getUsername() { return username; }
     public String getCategory() { return category; }
+    public HashMap<String, Integer> getDepts(){ return debts; }
+    public HashMap<String, Integer> getEarnings(){ return earnings; }
     public Boolean getActive() { return active; }
     public Boolean isLoaded() { return loaded; }
     public HashMap<String, HashMap<String, Object>> getGroups(){ return groups; }
@@ -56,10 +61,21 @@ public class User implements DataProvider.DatabaseReferenceObject {
                         case "category":
                             User.this.category = userData.getValue().toString();
                             break;
+                        case "debts":
+                            User.this.debts = (HashMap<String, Integer>) userData.getValue();
+                            break;
+                        case "earnings":
+                            User.this.earnings = (HashMap<String, Integer>) userData.getValue();
+                            break;
                     }
-                    loaded = true;
-                    if(DataProvider.isActiveUser(userId));
-                        DataProvider.userListener.onUserDataChanged();
+                }
+                loaded = true;
+
+                if(DataProvider.isActiveUser(userId)) {
+                    DataProvider.userListener.onUserDataChanged();
+                }
+                if(User.this.propertiesLoaded != null){
+                    User.this.propertiesLoaded.onPropertiesLoaded();
                 }
             }
 
@@ -68,6 +84,11 @@ public class User implements DataProvider.DatabaseReferenceObject {
                 throw databaseError.toException();
             }
         });
+    }
+
+    @Override
+    public void setPropertiesLoaded(DataProvider.PropertiesLoaded listener) {
+        propertiesLoaded = listener;
     }
 
     @Override
