@@ -17,8 +17,8 @@
             android:layout_height="200dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Email"
-            android:inputType="textPersonName"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress|textPersonName"
             android:textSize="24sp" />
 
         <EditText
@@ -27,7 +27,7 @@
             android:layout_height="200dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Benutzername"
+            android:hint="@string/bname"
             android:inputType="textPersonName"
             android:textSize="24sp" />
 
@@ -44,7 +44,7 @@
             android:layout_height="200dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Passwort"
+            android:hint="@string/passwort"
             android:inputType="textPassword"
             android:textSize="24sp" />
 
@@ -54,7 +54,7 @@
             android:layout_height="200dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Passwort wiederholen"
+            android:hint="@string/pw_wiederh"
             android:inputType="textPassword"
             android:textSize="24sp" />
 

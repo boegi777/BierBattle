@@ -13,6 +13,11 @@
     <string name="zahl_minus">2</string>
     <string name="rank">1</string>
     <string name="regestrierung">Regestrierung</string>
+    <string name="passwort">Passwort</string>
+    <string name="pw_wiederh">Passwort wiederholen</string>
+    <string name="bname">Benutzername</string>
+    <string name="login">Login</string>
+    <string name="termin">Neuer Termin</string>
 
 
     <string name="next">Next</string>
