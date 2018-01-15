@@ -23,6 +23,8 @@ import java.util.Map;
  */
 
 public class BierschuldenZaehler extends AppCompatActivity {
+    public ListView max = null;
+    public ListView min = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +41,17 @@ public class BierschuldenZaehler extends AppCompatActivity {
 
         MainActivity.dataProvider.getActiveUserBeerResults();
 
-        final ListView max = (ListView) findViewById(R.id.plusview);
-        final ListView min = (ListView) findViewById(R.id.minusview);
+        max = (ListView) findViewById(R.id.plusview);
+        min = (ListView) findViewById(R.id.minusview);
 
-        //final String[] plus = new String[];
+    }
 
+    public void onResume(){
+        super.onResume();
+        resumeViewData(this.max, this.min);
+    }
+
+    private void resumeViewData(final ListView max, final ListView min){
         MainActivity.dataProvider.setUsersBeercountLoadedListener(new DataProvider.UsersBeercountLoadedListener() {
             @Override
             public void onUsersBeercountLoaded(final HashMap<String, Integer> userData, final Boolean debts) {
