@@ -54,12 +54,12 @@ public class DateHelper {
         }
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(d1);
+        //calendar.setTime(d1);
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DATE, day);
-        calendar.set(Calendar.HOUR, hour);
-        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.HOUR_OF_DAY, d1.getHours());
+        calendar.set(Calendar.MINUTE, d1.getMinutes());
 
         return calendar.getTimeInMillis();
     }
