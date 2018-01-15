@@ -18,6 +18,14 @@
     <string name="bname">Benutzername</string>
     <string name="login">Login</string>
     <string name="termin">Neuer Termin</string>
+    <string name="datum">Datum:</string>
+    <string name="uhrzeit">Uhrzeit:</string>
+    <string name="ort">Ort:</string>
+    <string name="text">Text</string>
+    <string name="woechentlich">Wöchentlich</string>
+    <string name="abstimmung">Abstimmung</string>
+
+
 
 
     <string name="next">Next</string>
