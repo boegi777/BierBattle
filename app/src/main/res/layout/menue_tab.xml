@@ -92,10 +92,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.148"
+            app:layout_constraintHorizontal_bias="0.157"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.862" />
+            app:layout_constraintVertical_bias="0.843" />
 
         <ImageButton
             android:id="@+id/imageButton"
@@ -107,10 +107,10 @@
             android:src="@drawable/linebutton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.907"
+            app:layout_constraintHorizontal_bias="0.108"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.24" />
+            app:layout_constraintVertical_bias="0.173" />
 
         <ImageButton
             android:id="@+id/imageButton4"
@@ -122,10 +122,10 @@
             android:src="@drawable/weissplus"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.099"
+            app:layout_constraintHorizontal_bias="0.907"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.233" />
+            app:layout_constraintVertical_bias="0.173" />
 
         <TextView
             android:id="@+id/debtCount"
@@ -138,15 +138,15 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.865"
+            app:layout_constraintHorizontal_bias="0.862"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.862" />
+            app:layout_constraintVertical_bias="0.843" />
 
         <ImageButton
             android:id="@+id/bier"
-            android:layout_width="123dp"
-            android:layout_height="122dp"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
             android:layout_gravity="center_horizontal"
             android:background="@color/colorPrimary"
             android:contentDescription="@android:string/ok"

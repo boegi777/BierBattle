@@ -30,7 +30,8 @@
             android:editable="false"
             android:ems="10"
             android:hint="@string/datum"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:focusableInTouchMode="false"/>
 
 
         <EditText
@@ -42,7 +43,8 @@
             android:ems="10"
             android:hint="@string/uhrzeit"
             android:inputType="none"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:focusableInTouchMode="false"/>
 
 
         <EditText
