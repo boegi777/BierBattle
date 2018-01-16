@@ -43,6 +43,6 @@
     <string name="title_slide5">Community</string>
     <string name="desc_slide5">Eine Übersicht von allen Komilitonen die beim BierBattle mitmachen</string>
     <string name="title_slide6">Bierschuldenzähler</string>
-    <string name="desc_slide6">Die Früchte deiner "Arbeit". \n Hier siehst du von wem du noch ein Bier schuldest oder von wem du noch eins bekommst</string>
+    <string name="desc_slide6">Die Früchte deiner "Arbeit". \n Hier siehst du wem du noch ein Bier schuldest oder von wem du noch eins bekommst</string>
 
 </resources>
