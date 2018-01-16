@@ -39,7 +39,7 @@
     <string name="title_slide3">Events</string>
     <string name="desc_slide3">Du kannst neue Termine erstellen an denen Ihr Punkte sammeln könnt</string>
     <string name="title_slide4">Punkte</string>
-    <string name="desc_slide4">Um Punkte zubekommen müsst Ihr euch an der Hochschule Hannover befinden oder die QR-Codes bei den Terminen mit dem integrierten Scanner scannen </string>
+    <string name="desc_slide4">Um Punkte zubekommen müsst Ihr wärend eines Termins an der Hochschule Hannover befinden oder den ausgehangenden QR-Code mit dem integrierten Scanner scannen </string>
     <string name="title_slide5">Community</string>
     <string name="desc_slide5">Eine Übersicht von allen Komilitonen die beim BierBattle mitmachen</string>
     <string name="title_slide6">Bierschuldenzähler</string>

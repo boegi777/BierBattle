@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+//Klasse für das Intro
 public class IntroActivity extends Activity {
 
     private ViewPager viewPager;
