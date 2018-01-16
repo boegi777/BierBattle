@@ -62,7 +62,7 @@
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:fontFamily="sans-serif-smallcaps"
-                android:text="Login"
+                android:text="@string/login"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textSize="20sp"
