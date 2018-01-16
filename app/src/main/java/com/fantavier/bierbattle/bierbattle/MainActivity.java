@@ -49,9 +49,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Intro
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(this);
 
+        //Prüft ob Intro schon einmal aufgerufen wurde
         if (!prefs.getBoolean("locked", false)){
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean("locked", true);
@@ -59,17 +61,20 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, IntroActivity.class));
         }
 
+        //Setzten des Mainlayout
         setContentView(R.layout.activity_main);
 
         dataProvider = new DataProvider();
         notificationHelper = new NotificationHelper(MainActivity.this);
         location = new Location();
 
+        //Prüft ob Client eingeloggt ist
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
             Intent i = new Intent(this, Login.class);
             startActivity(i);
         }
 
+        //Setzt Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -77,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        //Setzt Menü
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -85,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //startet Lokaliesierung
     @Override
     public void onStart(){
         super.onStart();
@@ -95,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Prüft Berechtigung
     @Override
     public void onResume(){
         super.onResume();
@@ -102,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         requestLocationUpdates();
     }
 
+    //Stoppt Lokalisierung
     @Override
     public void onDestroy(){
         moveTaskToBack(true);

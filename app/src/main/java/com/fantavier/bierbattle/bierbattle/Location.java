@@ -17,7 +17,7 @@ import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
 
 
 
-
+//Klasse zur Lokalisierung
 public class Location extends Service   {
 
     private LocationManager locationManager;
@@ -35,7 +35,7 @@ public class Location extends Service   {
         return null;
     }
 
-    @SuppressLint("MissingPermission") //Permissions are set in Mainactivity.class
+    @SuppressLint("MissingPermission") //Berechtigung wurde in der Mainactivity.class abgefragt
     @Override
     public void onCreate() {
 
@@ -43,6 +43,8 @@ public class Location extends Service   {
 
         listener = new LocationListener() {
 
+            //Wenn sich der Standort geändert hat wird die Distanz geprüft
+            //Wenn diese kleiner als hundert Meter ist wird ein Punkt verteilt
             @Override
             public void onLocationChanged(android.location.Location location) {
                 latitude = location.getLatitude();
@@ -68,6 +70,7 @@ public class Location extends Service   {
             public void onProviderEnabled(String s) {
 
             }
+
             @Override
             public void onProviderDisabled(String s) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -87,6 +90,7 @@ public class Location extends Service   {
         }
     }
 
+    //Berechtigung der Distanz
     private double distance(double lat1, double lng1, double lat2, double lng2) {
         double earthRadius = 6371;
 

@@ -105,7 +105,7 @@
 
             <ListView
                 android:id="@+id/minusview"
-                android:layout_width="150dp"
+                android:layout_width="140dp"
                 android:layout_height="match_parent"
                 android:divider="@android:color/background_light"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -117,13 +117,13 @@
 
             <TextView
                 android:id="@+id/emptyview2"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
             <ListView
                 android:id="@+id/plusview"
-                android:layout_width="150sp"
+                android:layout_width="140sp"
                 android:layout_height="match_parent"
                 android:divider="@android:color/background_light"
                 app:layout_constraintBottom_toBottomOf="parent"

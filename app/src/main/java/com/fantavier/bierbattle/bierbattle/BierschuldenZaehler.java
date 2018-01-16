@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Created by Mir on 14.12.2017.
  */
-
+//Klasse für den Bierschuldenzähler
 public class BierschuldenZaehler extends AppCompatActivity {
     public ListView max = null;
     public ListView min = null;

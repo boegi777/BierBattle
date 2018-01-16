@@ -44,6 +44,7 @@ public class IntroActivity extends Activity {
         btnSkip = (Button) findViewById(R.id.btn_skip);
         btnNext = (Button) findViewById(R.id.btn_next);
 
+        //Setzen der Intro Seiten
         layouts = new int[]{
                 R.layout.slide1,
                 R.layout.slide2,
@@ -52,7 +53,6 @@ public class IntroActivity extends Activity {
                 R.layout.slide5,
                 R.layout.slide6};
 
-        // adding bottom dots
         addBottomDots(0);
 
         viewPagerAdapter = new ViewPagerAdapter();
@@ -70,11 +70,11 @@ public class IntroActivity extends Activity {
 
     public  void btnNextClick(View v)
     {
-        // checking for last page
-        // if last page home screen will be launched
+        // Prüft ob letzte Seite
+        // Startbildschirm wird auf der letzten Seite gestartet
         int current = getItem(1);
         if (current < layouts.length) {
-            // move to next screen
+            // Wechselt zur nächsten Seite
             viewPager.setCurrentItem(current);
         } else {
             launchHomeScreen();
@@ -88,13 +88,12 @@ public class IntroActivity extends Activity {
         public void onPageSelected(int position) {
             addBottomDots(position);
 
-            // changing the next button text 'NEXT' / 'GOT IT'
+            // Ändert den button text zu 'NEXT' / 'START'
             if (position == layouts.length - 1) {
-                // last page. make button text to GOT IT
+                // Ab letzter Seite ändert sich button text zu Start
                 btnNext.setText(getString(R.string.start));
                 btnSkip.setVisibility(View.GONE);
             } else {
-                // still pages are left
                 btnNext.setText(getString(R.string.next));
                 btnSkip.setVisibility(View.VISIBLE);
             }
@@ -133,6 +132,7 @@ public class IntroActivity extends Activity {
         return viewPager.getCurrentItem() + i;
     }
 
+    //Ruft MainActivity auf
     private void launchHomeScreen() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
