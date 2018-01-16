@@ -36,8 +36,6 @@ public class BierschuldenZaehler extends AppCompatActivity {
             }
         });
 
-        MainActivity.dataProvider.getActiveUserBeerResults();
-
         max = (ListView) findViewById(R.id.plusview);
         min = (ListView) findViewById(R.id.minusview);
 
@@ -49,6 +47,7 @@ public class BierschuldenZaehler extends AppCompatActivity {
     }
 
     private void resumeViewData(final ListView max, final ListView min){
+        MainActivity.dataProvider.getActiveUserBeerResults();
         MainActivity.dataProvider.setUsersBeercountLoadedListener(new DataProvider.UsersBeercountLoadedListener() {
             @Override
             public void onUsersBeercountLoaded(final HashMap<String, Integer> userData, final Boolean debts) {

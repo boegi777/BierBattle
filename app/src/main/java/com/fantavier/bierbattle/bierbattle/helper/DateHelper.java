@@ -31,8 +31,6 @@ import java.util.TimerTask;
 public class DateHelper {
 
     private static final String TAG = "DateHelper";
-    private static long serverTime = 0l;
-    private static Object timestampCreated;
 
     public static Long convertDateToMilliSec(String date, String time) {
         String[] dateArray = date.split("\\.");
@@ -57,8 +55,6 @@ public class DateHelper {
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
-        //calendar.set(Calendar.HOUR_OF_DAY, d1.getHours());
-        //calendar.set(Calendar.MINUTE, d1.getMinutes());
 
         return calendar.getTimeInMillis();
     }
