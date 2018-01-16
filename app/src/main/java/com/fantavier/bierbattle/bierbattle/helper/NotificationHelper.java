@@ -51,7 +51,7 @@ public class NotificationHelper extends ContextWrapper {
         return new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ONE_ID)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(R.drawable.beer)
+                .setSmallIcon(R.drawable.beers)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
 
