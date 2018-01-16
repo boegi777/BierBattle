@@ -6,6 +6,28 @@
     <string name="tab_text_4">Teilnehmer</string>
     <string name="action_logout">Logout</string>
     <string name="section_format">Hello World from section: %1$d</string>
-    <string name="zurück">Zurück</string>
+    <string name="zurueck">Zurück</string>
+
+    <string name="email">Email</string>
+    <string name="zahl_plus">4</string>
+    <string name="zahl_minus">2</string>
+    <string name="rank">1</string>
+
+
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
+    <string name="start">Start</string>
+    <string name="title_slide1">Welcome to BeerBattle</string>
+    <string name="desc_slide1">Mit dieser App kannst du dich mit deinen Komilitonen messen</string>
+    <string name="title_slide2">Battlegroup</string>
+    <string name="desc_slide2">Jede Woche wird ein neuer Durchlauf gestartet, in dem du gegen deine Gruppe antrittst </string>
+    <string name="title_slide3">Events</string>
+    <string name="desc_slide3">Du kannst neue Termine erstellen an denen Ihr Punkte sammeln könnt</string>
+    <string name="title_slide4">QR-Scanner</string>
+    <string name="desc_slide4">Die QR-Codes bei den Veranstaltungen müsst Ihr mit dem integrierten Scanner für Punkte scannen </string>
+    <string name="title_slide5">Community</string>
+    <string name="desc_slide5">Hier siehst du wer alles beim BierBattle mitmacht</string>
+    <string name="title_slide6">Bierschulden</string>
+    <string name="desc_slide6">Hier siehst du die Früchte deiner "Arbeit"</string>
 
 </resources>

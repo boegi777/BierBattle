@@ -28,8 +28,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:ems="10"
-            android:fontFamily="sans-serif-condensed"
-            android:hint="Email"
+            android:fontFamily="sans-serif"
+            android:hint="@string/email"
             android:inputType="textPersonName"
             android:textColor="?attr/colorPrimary"
             android:textSize="24sp" />
@@ -53,7 +53,7 @@
 
             <Button
                 android:id="@+id/login_button"
-                android:layout_width="wrap_content"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"

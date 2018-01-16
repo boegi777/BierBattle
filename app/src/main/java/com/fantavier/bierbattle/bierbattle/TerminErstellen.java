@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class TerminErstellen extends AppCompatActivity {
@@ -57,31 +58,26 @@ public class TerminErstellen extends AppCompatActivity {
     public void onStart(){
         super.onStart();
 
-
-        datePicker = new DatePickerDialog.OnDateSetListener() {
+        datePicker = new DatePickerDialog.OnDateSetListener(){
 
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-
-
-                // TODO Auto-generated method stub
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, monthOfYear);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                calendar.set(year, monthOfYear, dayOfMonth);
                 updateDate();
             }
 
         };
 
+
         timePicker = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                calendar.set(Calendar.HOUR, i);
-                calendar.set(Calendar.MINUTE, i1);
+                 calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),calendar.get(Calendar.DATE), i, i1);
                 updateTime();
             }
         };
+
+
 
         date.setOnClickListener(new View.OnClickListener() {
 

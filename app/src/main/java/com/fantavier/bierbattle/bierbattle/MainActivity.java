@@ -2,8 +2,10 @@ package com.fantavier.bierbattle.bierbattle;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
@@ -42,9 +44,21 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private Intent location_service;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(this);
+
+        if (!prefs.getBoolean("locked", false)){
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("locked", true);
+            editor.apply();
+            startActivity(new Intent(this, IntroActivity.class));
+        }
+
         setContentView(R.layout.activity_main);
 
         dataProvider = new DataProvider();
@@ -111,6 +125,11 @@ public class MainActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().signOut();
             finish();
         }
+
+        if (id == R.id.action_intro) {
+            startActivity(new Intent(this, IntroActivity.class));
+        }
+
 
         return super.onOptionsItemSelected(item);
     }

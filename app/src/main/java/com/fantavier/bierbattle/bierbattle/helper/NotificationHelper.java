@@ -28,8 +28,6 @@ public class NotificationHelper extends ContextWrapper {
         createChannels();
     }
 
-
-
     public void createChannels() {
         if (Build.VERSION.SDK_INT >= 26) {
             NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ONE_ID,
