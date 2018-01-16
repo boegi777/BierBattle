@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //Optionsmenü mit Lougot und Reaktivierung des Intros
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
