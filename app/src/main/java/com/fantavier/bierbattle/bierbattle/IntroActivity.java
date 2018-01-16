@@ -50,7 +50,7 @@ public class IntroActivity extends Activity {
                 R.layout.slide2,
                 R.layout.slide3,
                 R.layout.slide4,
-                R.layout.slide5,
+                //R.layout.slide5,
                 R.layout.slide6};
 
         addBottomDots(0);
