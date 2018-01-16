@@ -15,6 +15,7 @@
         <ImageView
             android:layout_width="@dimen/img_width"
             android:layout_height="@dimen/img_height"
+            android:contentDescription="@string/app_name"
             android:src="@drawable/camera" />
 
         <TextView

@@ -27,7 +27,7 @@
                 android:layout_columnSpan="1"
                 android:layout_marginBottom="10dp"
                 android:layout_row="0"
-                android:text="3"
+                android:text="@string/zahl"
                 android:textAlignment="textEnd"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -42,7 +42,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_row="0"
                 android:lines="2"
-                android:text="Abstimmung\n00:00"
+                android:text="@string/abstimmung"
                 android:textAlignment="center"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -54,7 +54,7 @@
                 android:layout_column="3"
                 android:layout_columnSpan="1"
                 android:layout_marginBottom="10dp"
-                android:text="3"
+                android:text="@string/zahl"
                 android:textAlignment="textStart"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -111,9 +111,8 @@
                 android:layout_weight="1"
                 android:paddingHorizontal="5dp"
                 android:paddingVertical="10dp"
-                android:text="Datum:"
-                android:textSize="30sp"
-                tools:text="Datum:" />
+                android:text="@string/datum"
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/appointmentDate"
@@ -122,7 +121,7 @@
                 android:layout_weight="1"
                 android:paddingHorizontal="5dp"
                 android:paddingVertical="10dp"
-                android:text="TextView"
+                android:text="@string/text"
                 android:textAlignment="textEnd"
                 android:textSize="30sp" />
         </LinearLayout>
@@ -141,7 +140,7 @@
                 android:layout_weight="1"
                 android:paddingHorizontal="5dp"
                 android:paddingVertical="10dp"
-                android:text="Uhrzeit:"
+                android:text="@string/uhrzeit"
                 android:textSize="30sp" />
 
             <TextView
@@ -151,7 +150,7 @@
                 android:layout_weight="1"
                 android:paddingHorizontal="5dp"
                 android:paddingVertical="10dp"
-                android:text="TextView"
+                android:text="@string/text"
                 android:textAlignment="textEnd"
                 android:textSize="30sp" />
         </LinearLayout>
@@ -170,7 +169,7 @@
                 android:layout_weight="1"
                 android:paddingHorizontal="5dp"
                 android:paddingVertical="10dp"
-                android:text="Ort:"
+                android:text="@string/ort"
                 android:textSize="30sp" />
 
             <TextView
@@ -180,7 +179,7 @@
                 android:layout_weight="1"
                 android:paddingHorizontal="5dp"
                 android:paddingVertical="10dp"
-                android:text="TextView"
+                android:text="@string/text"
                 android:textAlignment="textEnd"
                 android:textSize="30sp" />
         </LinearLayout>
@@ -197,10 +196,9 @@
             android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
             android:paddingHorizontal="5dp"
             android:paddingVertical="10dp"
-            android:text="Wöchentlich"
+            android:text="@string/woechentlich"
             android:textAlignment="viewStart"
             android:textColorLink="@color/colorPrimary"
-            android:textSize="30sp"
-            tools:text="Wöchentlich" />
+            android:textSize="30sp" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

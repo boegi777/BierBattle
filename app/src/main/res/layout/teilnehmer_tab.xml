@@ -24,6 +24,7 @@
         android:id="@+id/imageView"
         android:layout_width="74dp"
         android:layout_height="97dp"
+        android:contentDescription="@string/app_name"
         android:src="@drawable/dancing"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"

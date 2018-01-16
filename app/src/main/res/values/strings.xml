@@ -9,9 +9,24 @@
     <string name="zurueck">Zurück</string>
 
     <string name="email">Email</string>
-    <string name="zahl_plus">4</string>
-    <string name="zahl_minus">2</string>
-    <string name="rank">1</string>
+    <string name="zahl">0</string>
+    <string name="regestrierung">Regestrierung</string>
+    <string name="passwort">Passwort</string>
+    <string name="pw_wiederh">Passwort wiederholen</string>
+    <string name="bname">Benutzername</string>
+    <string name="login">Login</string>
+    <string name="termin">Neuer Termin</string>
+    <string name="datum">Datum:</string>
+    <string name="uhrzeit">Uhrzeit:</string>
+    <string name="ort">Ort:</string>
+    <string name="text">Text</string>
+    <string name="woechentlich">Wöchentlich</string>
+    <string name="abstimmung">Abstimmung</string>
+    <string name="titel">Titel</string>
+
+    <string name="schulden">Schulden</string>
+    <string name="verdienst">Verdienst</string>
+
 
 
     <string name="next">Next</string>
@@ -20,14 +35,14 @@
     <string name="title_slide1">Welcome to BeerBattle</string>
     <string name="desc_slide1">Mit dieser App kannst du dich mit deinen Komilitonen messen</string>
     <string name="title_slide2">Battlegroup</string>
-    <string name="desc_slide2">Jede Woche wird ein neuer Durchlauf gestartet, in dem du gegen deine Gruppe antrittst </string>
+    <string name="desc_slide2">Jeden Monat wird ein neuer Durchlauf gestartet, in dem du gegen deine Gruppe antrittst </string>
     <string name="title_slide3">Events</string>
     <string name="desc_slide3">Du kannst neue Termine erstellen an denen Ihr Punkte sammeln könnt</string>
-    <string name="title_slide4">QR-Scanner</string>
-    <string name="desc_slide4">Die QR-Codes bei den Veranstaltungen müsst Ihr mit dem integrierten Scanner für Punkte scannen </string>
+    <string name="title_slide4">Punkte</string>
+    <string name="desc_slide4">Um Punkte zubekommen müsst Ihr wärend eines Termins an der Hochschule Hannover befinden oder den ausgehangenden QR-Code mit dem integrierten Scanner scannen </string>
     <string name="title_slide5">Community</string>
-    <string name="desc_slide5">Hier siehst du wer alles beim BierBattle mitmacht</string>
-    <string name="title_slide6">Bierschulden</string>
-    <string name="desc_slide6">Hier siehst du die Früchte deiner "Arbeit"</string>
+    <string name="desc_slide5">Eine Übersicht von allen Komilitonen die beim BierBattle mitmachen</string>
+    <string name="title_slide6">Bierschuldenzähler</string>
+    <string name="desc_slide6">Die Früchte deiner "Arbeit". \n Hier siehst du wem du noch ein Bier schuldest oder von wem du noch eins bekommst</string>
 
 </resources>

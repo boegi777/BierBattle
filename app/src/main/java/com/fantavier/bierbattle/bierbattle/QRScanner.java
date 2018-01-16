@@ -16,7 +16,7 @@ import com.google.zxing.Result;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import static android.Manifest.permission.CAMERA;
 
-
+//Klasse für QRScanner
 public class QRScanner extends AppCompatActivity implements ZXingScannerView.ResultHandler{
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView mScannerView;
@@ -31,6 +31,8 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
         mScannerView = new ZXingScannerView(this);
         setContentView(mScannerView);
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+
+        //Prüft ob Berechtigung schon besteht
         if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
             if (checkPermission()) {
                 Toast.makeText(getApplicationContext(), "Permission already granted", Toast.LENGTH_LONG).show();
@@ -43,10 +45,12 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
         return ( ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA ) == PackageManager.PERMISSION_GRANTED);
     }
 
+    //Fragt nach der Berechtigung für die Kamera
     private void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{CAMERA}, REQUEST_CAMERA);
     }
 
+    //Request wird ausgewertet
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case REQUEST_CAMERA:
@@ -113,6 +117,7 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
         mScannerView.stopCamera();
     }
 
+    //Gescannter Code wird verarbeitet
     @Override
     public void handleResult(Result rawResult) {
         int requestValue = 0;

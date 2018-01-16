@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Titel:"
+            android:hint="@string/titel"
             android:inputType="textPersonName"
             android:textSize="30sp" />
 
@@ -27,10 +27,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ems="10"
-            android:hint="Datum:"
             android:editable="false"
-            android:textSize="30sp" />
+            android:ems="10"
+            android:hint="@string/datum"
+            android:textSize="30sp"
+            android:focusableInTouchMode="false"/>
 
 
         <EditText
@@ -40,9 +41,10 @@
             android:layout_weight="1"
             android:editable="false"
             android:ems="10"
-            android:hint="Uhrzeit:"
+            android:hint="@string/uhrzeit"
             android:inputType="none"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:focusableInTouchMode="false"/>
 
 
         <EditText
@@ -51,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Ort:"
+            android:hint="@string/ort"
             android:inputType="textPersonName"
             android:textSize="30sp" />
 
@@ -68,12 +70,11 @@
             android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
             android:paddingHorizontal="5dp"
             android:paddingVertical="10dp"
-            android:text="Wöchentlich"
+            android:text="@string/woechentlich"
             android:textAlignment="viewStart"
             android:textColor="@android:color/darker_gray"
             android:textColorLink="@color/colorPrimary"
-            android:textSize="30sp"
-            tools:text="Wöchentlich" />
+            android:textSize="30sp" />
 
         <Button
             android:id="@+id/createButton"
