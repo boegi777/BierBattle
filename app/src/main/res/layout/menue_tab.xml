@@ -68,10 +68,10 @@
         app:layout_constraintVertical_bias="0.859" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/earningCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="4"
+        android:text="0"
         android:textColor="@android:color/background_dark"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -82,11 +82,11 @@
         app:layout_constraintVertical_bias="0.589" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/debtCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-smallcaps"
-        android:text="2"
+        android:text="0"
         android:textColor="@android:color/background_dark"
         android:textSize="30sp"
         android:textStyle="bold"

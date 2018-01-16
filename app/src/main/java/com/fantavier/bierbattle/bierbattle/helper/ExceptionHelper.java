@@ -34,4 +34,8 @@ public class ExceptionHelper {
             super("ThreadList wurde nicht initialisiert");
         }
     }
+
+    public static class BeerCounterException extends Exception {
+        public BeerCounterException() { super("Ein Fehler ist aufgetreten!"); }
+    }
 }

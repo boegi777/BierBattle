@@ -26,13 +26,15 @@ import com.fantavier.bierbattle.bierbattle.model.Appointment;
 import com.fantavier.bierbattle.bierbattle.model.DataProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     public static DataProvider dataProvider = null;
-   // public static NotificationHelper notificationHelper = null;
+    public static NotificationHelper notificationHelper = null;
     public static Location location = null;
 
     private static final String TAG = "MainActivity";
@@ -46,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         dataProvider = new DataProvider();
-        //notificationHelper = new NotificationHelper(MainActivity.this);
+        notificationHelper = new NotificationHelper(MainActivity.this);
+        location = new Location();
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
             Intent i = new Intent(this, Login.class);
@@ -85,14 +88,12 @@ public class MainActivity extends AppCompatActivity {
         requestLocationUpdates();
     }
 
-
     @Override
     public void onDestroy(){
         moveTaskToBack(true);
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(1);
         super.onDestroy();
-
     }
 
 
@@ -152,7 +153,9 @@ public class MainActivity extends AppCompatActivity {
             setGroupDataListener();
             setAppointmentListener();
             setRankingDataListener();
+            setBeercountDataListener();
             MainActivity.dataProvider.loadData();
+            MainActivity.dataProvider.getActiveUserBeerResults();
         } catch (Exception e){
             Log.d(TAG, e.getMessage());
         }
@@ -163,6 +166,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onUserDataChanged() {
                 MenueTab.username.setText(dataProvider.getActiveUser().getUsername());
+            }
+        });
+    }
+
+    private void setBeercountDataListener(){
+        MainActivity.dataProvider.setUsersBeercountLoadedListener(new DataProvider.UsersBeercountLoadedListener() {
+            @Override
+            public void onUsersBeercountLoaded(final HashMap<String, Integer> userData, final Boolean debts) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(debts){
+                            MenueTab.debtCount.setText(MainActivity.this.getBeercountStrings(userData));
+                        } else {
+                            MenueTab.earningCount.setText(MainActivity.this.getBeercountStrings(userData));
+                        }
+                    }
+                });
             }
         });
     }
@@ -187,42 +208,50 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.dataProvider.setGroupDataListener(new DataProvider.GroupDataListener() {
             @Override
             public void onGroupeDataChanged() {
-            MainActivity.dataProvider.setAppointmentDataListener(new DataProvider.AppointmentDataListener() {
-                @Override
-                public void onAppointmentDataChangedListener() {
-                runOnUiThread(new Runnable() {
+                MainActivity.dataProvider.setAppointmentDataListener(new DataProvider.AppointmentDataListener() {
                     @Override
-                    public void run() {
-                        List<String> appointments = dataProvider.getActiveGroup().getAppointmentTitles();
-                        ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
-                        TermineTab.appointmentList.setAdapter(appointmentAdapter);
-                    }
-                });
-                }
-            });
-
-            MainActivity.dataProvider.setMemberDataListener(new DataProvider.MemberDataListener() {
-                @Override
-                public void onMemberDataChangedListener() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<String> members = dataProvider.getActiveGroup().getMemberTitles();
-                        ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, members);
-                        GruppeTab.groupList.setAdapter(groupMemberAdapter);
-                        try {
-                            MenueTab.rank.setText(MainActivity.dataProvider.getUserrank());
-                        } catch (NullPointerException e){
-                            Log.w(TAG, e.getMessage());
-                        } catch (ExceptionHelper.MemberNotFoundException e) {
-                            Log.w(TAG, e.getMessage());
-                            Toast.makeText(MainActivity.this, "Platzierung konnte nicht ermittelt werden.",
-                                    Toast.LENGTH_SHORT).show();
+                    public void onAppointmentDataChangedListener() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<String> appointments = dataProvider.getActiveGroup().getAppointmentTitles();
+                            ArrayAdapter<String> appointmentAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, appointments);
+                            TermineTab.appointmentList.setAdapter(appointmentAdapter);
                         }
+                    });
                     }
                 });
-                }
-            });
+
+                MainActivity.dataProvider.setMemberDataListener(new DataProvider.MemberDataListener() {
+                    @Override
+                    public void onMemberDataChangedListener() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<String> members = dataProvider.getActiveGroup().getMemberTitles();
+                            ArrayAdapter<String> groupMemberAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, members);
+                            GruppeTab.groupList.setAdapter(groupMemberAdapter);
+                            try {
+                                MenueTab.rank.setText(MainActivity.dataProvider.getUserrank());
+                            } catch (NullPointerException e){
+                                Log.w(TAG, e.getMessage());
+                            } catch (ExceptionHelper.MemberNotFoundException e) {
+                                Log.w(TAG, e.getMessage());
+                                Toast.makeText(MainActivity.this, "Platzierung konnte nicht ermittelt werden.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    }
+                });
+            }
+        });
+        MainActivity.dataProvider.setRoundEndListener(new DataProvider.RoundEndingListener() {
+            @Override
+            public void onRoundEnd() {
+                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Runde beendet!", "Runde beendet!");
+                notificationHelper.notify(106, notificationBuilder);
+                MainActivity.dataProvider.finishRound();
             }
         });
     }
@@ -233,7 +262,6 @@ public class MainActivity extends AppCompatActivity {
             public void onAppointmentCreatedListener() {
                 NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin erstellt", "Ein Termin wurde erstellt");
                 notificationHelper.notify(105, notificationBuilder);
-
             }
         });*/
         MainActivity.dataProvider.setAppointmentStartListener(new DataProvider.AppointmentStartListener() {
@@ -269,6 +297,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private boolean requestLocationUpdates() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -281,6 +310,17 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    private String getBeercountStrings(HashMap<String, Integer> userData){
+        Integer count = 0;
+        Iterator it = userData.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry entry = (Map.Entry) it.next();
+            count += (Integer) entry.getValue();
+        }
+        return count.toString();
+    }
+
+
     public void onRequestPermissionResults(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
@@ -291,8 +331,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-
-
 }
 
 

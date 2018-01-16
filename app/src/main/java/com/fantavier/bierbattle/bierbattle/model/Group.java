@@ -24,16 +24,18 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     private String groupId = "";
     //private String category = "";
     //private String starttime = "";
-    //private String endtime = "";
+    private Long endtime = 0l;
     //private boolean active = false;
     private List<Member> members = null;
     private HashMap<String, Appointment> appointments = null;
+    private Thread endtimeWatcher = null;
 
     public Group(){
         appointments = new HashMap<>();
     }
 
     public String getGroupId(){ return this.groupId; }
+    public Long getEndtime(){ return this.endtime; }
     //public String getCategory() { return this.category; }
 
     public HashMap<String, Appointment> getAppointments(){
@@ -151,10 +153,10 @@ public class Group implements DataProvider.DatabaseReferenceObject{
                             break;
                         case "starttime":
                             Group.this.starttime = groupData.getValue().toString();
-                            break;
-                        case "endtime":
-                            Group.this.endtime = groupData.getValue().toString();
                             break;*/
+                        case "endtime":
+                            Group.this.endtime = Long.parseLong(groupData.getValue().toString());
+                            break;
                         case "members":
                             Group.this.members = loadMembers(groupData);
                             break;
@@ -164,6 +166,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
                     }
                 }
                 DataProvider.groupListener.onGroupeDataChanged();
+                Group.this.createEndtimeWatcher();
             }
 
             @Override
@@ -254,4 +257,27 @@ public class Group implements DataProvider.DatabaseReferenceObject{
         }
         return members;
     }
+
+    public void createEndtimeWatcher(){
+        Long endtime = Group.this.getEndtime();
+        final Long restTime = endtime - System.currentTimeMillis();
+        if(restTime <= 0){
+            DataProvider.roundEndListener.onRoundEnd();
+        } else {
+            Group.this.endtimeWatcher = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(restTime);
+                        DataProvider.roundEndListener.onRoundEnd();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            Group.this.endtimeWatcher.setName("endtimeWatcher");
+            Group.this.endtimeWatcher.start();
+        }
+    }
+
 }

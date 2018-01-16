@@ -1,28 +1,17 @@
 package com.fantavier.bierbattle.bierbattle.model;
 
-import android.content.Context;
-import android.provider.ContactsContract;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
+import com.fantavier.bierbattle.bierbattle.helper.HttpHelper;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +30,8 @@ public class DataProvider {
     public static AppointmentEndsListener appointmentEndsListener = null;
     public static VotingEndsListener votingEndsListener = null;
     public static UsersBeercountLoadedListener usersBeercountLoadedListener = null;
+    public static RoundEndingListener roundEndListener = null;
+
 
     private static final String TAG = "DataProvider";
     private static String groupId = "";
@@ -71,6 +62,10 @@ public class DataProvider {
 
     public interface GroupDataListener {
         void onGroupeDataChanged();
+    }
+
+    public interface RoundEndingListener {
+        void onRoundEnd();
     }
 
     public interface RankingDataListener{
@@ -107,6 +102,7 @@ public class DataProvider {
 
     public void setUserDataListener(UserDataListener listener) { userListener = listener; }
     public void setGroupDataListener(GroupDataListener listener){ groupListener = listener; }
+    public void setRoundEndListener(RoundEndingListener listener){ roundEndListener = listener; }
     public void setRankingDataListener(RankingDataListener listener) { rankingDataListener = listener; }
     public void setMemberDataListener(MemberDataListener listener) { memberDataListener = listener; }
     public void setAppointmentCreatedListener(AppointmentCreatedListener listener) { appointmentCreatedListener = listener; }
@@ -118,7 +114,6 @@ public class DataProvider {
 
     public static void createUser(Map<String, String> userData) {
         try {
-            /* Daten überprüfen */
             DatabaseReference createUser = FirebaseDatabase.getInstance().getReference("users").child(userData.get("uid"));
             userData.remove("uid");
             createUser.setValue(userData);
@@ -162,45 +157,51 @@ public class DataProvider {
         FirebaseDatabase.getInstance().getReference().child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                final HashMap<String, Integer> debts = getActiveUser().getDepts();
-                final HashMap<String, Integer> debtsWithNames = new HashMap<>();
+                try {
+                    final HashMap<String, Integer> debts = getActiveUser().getDepts();
+                    final HashMap<String, Integer> debtsWithNames = new HashMap<>();
 
-                final HashMap<String, Integer> earnings = getActiveUser().getEarnings();
-                final HashMap<String, Integer> earningsWithNames = new HashMap<>();
+                    final HashMap<String, Integer> earnings = getActiveUser().getEarnings();
+                    final HashMap<String, Integer> earningsWithNames = new HashMap<>();
 
-                Iterator itDebts = debts.entrySet().iterator();
-                while(itDebts.hasNext()){
-                    Map.Entry debt = (Map.Entry) itDebts.next();
-                    final Integer value = Integer.parseInt(debt.getValue().toString());
-                    final User user = new User();
-                    user.loadObjectProperties(debt.getKey().toString());
-                    user.setPropertiesLoaded(new PropertiesLoaded() {
-                        @Override
-                        public void onPropertiesLoaded() {
-                            debtsWithNames.put(user.getUsername(), value);
-                            if(debtsWithNames.size() == debts.size()){
-                                DataProvider.usersBeercountLoadedListener.onUsersBeercountLoaded(debtsWithNames, true);
+                    Iterator itDebts = debts.entrySet().iterator();
+                    while(itDebts.hasNext()){
+                        Map.Entry debt = (Map.Entry) itDebts.next();
+                        final Integer value = Integer.parseInt(debt.getValue().toString());
+                        final User user = new User();
+                        user.loadObjectProperties(debt.getKey().toString());
+                        user.setPropertiesLoaded(new PropertiesLoaded() {
+                            @Override
+                            public void onPropertiesLoaded() {
+                                debtsWithNames.put(user.getUsername(), value);
+                                if(debtsWithNames.size() == debts.size()){
+                                    DataProvider.usersBeercountLoadedListener.onUsersBeercountLoaded(debtsWithNames, true);
+                                }
                             }
-                        }
-                    });
+                        });
 
-                }
-
-                Iterator itEarnings = earnings.entrySet().iterator();
-                while(itEarnings.hasNext()){
-                    Map.Entry entry = (Map.Entry) itEarnings.next();
-                    final Integer value = Integer.parseInt(entry.getValue().toString());
-                    final User user = new User();
-                    user.loadObjectProperties(entry.getKey().toString());
-                    user.setPropertiesLoaded(new PropertiesLoaded() {
-                        @Override
-                        public void onPropertiesLoaded() {
-                            earningsWithNames.put(user.getUsername(), value);
-                            if(earningsWithNames.size() == earnings.size()){
-                                DataProvider.usersBeercountLoadedListener.onUsersBeercountLoaded(earningsWithNames, false);
+                    }
+                    if(earnings == null){
+                        throw new ExceptionHelper.BeerCounterException();
+                    }
+                    Iterator itEarnings = earnings.entrySet().iterator();
+                    while(itEarnings.hasNext()){
+                        Map.Entry entry = (Map.Entry) itEarnings.next();
+                        final Integer value = Integer.parseInt(entry.getValue().toString());
+                        final User user = new User();
+                        user.loadObjectProperties(entry.getKey().toString());
+                        user.setPropertiesLoaded(new PropertiesLoaded() {
+                            @Override
+                            public void onPropertiesLoaded() {
+                                earningsWithNames.put(user.getUsername(), value);
+                                if(earningsWithNames.size() == earnings.size()){
+                                    DataProvider.usersBeercountLoadedListener.onUsersBeercountLoaded(earningsWithNames, false);
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
+                } catch(ExceptionHelper.BeerCounterException ex){
+                    Log.d(TAG, ex.getMessage());
                 }
             }
 
@@ -211,33 +212,17 @@ public class DataProvider {
         });
     }
 
+    public void finishRound(){
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("groupId", getActiveGroup().getGroupId());
+        String url = "https://us-central1-bierbattle.cloudfunctions.net/roundEnds";
+        HttpHelper.sendPost(url, body);
+    }
+
     public String getUserrank() throws ExceptionHelper.MemberNotFoundException{
         return getActiveGroup().getRankOfMember(getActiveUser().getUserId()).toString();
     }
 
-    public void checkAppointments(){
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String groupId = getActiveGroup().getGroupId();
-                    URL url = new URL("https://us-central1-bierbattle.cloudfunctions.net/checkAppointments");
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.setRequestMethod("POST");
-
-                    BufferedWriter httpRequestBodyWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
-                    httpRequestBodyWriter.write("groupId="+groupId);
-                    httpRequestBodyWriter.close();
-
-                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                } catch(IOException ex){
-                    Thread.interrupted();
-                    Log.d(TAG, ex.getMessage());
-                }
-            }
-        });
-        thread.start();
-    }
     private void loadUserData(){
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         user.loadObjectProperties(uid);
