@@ -158,17 +158,17 @@ public class DataProvider {
         FirebaseDatabase.getInstance().getReference().child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
-                    final HashMap<String, Integer> debts = getActiveUser().getDepts();
-                    final HashMap<String, Integer> debtsWithNames = new HashMap<>();
+                final HashMap<String, Integer> debts = getActiveUser().getDepts();
+                final HashMap<String, Integer> debtsWithNames = new HashMap<>();
 
-                    final HashMap<String, Integer> earnings = getActiveUser().getEarnings();
-                    final HashMap<String, Integer> earningsWithNames = new HashMap<>();
+                final HashMap<String, Integer> earnings = getActiveUser().getEarnings();
+                final HashMap<String, Integer> earningsWithNames = new HashMap<>();
 
-                    earningUsers = new ArrayList<>();
+                earningUsers = new ArrayList<>();
 
+                if (debts != null){
                     Iterator itDebts = debts.entrySet().iterator();
-                    while(itDebts.hasNext()){
+                    while (itDebts.hasNext()) {
                         Map.Entry debt = (Map.Entry) itDebts.next();
                         final Integer value = Integer.parseInt(debt.getValue().toString());
                         final User user = new User();
@@ -177,18 +177,17 @@ public class DataProvider {
                             @Override
                             public void onPropertiesLoaded() {
                                 debtsWithNames.put(user.getUsername(), value);
-                                if(debtsWithNames.size() == debts.size()){
+                                if (debtsWithNames.size() == debts.size()) {
                                     DataProvider.usersBeercountLoadedListener.onUsersBeercountLoaded(debtsWithNames, true);
                                 }
                             }
                         });
-                        DataProvider.earningUsers.add(user);
                     }
-                    if(earnings == null){
-                        throw new ExceptionHelper.BeerCounterException();
-                    }
+                }
+
+                if(earnings != null) {
                     Iterator itEarnings = earnings.entrySet().iterator();
-                    while(itEarnings.hasNext()){
+                    while (itEarnings.hasNext()) {
                         Map.Entry entry = (Map.Entry) itEarnings.next();
                         final Integer value = Integer.parseInt(entry.getValue().toString());
                         final User user = new User();
@@ -197,14 +196,13 @@ public class DataProvider {
                             @Override
                             public void onPropertiesLoaded() {
                                 earningsWithNames.put(user.getUsername(), value);
-                                if(earningsWithNames.size() == earnings.size()){
+                                if (earningsWithNames.size() == earnings.size()) {
                                     DataProvider.usersBeercountLoadedListener.onUsersBeercountLoaded(earningsWithNames, false);
                                 }
                             }
                         });
+                        DataProvider.earningUsers.add(user);
                     }
-                } catch(ExceptionHelper.BeerCounterException ex){
-                    Log.d(TAG, ex.getMessage());
                 }
             }
 
