@@ -35,6 +35,7 @@ public class TerminDetail extends AppCompatActivity {
 
     private static final String TAG = "TerminDetail";
     private static String index;
+    private static String key;
     private Appointment appointment;
     private Thread refreshThread;
 
@@ -44,7 +45,11 @@ public class TerminDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_termin_detail);
 
+
         index = getIntent().getStringExtra("Index");
+        if(index == null){
+            key = getIntent().getStringExtra("appointmentKey");
+        }
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.action_bar);
@@ -80,7 +85,12 @@ public class TerminDetail extends AppCompatActivity {
     }
 
     private void setAppointmentViewData(){
-        appointment = MainActivity.dataProvider.getActiveGroup().getAppointment(Integer.parseInt(index));
+        if(index != null){
+            appointment = MainActivity.dataProvider.getActiveGroup().getAppointment(Integer.parseInt(index), null);
+        } else {
+            appointment = MainActivity.dataProvider.getActiveGroup().getAppointment(null, key);
+        }
+
 
         title.setText(appointment.getTitle());
         datum.setText(appointment.getDate());

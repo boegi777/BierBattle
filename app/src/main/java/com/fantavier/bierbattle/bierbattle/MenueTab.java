@@ -23,6 +23,8 @@ public class MenueTab extends Fragment {
 
     public static TextView username = null;
     public static TextView rank = null;
+    public static TextView debtCount = null;
+    public static TextView earningCount = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,6 +33,8 @@ public class MenueTab extends Fragment {
 
         username = rootView.findViewById(R.id.username);
         rank = rootView.findViewById(R.id.rank);
+        debtCount = rootView.findViewById(R.id.debtCount);
+        earningCount = rootView.findViewById(R.id.earningCount);
         ImageButton zurueck = (ImageButton) rootView.findViewById(R.id.bier);
         kamera_btn = (ImageButton) rootView.findViewById(R.id.kamera);
         kamera_btn.setOnClickListener(new View.OnClickListener() {

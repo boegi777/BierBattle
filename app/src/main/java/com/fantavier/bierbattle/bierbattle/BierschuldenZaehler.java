@@ -3,6 +3,7 @@ package com.fantavier.bierbattle.bierbattle;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.fantavier.bierbattle.bierbattle.model.DataProvider;
+import com.fantavier.bierbattle.bierbattle.ui.PopupListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,10 +41,18 @@ public class BierschuldenZaehler extends AppCompatActivity {
             }
         });
 
-        MainActivity.dataProvider.getActiveUserBeerResults();
-
         max = (ListView) findViewById(R.id.plusview);
         min = (ListView) findViewById(R.id.minusview);
+
+        min.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Snackbar popup = Snackbar.make(view, "Schuld begleichen?", 2000);
+                popup.setAction("Begleichen", new PopupListener(i));
+                popup.show();
+                //MainActivity.dataProvider.getEarningUser(i);
+            }
+        });
 
     }
 
@@ -52,6 +62,7 @@ public class BierschuldenZaehler extends AppCompatActivity {
     }
 
     private void resumeViewData(final ListView max, final ListView min){
+        MainActivity.dataProvider.getActiveUserBeerResults();
         MainActivity.dataProvider.setUsersBeercountLoadedListener(new DataProvider.UsersBeercountLoadedListener() {
             @Override
             public void onUsersBeercountLoaded(final HashMap<String, Integer> userData, final Boolean debts) {

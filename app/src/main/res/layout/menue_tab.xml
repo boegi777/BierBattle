@@ -82,7 +82,7 @@
         app:layout_constraintVertical_bias="0.045">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/earningCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-smallcaps"
@@ -128,7 +128,7 @@
             app:layout_constraintVertical_bias="0.233" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/debtCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-smallcaps"

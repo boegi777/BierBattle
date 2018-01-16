@@ -1,26 +1,15 @@
 package com.fantavier.bierbattle.bierbattle.model;
 
-import android.provider.ContactsContract;
-import android.util.Log;
-
 import com.fantavier.bierbattle.bierbattle.helper.DateHelper;
 import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
+import com.fantavier.bierbattle.bierbattle.helper.HttpHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -72,6 +61,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     public Boolean isLoaded() { return this.loaded; }
     public Boolean isBlocked() { return this.blocked; }
     public HashMap<String, Boolean> getVotings(){ return this.votings; }
+    public String getId(){return appointmentId;}
 
     public void setBlocked(Boolean blocked){
         this.blocked = blocked;
@@ -79,17 +69,6 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
 
     public void setVoting(String uid, Boolean vote){
         dbRef.child("votings").child(uid).setValue(vote);
-    }
-
-    public static void clearThreadList(){
-        if(threads == null){
-            threads = new ArrayList<Thread>();
-        }
-        for(Thread thread : threads){
-            if(thread != null)
-                thread.interrupt();
-        }
-        threads.clear();
     }
 
     public Boolean isStarted(){
@@ -171,8 +150,15 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
         return builder.toString();
     }
 
-    public Long getDateInMilliSec() {
-        return DateHelper.convertDateToMilliSec(getDate(), getTime());
+    public static void clearThreadList(){
+        if(threads == null){
+            threads = new ArrayList<Thread>();
+        }
+        for(Thread thread : threads){
+            if(thread != null)
+                thread.interrupt();
+        }
+        threads.clear();
     }
 
     public String getPositivVotings(){
@@ -262,29 +248,13 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     }
 
     public void checkAppointmentStatus(){
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String appointmentId = Appointment.this.appointmentId;
-                    String groupId = Appointment.this.parentRef.getGroupId();
-                    URL url = new URL("https://us-central1-bierbattle.cloudfunctions.net/checkAppointment");
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.setRequestMethod("POST");
-
-                    BufferedWriter httpRequestBodyWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
-                    httpRequestBodyWriter.write("groupId="+groupId+"&appointmentId="+appointmentId);
-                    httpRequestBodyWriter.close();
-
-                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    Thread.interrupted();
-                } catch(IOException ex){
-                    Thread.interrupted();
-                    Log.d(TAG, ex.getMessage());
-                }
-            }
-        });
-        thread.start();
+        String appointmentId = Appointment.this.appointmentId;
+        String groupId = Appointment.this.parentRef.getGroupId();
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("groupId", groupId);
+        body.put("appointmentId", appointmentId);
+        String url = "https://us-central1-bierbattle.cloudfunctions.net/checkAppointment";
+        HttpHelper.sendPost(url, body);
     }
 
     private HashMap<String, Boolean> initVotings(DataSnapshot votingsDS){
