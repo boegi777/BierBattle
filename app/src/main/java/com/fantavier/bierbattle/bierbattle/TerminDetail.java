@@ -89,8 +89,7 @@ public class TerminDetail extends AppCompatActivity {
             appointment = MainActivity.dataProvider.getActiveGroup().getAppointment(Integer.parseInt(index), null);
         } else {
             appointment = MainActivity.dataProvider.getActiveGroup().getAppointment(null, key);
-         }
-
+        }
 
 
         title.setText(appointment.getTitle());

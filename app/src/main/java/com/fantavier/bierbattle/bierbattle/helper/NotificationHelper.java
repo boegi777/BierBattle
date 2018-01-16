@@ -23,17 +23,17 @@ public class NotificationHelper extends ContextWrapper {
     public static final String CHANNEL_ONE_ID = "com.fantavier.bierbattle.ONE";
     public static final String CHANNEL_ONE_NAME = "Channel One";
 
-    public NotificationHelper(String channel,Context base) {
+    public NotificationHelper(Context base) {
         super(base);
-        createChannels(channel);
+        createChannels();
     }
 
 
 
-    public void createChannels(String channel) {
+    public void createChannels() {
         if (Build.VERSION.SDK_INT >= 26) {
-            NotificationChannel notificationChannel = new NotificationChannel(channel,
-                    channel, notifManager.IMPORTANCE_HIGH);
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ONE_ID,
+                    CHANNEL_ONE_NAME, notifManager.IMPORTANCE_HIGH);
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.RED);
             notificationChannel.setShowBadge(true);

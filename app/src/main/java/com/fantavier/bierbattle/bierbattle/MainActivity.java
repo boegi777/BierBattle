@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.dataProvider.setRoundEndListener(new DataProvider.RoundEndingListener() {
             @Override
             public void onRoundEnd() {
-                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Runde beendet!", "Runde beendet!");
+                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Runde beendet!", "Runde beendet!", null);
                 notificationHelper.notify(106, notificationBuilder);
                 MainActivity.dataProvider.finishRound();
             }
@@ -267,7 +267,6 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.dataProvider.setAppointmentStartListener(new DataProvider.AppointmentStartListener() {
             @Override
             public void onAppointmentStart(Appointment appointment) {
-                NotificationHelper notificationHelper = new NotificationHelper("channel_one",MainActivity.this);
                 String id = appointment.getId();
                 NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin gestartet", "Termin "+appointment.getTitle()+ " ist gestartet",id);
                 notificationHelper.notify(104, notificationBuilder);
@@ -278,7 +277,6 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.dataProvider.setAppointmentEndsListener(new DataProvider.AppointmentEndsListener() {
             @Override
             public void onAppointmentEnds(Appointment appointment) {
-                NotificationHelper notificationHelper = new NotificationHelper("channel_two",MainActivity.this);
                 String id = appointment.getId();
                 NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin beendet", "Termin "+appointment.getTitle()+ " ist beendet",id);
                 notificationHelper.notify(103, notificationBuilder);
@@ -289,7 +287,6 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.dataProvider.setVotingEndsListener(new DataProvider.VotingEndsListener() {
             @Override
             public void onVotingEnds(Appointment appointment) {
-                NotificationHelper notificationHelper = new NotificationHelper("channel_three",MainActivity.this);
                 String id = appointment.getId();
                 NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Abstimmung beendet", "Abstimmung für "+appointment.getTitle()+ " wurde beendet",id);
                 notificationHelper.notify(101, notificationBuilder);
