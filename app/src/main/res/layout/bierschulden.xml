@@ -21,10 +21,11 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageView4"
+                android:id="@+id/fullbeer"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
+                android:contentDescription="@string/title_slide6"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.218"
@@ -34,10 +35,11 @@
                 app:srcCompat="@drawable/beermugf" />
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/beers"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
+                android:contentDescription="@string/title_slide6"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -46,10 +48,11 @@
                 app:srcCompat="@drawable/beers" />
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/emptybeer"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
+                android:contentDescription="@string/title_slide6"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.79"
@@ -70,14 +73,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Verdienst  "
+                android:text="@string/verdienst"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/emptyview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -86,7 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Schulden "
+                android:text="@string/schulden"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold" />
@@ -112,7 +115,7 @@
             </ListView>
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/emptyview2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
