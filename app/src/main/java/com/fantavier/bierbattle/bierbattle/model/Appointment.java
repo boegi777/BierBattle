@@ -17,8 +17,6 @@ import java.util.Map;
 
 public class Appointment implements DataProvider.DatabaseReferenceObject {
 
-    public static int count = 0;
-
     private static final String TAG = "Appointment";
     private static List<Thread> threads = null;
     private DatabaseReference dbRef = null;
@@ -112,6 +110,9 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
                             Appointment.this.active  = Boolean.parseBoolean(appointmentData.getValue().toString());
                             break;
                     }
+                }
+                if(loaded == false){
+                    checkAppointmentStatus();
                 }
                 loaded = true;
                 if(Appointment.this.getActive() || !Appointment.this.getVotingend()){

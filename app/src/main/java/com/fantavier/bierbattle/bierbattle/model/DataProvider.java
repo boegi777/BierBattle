@@ -2,6 +2,7 @@ package com.fantavier.bierbattle.bierbattle.model;
 
 import android.util.Log;
 
+import com.fantavier.bierbattle.bierbattle.helper.DateHelper;
 import com.fantavier.bierbattle.bierbattle.helper.ExceptionHelper;
 import com.fantavier.bierbattle.bierbattle.helper.HttpHelper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +32,7 @@ public class DataProvider {
     public static VotingEndsListener votingEndsListener = null;
     public static UsersBeercountLoadedListener usersBeercountLoadedListener = null;
     public static RoundEndingListener roundEndListener = null;
+    public static EndtimeListener endtimeListener = null;
 
 
     private static final String TAG = "DataProvider";
@@ -69,6 +71,10 @@ public class DataProvider {
         void onRoundEnd();
     }
 
+    public interface EndtimeListener{
+        void onEndtimeChanged();
+    }
+
     public interface RankingDataListener{
         void onRankingDataListenerChanged();
     }
@@ -104,6 +110,7 @@ public class DataProvider {
     public void setUserDataListener(UserDataListener listener) { userListener = listener; }
     public void setGroupDataListener(GroupDataListener listener){ groupListener = listener; }
     public void setRoundEndListener(RoundEndingListener listener){ roundEndListener = listener; }
+    public void setEndtimeListener(EndtimeListener listener){ endtimeListener = listener;}
     public void setRankingDataListener(RankingDataListener listener) { rankingDataListener = listener; }
     public void setMemberDataListener(MemberDataListener listener) { memberDataListener = listener; }
     public void setAppointmentCreatedListener(AppointmentCreatedListener listener) { appointmentCreatedListener = listener; }
@@ -211,6 +218,10 @@ public class DataProvider {
                 throw databaseError.toException();
             }
         });
+    }
+
+    public String getEndtimeString(){
+        return "Rundenende \n" + DateHelper.getDateStringFromMilli(getActiveGroup().getEndtime());
     }
 
     public void setPayedDebtsForUser(Integer i){

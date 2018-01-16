@@ -273,6 +273,12 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.dataProvider.finishRound();
             }
         });
+        MainActivity.dataProvider.setEndtimeListener(new DataProvider.EndtimeListener() {
+            @Override
+            public void onEndtimeChanged() {
+                GruppeTab.endtime.setText(MainActivity.dataProvider.getEndtimeString());
+            }
+        });
     }
 
     private void setAppointmentListener(){

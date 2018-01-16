@@ -82,4 +82,39 @@ public class DateHelper {
 
         return timeDiffArray;
     }
+
+    public static String getDateStringFromMilli(Long milli){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milli);
+
+        int month = calendar.get(Calendar.MONTH) + 1;
+
+        String day = calendar.get(Calendar.DAY_OF_MONTH) + "";
+        if(day.length() == 1){
+            day = "0" + day;
+        }
+        String monthString = month + "";
+        if(monthString.length() == 1){
+            monthString = "0" + monthString;
+        }
+        String year = calendar.get(Calendar.YEAR) + "";
+
+        String hour = calendar.get(Calendar.HOUR_OF_DAY) + "";
+        if(hour.length() == 1){
+            hour = "0" + hour;
+        }
+        String minute = calendar.get(Calendar.MINUTE) + "";
+        if(minute.length() == 1){
+            minute = "0" + minute;
+        }
+
+        String date = "";
+        date += day + ".";
+        date += monthString + ".";
+        date += year + " - ";
+        date += hour + ":";
+        date += minute;
+
+        return date;
+    }
 }

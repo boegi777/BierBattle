@@ -124,7 +124,11 @@ public class User implements DataProvider.DatabaseReferenceObject {
                 debt -= 1;
             }
         }
-        dbRef.child("debts").child(userId).setValue(debt);
+        if(debt <= 0){
+            dbRef.child("debts").child(userId).setValue(0);
+        } else {
+            dbRef.child("debts").child(userId).setValue(debt);
+        }
     }
 
     public void removeEarning(String userId){
@@ -137,7 +141,11 @@ public class User implements DataProvider.DatabaseReferenceObject {
                 earning -= 1;
             }
         }
-        dbRef.child("earnings").child(userId).setValue(earning);
+        if(earning <= 0){
+            dbRef.child("earning").child(userId).setValue(0);
+        } else {
+            dbRef.child("earnings").child(userId).setValue(earning);
+        }
     }
 
     private HashMap<String, HashMap<String, Object>> initGroups(DataSnapshot groupsDS){

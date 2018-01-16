@@ -261,6 +261,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     public void createEndtimeWatcher(){
         Long endtime = Group.this.getEndtime();
         final Long restTime = endtime - System.currentTimeMillis();
+        DataProvider.endtimeListener.onEndtimeChanged();
         if(restTime <= 0){
             DataProvider.roundEndListener.onRoundEnd();
         } else {
