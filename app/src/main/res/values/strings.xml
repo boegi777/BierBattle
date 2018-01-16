@@ -9,9 +9,7 @@
     <string name="zurueck">Zurück</string>
 
     <string name="email">Email</string>
-    <string name="zahl_plus">4</string>
-    <string name="zahl_minus">2</string>
-    <string name="rank">1</string>
+    <string name="zahl">0</string>
     <string name="regestrierung">Regestrierung</string>
     <string name="passwort">Passwort</string>
     <string name="pw_wiederh">Passwort wiederholen</string>
