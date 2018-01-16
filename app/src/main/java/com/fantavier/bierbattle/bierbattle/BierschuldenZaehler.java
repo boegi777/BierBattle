@@ -44,7 +44,7 @@ public class BierschuldenZaehler extends AppCompatActivity {
         max = (ListView) findViewById(R.id.plusview);
         min = (ListView) findViewById(R.id.minusview);
 
-        min.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        max.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Snackbar popup = Snackbar.make(view, "Schuld begleichen?", 2000);

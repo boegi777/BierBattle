@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -114,12 +115,28 @@ public class User implements DataProvider.DatabaseReferenceObject {
     }
 
     public void removeDebt(String userId){
-        Integer debt = debts.get(userId) - 1;
+        long debt = 0;
+        Iterator it = debts.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry<String, Long> entry = (Map.Entry) it.next();
+            if(entry.getKey().equals(userId)){
+                debt = entry.getValue();
+                debt -= 1;
+            }
+        }
         dbRef.child("debts").child(userId).setValue(debt);
     }
 
     public void removeEarning(String userId){
-        Integer earning = earnings.get(userId) - 1;
+        long earning = 0;
+        Iterator it = earnings.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry<String, Long> entry = (Map.Entry) it.next();
+            if(entry.getKey().equals(userId)){
+                earning = entry.getValue();
+                earning -= 1;
+            }
+        }
         dbRef.child("earnings").child(userId).setValue(earning);
     }
 

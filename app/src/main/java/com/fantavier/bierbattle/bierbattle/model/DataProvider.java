@@ -182,7 +182,6 @@ public class DataProvider {
                                 }
                             }
                         });
-                        DataProvider.earningUsers.add(user);
                     }
                     if(earnings == null){
                         throw new ExceptionHelper.BeerCounterException();
@@ -202,6 +201,7 @@ public class DataProvider {
                                 }
                             }
                         });
+                        DataProvider.earningUsers.add(user);
                     }
                 } catch(ExceptionHelper.BeerCounterException ex){
                     Log.d(TAG, ex.getMessage());
