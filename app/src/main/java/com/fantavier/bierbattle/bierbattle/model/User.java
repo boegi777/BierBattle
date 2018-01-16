@@ -113,6 +113,16 @@ public class User implements DataProvider.DatabaseReferenceObject {
         return points;
     }
 
+    public void removeDebt(String userId){
+        Integer debt = debts.get(userId) - 1;
+        dbRef.child("debts").child(userId).setValue(debt);
+    }
+
+    public void removeEarning(String userId){
+        Integer earning = earnings.get(userId) - 1;
+        dbRef.child("earnings").child(userId).setValue(earning);
+    }
+
     private HashMap<String, HashMap<String, Object>> initGroups(DataSnapshot groupsDS){
         HashMap<String, HashMap<String, Object>> groups = new HashMap<>();
 

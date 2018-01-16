@@ -37,6 +37,7 @@ public class DataProvider {
     private static String groupId = "";
     private static Group group = null;
     private static User user = null;
+    private static List<User> earningUsers = null;
     private static List<User> ranking = null;
 
 
@@ -164,6 +165,8 @@ public class DataProvider {
                     final HashMap<String, Integer> earnings = getActiveUser().getEarnings();
                     final HashMap<String, Integer> earningsWithNames = new HashMap<>();
 
+                    earningUsers = new ArrayList<>();
+
                     Iterator itDebts = debts.entrySet().iterator();
                     while(itDebts.hasNext()){
                         Map.Entry debt = (Map.Entry) itDebts.next();
@@ -179,7 +182,7 @@ public class DataProvider {
                                 }
                             }
                         });
-
+                        DataProvider.earningUsers.add(user);
                     }
                     if(earnings == null){
                         throw new ExceptionHelper.BeerCounterException();
@@ -210,6 +213,12 @@ public class DataProvider {
                 throw databaseError.toException();
             }
         });
+    }
+
+    public void setPayedDebtsForUser(Integer i){
+        User user = earningUsers.get(i);
+        user.removeDebt(getActiveUser().getUserId());
+        getActiveUser().removeEarning(user.getUserId());
     }
 
     public void finishRound(){
