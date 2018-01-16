@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(3);
 
     }
 
@@ -162,9 +162,9 @@ public class MainActivity extends AppCompatActivity {
                 case 2:
                     TermineTab termine = new TermineTab();
                     return termine;
-                case 3:
-                    TeilnehmerTab teilnehmer = new TeilnehmerTab();
-                    return teilnehmer;
+                //case 3:
+                    //TeilnehmerTab teilnehmer = new TeilnehmerTab();
+                    //return teilnehmer;
                 default:
                     return null;
             }
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 4;
+            return 3;
         }
     }
 
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
             setUserDataListener();
             setGroupDataListener();
             setAppointmentListener();
-            setRankingDataListener();
+            //setRankingDataListener();
             setBeercountDataListener();
             MainActivity.dataProvider.loadData();
             MainActivity.dataProvider.getActiveUserBeerResults();
@@ -217,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /*
     private void setRankingDataListener(){
         MainActivity.dataProvider.setRankingDataListener(new DataProvider.RankingDataListener() {
             @Override
@@ -231,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-    }
+    }*/
 
     private void setGroupDataListener(){
         MainActivity.dataProvider.setGroupDataListener(new DataProvider.GroupDataListener() {
