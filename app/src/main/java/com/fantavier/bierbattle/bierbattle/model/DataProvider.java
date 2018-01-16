@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
 public class DataProvider {
 
     public static UserDataListener userListener = null;
@@ -46,6 +47,7 @@ public class DataProvider {
     private static Group group = null;
     private static User user = null;
     private static List<User> ranking = null;
+
 
     public DataProvider(){
         DataProvider.group = new Group();
@@ -80,7 +82,7 @@ public class DataProvider {
     }
 
     public interface AppointmentCreatedListener {
-        void onAppointmentCreatedListener();
+        void onAppointmentCreatedListener(Appointment appointment);
     }
 
     public interface AppointmentDataListener {
@@ -154,7 +156,6 @@ public class DataProvider {
         }
         Member member = getActiveGroup().getMember(getActiveUser().getUserId());
         member.setPoints(points);
-
     }
 
     public void getActiveUserBeerResults(){

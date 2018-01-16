@@ -72,6 +72,7 @@ public class Appointment implements DataProvider.DatabaseReferenceObject {
     public Boolean isLoaded() { return this.loaded; }
     public Boolean isBlocked() { return this.blocked; }
     public HashMap<String, Boolean> getVotings(){ return this.votings; }
+    public String getId(){return appointmentId;}
 
     public void setBlocked(Boolean blocked){
         this.blocked = blocked;

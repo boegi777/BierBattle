@@ -41,12 +41,18 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     }
     public List<Member> getMembers() { return members; }
 
-    public Appointment getAppointment(Integer index) {
+    public Appointment getAppointment(Integer index, String key) {
+        if(index != null){
+            List keys = new ArrayList(this.appointments.keySet());
+            String appointmentId = keys.get(index).toString();
+            checkAppointmentActiveStatus(appointmentId);
+            return this.appointments.get(appointmentId);
 
-        List keys = new ArrayList(this.appointments.keySet());
-        String appointmentId = keys.get(index).toString();
-        checkAppointmentActiveStatus(appointmentId);
-        return this.appointments.get(appointmentId);
+        } else if (key != null){
+            checkAppointmentActiveStatus(key);
+            return this.appointments.get(key);
+        }
+        return null;
     }
 
     public Member getMember(String uid) throws ExceptionHelper.MemberNotFoundException{

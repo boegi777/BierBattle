@@ -1,6 +1,6 @@
 package com.fantavier.bierbattle.bierbattle;
 
-import android.app.Notification;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -28,10 +28,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
+
 public class MainActivity extends AppCompatActivity {
 
     public static DataProvider dataProvider = null;
-    public static NotificationHelper notificationHelper = null;
+   // public static NotificationHelper notificationHelper = null;
     public static Location location = null;
 
     private static final String TAG = "MainActivity";
@@ -45,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         dataProvider = new DataProvider();
-        notificationHelper = new NotificationHelper(MainActivity.this);
-        location = new Location();
+        //notificationHelper = new NotificationHelper(MainActivity.this);
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
             Intent i = new Intent(this, Login.class);
@@ -85,13 +85,14 @@ public class MainActivity extends AppCompatActivity {
         requestLocationUpdates();
     }
 
+
     @Override
     public void onDestroy(){
         moveTaskToBack(true);
-        stopService(location_service);
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(1);
         super.onDestroy();
+
     }
 
 
@@ -227,17 +228,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setAppointmentListener(){
-        MainActivity.dataProvider.setAppointmentCreatedListener(new DataProvider.AppointmentCreatedListener() {
+       /*MainActivity.dataProvider.setAppointmentCreatedListener(new DataProvider.AppointmentCreatedListener() {
             @Override
             public void onAppointmentCreatedListener() {
                 NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin erstellt", "Ein Termin wurde erstellt");
                 notificationHelper.notify(105, notificationBuilder);
+
             }
-        });
+        });*/
         MainActivity.dataProvider.setAppointmentStartListener(new DataProvider.AppointmentStartListener() {
             @Override
             public void onAppointmentStart(Appointment appointment) {
-                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin gestartet", "Termin "+appointment.getTitle()+ " ist gestartet");
+                NotificationHelper notificationHelper = new NotificationHelper("channel_one",MainActivity.this);
+                String id = appointment.getId();
+                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin gestartet", "Termin "+appointment.getTitle()+ " ist gestartet",id);
                 notificationHelper.notify(104, notificationBuilder);
                 appointment.checkAppointmentStatus();
             }
@@ -246,7 +250,9 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.dataProvider.setAppointmentEndsListener(new DataProvider.AppointmentEndsListener() {
             @Override
             public void onAppointmentEnds(Appointment appointment) {
-                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin beendet", "Termin "+appointment.getTitle()+ " ist beendet");
+                NotificationHelper notificationHelper = new NotificationHelper("channel_two",MainActivity.this);
+                String id = appointment.getId();
+                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Termin beendet", "Termin "+appointment.getTitle()+ " ist beendet",id);
                 notificationHelper.notify(103, notificationBuilder);
                 appointment.checkAppointmentStatus();
             }
@@ -255,13 +261,14 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.dataProvider.setVotingEndsListener(new DataProvider.VotingEndsListener() {
             @Override
             public void onVotingEnds(Appointment appointment) {
-                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Abstimmung beendet", "Abstimmung für "+appointment.getTitle()+ " wurde beendet");
+                NotificationHelper notificationHelper = new NotificationHelper("channel_three",MainActivity.this);
+                String id = appointment.getId();
+                NotificationCompat.Builder notificationBuilder = notificationHelper.getNotification1("Abstimmung beendet", "Abstimmung für "+appointment.getTitle()+ " wurde beendet",id);
                 notificationHelper.notify(101, notificationBuilder);
                 appointment.checkAppointmentStatus();
             }
         });
     }
-
     private boolean requestLocationUpdates() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -274,8 +281,6 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-
-
     public void onRequestPermissionResults(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
@@ -286,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
 
 }
 
