@@ -52,27 +52,33 @@ public class Login extends AppCompatActivity {
     }
 
     public void onLogin(){
-        mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(Login.this, "Authentication succeeded",
-                                    Toast.LENGTH_SHORT).show();
-                            Login.this.finish();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(Login.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
+        try {
+            mAuth.signInWithEmailAndPassword(Login.this.email.getText().toString(), Login.this.password.getText().toString())
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "signInWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                Toast.makeText(Login.this, "Anmeldung erfolgreich",
+                                        Toast.LENGTH_SHORT).show();
+                                Login.this.finish();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(Login.this, "Anmeldung fehlgeschlagen",
+                                        Toast.LENGTH_SHORT).show();
+                            }
 
-                        // ...
-                    }
-                });
+                            // ...
+                        }
+                    });
+        } catch (Exception ex){
+            Log.w(TAG, "signInWithEmail:failure", ex);
+            Toast.makeText(Login.this, "Ein Fehler ist aufgetreten",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onRegistration(){

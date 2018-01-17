@@ -75,6 +75,7 @@ public class TerminDetail extends AppCompatActivity {
 
     public void onPause(){
         super.onPause();
+        appointment.checkAppointmentStatus();
     }
     public void onDestroy(){
         super.onDestroy();
@@ -192,6 +193,7 @@ public class TerminDetail extends AppCompatActivity {
             public void onVotingEnds(Appointment appointment) {
                 positivButton.setOnClickListener(null);
                 negativButton.setOnClickListener(null);
+                appointment.checkAppointmentStatus();
             }
         });
     }
