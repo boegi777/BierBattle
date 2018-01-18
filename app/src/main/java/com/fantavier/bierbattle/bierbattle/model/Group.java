@@ -25,6 +25,7 @@ public class Group implements DataProvider.DatabaseReferenceObject{
     //private String category = "";
     //private String starttime = "";
     private Long endtime = 0l;
+    private Boolean load = false;
     //private boolean active = false;
     private List<Member> members = null;
     private HashMap<String, Appointment> appointments = null;
@@ -165,8 +166,12 @@ public class Group implements DataProvider.DatabaseReferenceObject{
                             break;
                     }
                 }
+                if(load == false){
+                    Group.this.createEndtimeWatcher();
+                }
+                load = true;
                 DataProvider.groupListener.onGroupeDataChanged();
-                Group.this.createEndtimeWatcher();
+
             }
 
             @Override

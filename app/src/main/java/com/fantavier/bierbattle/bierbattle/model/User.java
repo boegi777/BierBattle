@@ -142,7 +142,7 @@ public class User implements DataProvider.DatabaseReferenceObject {
             }
         }
         if(earning <= 0){
-            dbRef.child("earning").child(userId).setValue(0);
+            dbRef.child("earnings").child(userId).setValue(0);
         } else {
             dbRef.child("earnings").child(userId).setValue(earning);
         }
